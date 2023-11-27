@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "169360981325",
+    "project_id": "planla",
+    "storage_bucket": "planla.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:169360981325:android:1d8014765d4fc1667acb04",
+        "android_client_info": {
+          "package_name": "com.planla.planla"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "169360981325-r2ve6v26hgdc3no39n22v5k3qa283ir9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.planla.planla",
+            "certificate_hash": "e4c544d0359947fa60af9a10b3eb97075c1e31d3"
+          }
+        },
+        {
+          "client_id": "169360981325-g7q8g48uvek6ucobvlncf4griar1n9po.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADYfmJRmeUsOHe-3U2IMDhHHvAE7tOLZU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "169360981325-g7q8g48uvek6ucobvlncf4griar1n9po.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
