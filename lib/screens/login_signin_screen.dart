@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-
+import 'package:planla/controls/firebase/auth.dart';
+import 'package:planla/screens/navigator_screen.dart';
+import 'package:page_transition/page_transition.dart';
 import '../utiles/constr.dart';
 import '../widgets/textinputfield_widget.dart';
 
@@ -18,22 +20,26 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
   String _username = '';
   bool viewControl = true;
   Uint8List? image;
+
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
     return viewControl ? loginScreen(size) : signInScreen(size);
   }
+
   SafeArea signInScreen(Size size) {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: size.height/20),
+            padding: EdgeInsets.symmetric(vertical: size.height / 20),
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                 /* Center(
+                  /* Center(
                     child: Text(
                       'Planla',
                       style: TextStyle(
@@ -71,8 +77,8 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                         });
                       }
                     },
-                    child:image == null ?
-                    Stack(
+                    child: image == null
+                        ? Stack(
                       children: [
                         Padding(
                           padding: EdgeInsets.only(top: size.height / 50),
@@ -102,18 +108,19 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                           ),
                         )
                       ],
-                    ) : Container(
+                    )
+                        : SizedBox(
                       width: size.width / 3,
                       height: size.width / 3,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.black,
+                      child: ClipRRect(
+                        borderRadius:
+                        BorderRadius.circular(size.width / 2),
+                        child: Image.memory(
+                          fit: BoxFit.cover,
+                          image!,
+                        ),
                       ),
-                      child: Image.memory(
-                        image!,
-                        fit: BoxFit.cover,
-                      ),
-                    )
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(
@@ -173,8 +180,17 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                     ),
                   ),
                   InkWell(
-                    /*onTap: () => authController.registerUser(
-                        _username, _email, _pass, authController.profilePhoto),*/
+                    onTap: () async {
+                      bool res = await Auth().signupUser(
+                          _email, _username, _pass, context, image!);
+                      if (res) {
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                                type: PageTransitionType.bottomToTop,
+                                child: NavigatorScreen()));
+                      }
+                    },
                     child: Container(
                       width: size.width / 1.1,
                       height: size.height / 13,
@@ -299,7 +315,16 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                 ),
               ),
               InkWell(
-                //onTap: () => authController.loginUser(_email, _pass),
+                onTap: () async{
+               bool res= await Auth().loginUser(_email, _pass,context);
+               if (res) {
+                 Navigator.push(
+                     context,
+                     PageTransition(
+                         type: PageTransitionType.bottomToTop,
+                         child: NavigatorScreen()));
+               }
+              },
                 child: Container(
                   width: size.width / 1.1,
                   height: size.height / 13,

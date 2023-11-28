@@ -1,35 +1,36 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:planla/controls/firebase/storage.dart';
 import 'package:planla/controls/provider_user.dart';
 import 'package:provider/provider.dart';
 
-import '../models/user.dart' as model;
-import '../utiles/constr.dart';
+import '../../models/user.dart' as model;
+import '../../utiles/constr.dart';
 
-
-class Auth{
-  ProviderUser providerUser=ProviderUser();
+class Auth {
+  ProviderUser providerUser = ProviderUser();
+  Storage storage = Storage();
 
   Future<void> signOut() async {
     await auth.signOut();
   }
 
-  Future<model.User> getCurrentUser(String? uid,String? imageUrl) async {
+  Future<model.User> getCurrentUser(String? uid) async {
     DocumentSnapshot cred = await firestore.collection('users').doc(uid).get();
     model.User user = model.User(
         uid: uid!,
         email: (cred.data()! as dynamic)['email'],
         username: (cred.data()! as dynamic)['username'],
-        imageurl: (cred.data()! as dynamic)['imageurl']
-    );
+        imageurl: (cred.data()! as dynamic)['imageurl']);
     providerUser.setUser(user);
     return user;
   }
 
-
-  Future<bool> signupUser(
-      String email, String username, String pass, BuildContext context) async {
+  Future<bool> signupUser(String email, String username, String pass,
+      BuildContext context, Uint8List profilePhoto) async {
     bool res = false;
     try {
       UserCredential cred = await auth.createUserWithEmailAndPassword(
@@ -37,13 +38,17 @@ class Auth{
         password: pass,
       );
       if (cred.user != null) {
+        String image =
+            await storage.uploadImageToStorage(profilePhoto, cred.user!.uid);
         model.User user = model.User(
-          uid: cred.user!.uid,
-          email: email.trim(),
-          username: username.trim(),
-          imageurl: ''//buraya image url'i getir
-        );
-        await firestore.collection('users').doc(cred.user!.uid).set(user.toMap());
+            uid: cred.user!.uid,
+            email: email.trim(),
+            username: username.trim(),
+            imageurl: image);
+        await firestore
+            .collection('users')
+            .doc(cred.user!.uid)
+            .set(user.toMap());
         Provider.of<ProviderUser>(context, listen: false).setUser(user);
         res = true;
       }
@@ -58,10 +63,11 @@ class Auth{
     bool res = false;
     try {
       UserCredential cred =
-      await auth.signInWithEmailAndPassword(email: email, password: pass);
+          await auth.signInWithEmailAndPassword(email: email, password: pass);
       if (cred.user != null) {
         //model.User user=model.User(uid: uid, email: email, username: username);
-        model.User user = await getCurrentUser(cred.user!.uid,cred.user!.photoURL);
+        model.User user =
+            await getCurrentUser(cred.user!.uid);
         Provider.of<ProviderUser>(context, listen: false).setUser(user);
         res = true;
       }
