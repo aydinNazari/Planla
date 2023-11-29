@@ -3,8 +3,9 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:planla/controls/firebase/storage.dart';
-import 'package:planla/controls/provider_user.dart';
+import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/user.dart' as model;
@@ -24,13 +25,13 @@ class Auth {
         uid: uid!,
         email: (cred.data()! as dynamic)['email'],
         username: (cred.data()! as dynamic)['username'],
-        imageurl: (cred.data()! as dynamic)['imageurl']);
+        imageurl: (cred.data()! as dynamic)['imageurl'] ?? '');
     providerUser.setUser(user);
     return user;
   }
 
   Future<bool> signupUser(String email, String username, String pass,
-      BuildContext context, Uint8List profilePhoto) async {
+      BuildContext context, Uint8List? profilePhoto) async {
     bool res = false;
     try {
       UserCredential cred = await auth.createUserWithEmailAndPassword(
@@ -58,6 +59,51 @@ class Auth {
     return res;
   }
 
+  Future<bool> signInWithGoogle(BuildContext context) async {
+    bool res = false;
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+      UserCredential userCredential =
+          await auth.signInWithCredential(credential);
+      User? user = userCredential.user;
+    /*  model.User _user = model.User(
+        uid: user!.uid,
+        email: user.email!,
+        username: user.displayName!,
+        imageurl: user.photoURL!,
+      );
+      providerUser.setUser(_user);
+*/
+      model.User _user = await getCurrentUser(user!.uid);
+      Provider.of<ProviderUser>(context, listen: false).setUser(_user);
+      if (user != null) {
+        if (userCredential.additionalUserInfo!.isNewUser) {
+          await firestore.collection('users').doc(user.uid).set(
+            {
+              'email': user.email,
+              'profilePhoto': user.photoURL,
+              'uid': user.uid,
+              'username': user.displayName,
+            },
+          );
+        }
+        res = true;
+      }
+      return res;
+    } on FirebaseAuthException catch (e) {
+      res = false;
+      showSnackBar(context, e.message!, Colors.red);
+      print(e.toString());
+    }
+    return res;
+  }
+
   Future<bool> loginUser(
       String email, String pass, BuildContext context) async {
     bool res = false;
@@ -66,8 +112,7 @@ class Auth {
           await auth.signInWithEmailAndPassword(email: email, password: pass);
       if (cred.user != null) {
         //model.User user=model.User(uid: uid, email: email, username: username);
-        model.User user =
-            await getCurrentUser(cred.user!.uid);
+        model.User user = await getCurrentUser(cred.user!.uid);
         Provider.of<ProviderUser>(context, listen: false).setUser(user);
         res = true;
       }

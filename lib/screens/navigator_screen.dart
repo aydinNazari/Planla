@@ -1,5 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/utiles/constr.dart';
+import 'package:provider/provider.dart';
 
 class NavigatorScreen extends StatefulWidget {
   const NavigatorScreen({Key? key}) : super(key: key);
@@ -20,6 +23,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final user = Provider.of<ProviderUser>(context, listen: false);
     return Scaffold(
       body: screenList[currentIndex],
       bottomNavigationBar: Padding(
@@ -75,14 +79,70 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                 label: '',
               ),
               BottomNavigationBarItem(
-                icon: Icon(
+                icon: /*Icon(
                   Icons.person_outline,
                   size: size.width / 17,
+                )*/
+                    Container(
+                  width: size.width / 17,
+                  height: size.width / 17,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: user.user.imageurl.isEmpty
+                      ? Image.asset('assets/icons/person_icon.png')
+                      : CachedNetworkImage(
+                          imageUrl: user.user.imageurl,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  CircularProgressIndicator(
+                                      value: downloadProgress.progress),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
                 ),
-                activeIcon: Icon(
+                activeIcon: /*Icon(
                   Icons.person,
                   size: size.width / 14,
+                ),*/
+                    /*  Container(
+                  width: size.width / 14,
+                  height: size.width / 14,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: user.user.imageurl.isEmpty ?
+                      const AssetImage('assets/icons/person_icon.png') :
+                      NetworkImage(user.user.imageurl) as ImageProvider<Object>,
+                    ),
+                  ),
+                ),*/
+                    Container(
+                  width: size.width / 14,
+                  height: size.width / 14,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: user.user.imageurl.isEmpty
+                      ? Image.asset('assets/icons/person_icon.png')
+                      : CachedNetworkImage(
+                          imageUrl: user.user.imageurl,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  CircularProgressIndicator(
+                                      value: downloadProgress.progress),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
                 ),
+                /*CachedNetworkImage(
+       imageUrl: "http://via.placeholder.com/350x150",
+       progressIndicatorBuilder: (context, url, downloadProgress) =>
+               CircularProgressIndicator(value: downloadProgress.progress),
+       errorWidget: (context, url, error) => Icon(Icons.error),
+    ),
+                */
                 label: '',
               )
             ],

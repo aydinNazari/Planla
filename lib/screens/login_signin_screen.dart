@@ -1,10 +1,15 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:planla/controls/firebase/auth.dart';
+import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/screens/navigator_screen.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:planla/widgets/account_button.widget.dart';
 import '../utiles/constr.dart';
+import '../widgets/alart_dialog.dart';
+import '../widgets/button_loginsignin_widget.dart';
 import '../widgets/textinputfield_widget.dart';
 
 class LoginSignInScreen extends StatefulWidget {
@@ -23,9 +28,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery
-        .of(context)
-        .size;
+    Size size = MediaQuery.of(context).size;
     return viewControl ? loginScreen(size) : signInScreen(size);
   }
 
@@ -79,48 +82,48 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                     },
                     child: image == null
                         ? Stack(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: size.height / 50),
-                          child: Container(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: size.height / 50),
+                                child: Container(
+                                  width: size.width / 3,
+                                  height: size.width / 3,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.black,
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.person,
+                                      size: size.width / 4,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                right: size.width / 20,
+                                bottom: size.height / 40,
+                                child: Icon(
+                                  Icons.add_a_photo,
+                                  color: Colors.white,
+                                  size: size.width / 14,
+                                ),
+                              )
+                            ],
+                          )
+                        : SizedBox(
                             width: size.width / 3,
                             height: size.width / 3,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.black,
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.person,
-                                size: size.width / 4,
-                                color: Colors.grey,
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.circular(size.width / 2),
+                              child: Image.memory(
+                                fit: BoxFit.cover,
+                                image!,
                               ),
                             ),
                           ),
-                        ),
-                        Positioned(
-                          right: size.width / 20,
-                          bottom: size.height / 40,
-                          child: Icon(
-                            Icons.add_a_photo,
-                            color: Colors.white,
-                            size: size.width / 14,
-                          ),
-                        )
-                      ],
-                    )
-                        : SizedBox(
-                      width: size.width / 3,
-                      height: size.width / 3,
-                      child: ClipRRect(
-                        borderRadius:
-                        BorderRadius.circular(size.width / 2),
-                        child: Image.memory(
-                          fit: BoxFit.cover,
-                          image!,
-                        ),
-                      ),
-                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(
@@ -161,7 +164,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                   Padding(
                     padding: EdgeInsets.only(
                       top: size.height / 50,
-                      bottom: size.height / 25,
+                      bottom: size.height / 80,
                     ),
                     child: TextInputField(
                       hintColor: Colors.black,
@@ -181,37 +184,43 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                   ),
                   InkWell(
                     onTap: () async {
-                      bool res = await Auth().signupUser(
-                          _email, _username, _pass, context, image!);
-                      if (res) {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                                type: PageTransitionType.bottomToTop,
-                                child: NavigatorScreen()));
+                      if (_email.isNotEmpty &&
+                          _pass.isNotEmpty &&
+                          _username.isNotEmpty) {
+                        if (image == null) {
+                          showMyDialog(context,
+                              'Are you sure to proceed without uploading the profile picture?',
+                              () async {
+                            await signupProsess();
+                          }, () {
+                            Navigator.of(context).pop();
+                          });
+                        } else {
+                          await signupProsess();
+                        }
+                      } else {
+                        setState(() {
+                          showSnackBar(
+                              context, 'Please fill in all fields', Colors.red);
+                        });
                       }
                     },
-                    child: Container(
-                      width: size.width / 1.1,
-                      height: size.height / 13,
-                      decoration: const BoxDecoration(
-                        color: Color(0xff673031),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Sign in',
-                          style: TextStyle(
-                            fontSize: size.width / 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ),
+                    child: const LoginSigninButtonWidget(
+                      color: Color(0xff673031),
+                      txt: 'Sign in',
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: size.height / 80),
+                    child: const AccountButtonWidget(
+                      buttonColor: Color(0xff3b91ea),
+                      txt: 'Sign with Google',
+                      textColor: Colors.white,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                      top: size.width / 25,
+                      top: size.width / 50,
                     ),
                     child: InkWell(
                       onTap: () {
@@ -225,7 +234,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                             TextSpan(
                               text: 'Already have an account?',
                               style: TextStyle(
-                                fontSize: size.width / 22,
+                                fontSize: size.width / 25,
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
@@ -274,9 +283,10 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                 child: Text(
                   'Login',
                   style: TextStyle(
-                      color: Colors.white,
-                      fontSize: size.width / 18,
-                      fontWeight: FontWeight.w800),
+                    color: Colors.white,
+                    fontSize: size.width / 18,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               Padding(
@@ -299,7 +309,9 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                    top: size.height / 25, bottom: size.height / 25),
+                  top: size.height / 25,
+                  bottom: size.height / 25,
+                ),
                 child: TextInputField(
                   hintColor: Colors.black,
                   hintText: 'Enter your password please...',
@@ -315,17 +327,20 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                 ),
               ),
               InkWell(
-                onTap: () async{
-               bool res= await Auth().loginUser(_email, _pass,context);
-               if (res) {
-                 Navigator.push(
-                     context,
-                     PageTransition(
-                         type: PageTransitionType.bottomToTop,
-                         child: NavigatorScreen()));
-               }
-              },
-                child: Container(
+                onTap: () async {
+                  if (_email.isNotEmpty && _pass.isNotEmpty) {
+                    await loginFunction();
+                  } else {
+                    setState(() {
+                      showSnackBar(
+                        context,
+                        'Please fill in all fields',
+                        Colors.red,
+                      );
+                    });
+                  }
+                },
+                child: /*Container(
                   width: size.width / 1.1,
                   height: size.height / 13,
                   decoration: const BoxDecoration(
@@ -341,6 +356,32 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                       ),
                     ),
                   ),
+                ),*/
+                    const LoginSigninButtonWidget(
+                  color: Color(0xff673031),
+                  txt: 'Log in',
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: size.height / 50),
+                child: InkWell(
+                  onTap: () async {
+                    bool res = await Auth().signInWithGoogle(context);
+                    if (res) {
+                      setState(() {
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                                type: PageTransitionType.bottomToTop,
+                                child: const NavigatorScreen()));
+                      });
+                    }
+                  },
+                  child: const AccountButtonWidget(
+                    buttonColor: Colors.blue,
+                    txt: 'Login with Google',
+                    textColor: Colors.white,
+                  ),
                 ),
               ),
               Padding(
@@ -354,11 +395,12 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                     });
                   },
                   child: RichText(
-                      text: TextSpan(children: [
+                    text: TextSpan(
+                      children: [
                         TextSpan(
                           text: 'Dont\'t have an account?',
                           style: TextStyle(
-                            fontSize: size.width / 22,
+                            fontSize: size.width / 25,
                             fontWeight: FontWeight.w400,
                             color: Colors.black,
                           ),
@@ -371,7 +413,9 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                             color: const Color(0xff673031),
                           ),
                         )
-                      ])),
+                      ],
+                    ),
+                  ),
                 ),
               )
             ],
@@ -380,4 +424,37 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
       ),
     );
   }
+  Future<void> loginFunction() async {
+    lottieProgressDialog(context);
+    bool res = await Auth().loginUser(_email, _pass, context);
+    Navigator.of(context).pop();
+    if (res) {
+      setState(() {
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.bottomToTop,
+            child: const NavigatorScreen(),
+          ),
+        );
+      });
+    }
+  }
+  Future<void> signupProsess() async {
+    lottieProgressDialog(context);
+    bool res =
+    await Auth().signupUser(_email, _username, _pass, context, image);
+    Navigator.of(context).pop();
+    if (res) {
+      setState(() {
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: const NavigatorScreen()));
+      });
+    }
+  }
+
+
 }
