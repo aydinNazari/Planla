@@ -57,31 +57,50 @@ Future<Uint8List?> pickImager() async {
 }
 
 //dialog
-Future<void> showMyDialog(BuildContext context, String txt,
+Future<void> showMyDialog(BuildContext context,Size size, String txt,
     void Function() yesFunction, void Function() noFunction) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(
-          'Warning',
-          style: TextStyle(
-              color: const Color(0xffe01c38),
-              fontSize: MediaQuery.of(context).size.width / 20,
-              fontWeight: FontWeight.w600),
-        ),
+        backgroundColor: Colors.white,
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
-              Text(txt),
-              //Text('Would you like to approve of this message?'),
+              SizedBox(
+                width: size.width/6,
+                height: size.width/6,
+                child: Image.asset('assets/images/goals_dialog.png'),
+              ),
+              SizedBox(
+                height: size.height/50,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: size.width/25),
+                child: Text(txt),
+              ),
             ],
           ),
         ),
         actions: <Widget>[
-          TextButton(onPressed: yesFunction, child: const Text('Yes')),
-          TextButton(onPressed: noFunction, child: const Text('No')),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                  onPressed: yesFunction,
+                  child:  Text(
+                    'Yes',
+                    style: TextStyle(color: Colors.black,fontSize: size.width/25),
+                  )),
+              TextButton(
+                  onPressed: noFunction,
+                  child:  Text(
+                    'No',
+                    style: TextStyle(color: Colors.black,fontSize: size.width/25),
+                  )),
+            ],
+          )
         ],
       );
     },

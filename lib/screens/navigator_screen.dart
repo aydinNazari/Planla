@@ -83,23 +83,29 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                   Icons.person_outline,
                   size: size.width / 17,
                 )*/
-                    Container(
+                    SizedBox(
                   width: size.width / 17,
                   height: size.width / 17,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(size.width / 2),
+                    child: user.user.imageurl.isEmpty
+                        ? Image.asset('assets/icons/person_icon.png')
+                        : CachedNetworkImage(
+                            imageUrl: user.user.imageurl,
+                            fit: BoxFit.cover,
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) =>
+                                    CircularProgressIndicator(
+                                        value: downloadProgress.progress),
+                            errorWidget: (context, url, error) {
+                              print(error.toString());
+                              return Icon(
+                                Icons.person,
+                                size: size.width / 4,
+                              );
+                            },
+                          ),
                   ),
-                  child: user.user.imageurl.isEmpty
-                      ? Image.asset('assets/icons/person_icon.png')
-                      : CachedNetworkImage(
-                          imageUrl: user.user.imageurl,
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                                  CircularProgressIndicator(
-                                      value: downloadProgress.progress),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
                 ),
                 activeIcon: /*Icon(
                   Icons.person,
@@ -118,23 +124,29 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                     ),
                   ),
                 ),*/
-                    Container(
-                  width: size.width / 14,
-                  height: size.width / 14,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
+                    SizedBox(
+                  width: size.width / 17,
+                  height: size.width / 17,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(size.width / 2),
+                    child: user.user.imageurl.isEmpty
+                        ? Image.asset('assets/icons/person_icon.png')
+                        : CachedNetworkImage(
+                            imageUrl: user.user.imageurl,
+                            fit: BoxFit.cover,
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) =>
+                                    CircularProgressIndicator(
+                                        value: downloadProgress.progress),
+                            errorWidget: (context, url, error) {
+                              print(error.toString());
+                              return Icon(
+                                Icons.person,
+                                size: size.width / 4,
+                              );
+                            },
+                          ),
                   ),
-                  child: user.user.imageurl.isEmpty
-                      ? Image.asset('assets/icons/person_icon.png')
-                      : CachedNetworkImage(
-                          imageUrl: user.user.imageurl,
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                                  CircularProgressIndicator(
-                                      value: downloadProgress.progress),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
                 ),
                 /*CachedNetworkImage(
        imageUrl: "http://via.placeholder.com/350x150",

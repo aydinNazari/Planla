@@ -1,14 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:planla/controls/firebase/auth.dart';
-import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/screens/navigator_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:planla/widgets/account_button.widget.dart';
 import '../utiles/constr.dart';
-import '../widgets/alart_dialog.dart';
 import '../widgets/button_loginsignin_widget.dart';
 import '../widgets/textinputfield_widget.dart';
 
@@ -32,6 +29,221 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
     return viewControl ? loginScreen(size) : signInScreen(size);
   }
 
+//Login widget
+  SafeArea loginScreen(Size size) {
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(top: size.height / 30),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Stack(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: size.width / 4),
+                      child: Container(
+                        width: size.width,
+                        height: size.height / 3,
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                          image: AssetImage('assets/images/goal.png'),
+                        )),
+                      ),
+                    ),
+                    Positioned(
+                        bottom: size.height / 19,
+                        right: size.width / 7,
+                        child: RichText(
+                          text: TextSpan(children: [
+                            TextSpan(
+                              text: 'Target',
+                              style: TextStyle(
+                                fontSize: size.width / 14,
+                                color: Colors.black45,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'T',
+                              style: TextStyle(
+                                fontSize: size.width / 9,
+                                color: Colors.black38,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'rack',
+                              style: TextStyle(
+                                fontSize: size.width / 14,
+                                color: Colors.black45,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            )
+                          ]),
+                        ))
+                  ],
+                )
+                /*    Center(
+                  child: Text(
+                    'Planla',
+                    style: TextStyle(
+                        fontSize: size.width / 9,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.black),
+                  ),
+                ),*/
+                /*  Center(
+                  child: Text(
+                    'Login',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: size.width / 18,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),*/
+                ,
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: size.height / 45,
+                  ),
+                  child: TextInputField(
+                    hintColor: Colors.black,
+                    hintText: 'Enter your email address please...',
+                    iconWidget: Padding(
+                      padding: EdgeInsets.only(right: size.width / 25),
+                      child: const Icon(Icons.mail),
+                    ),
+                    labelTextWidget: const Text('E-Mail'),
+                    obscrueText: false,
+                    onchange: (String s) {
+                      _email = s;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: size.height / 25,
+                    bottom: size.height / 25,
+                  ),
+                  child: TextInputField(
+                    hintColor: Colors.black,
+                    hintText: 'Enter your password please...',
+                    iconWidget: Padding(
+                      padding: EdgeInsets.only(right: size.width / 25),
+                      child: const Icon(Icons.lock),
+                    ),
+                    labelTextWidget: const Text('Password'),
+                    obscrueText: true,
+                    onchange: (String s) {
+                      _pass = s;
+                    },
+                  ),
+                ),
+                InkWell(
+                  onTap: () async {
+                    if (_email.isNotEmpty && _pass.isNotEmpty) {
+                      await loginFunction();
+                    } else {
+                      setState(() {
+                        showSnackBar(
+                          context,
+                          'Please fill in all fields',
+                          Colors.red,
+                        );
+                      });
+                    }
+                  },
+                  child: /*Container(
+                    width: size.width / 1.1,
+                    height: size.height / 13,
+                    decoration: const BoxDecoration(
+                      color: Color(0xff803c48),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: size.width / 18,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),*/
+                      const LoginSigninButtonWidget(
+                    color: Color(0xff171818),
+                    txt: 'Log in',
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: size.height / 50),
+                  child: InkWell(
+                    onTap: () async {
+                      bool res = await Auth().signInWithGoogle(context);
+                      if (res) {
+                        setState(() {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                  type: PageTransitionType.bottomToTop,
+                                  child: const NavigatorScreen()));
+                        });
+                      }
+                    },
+                    child: const AccountButtonWidget(
+                      buttonColor: Colors.blue,
+                      txt: 'Login with Google',
+                      textColor: Colors.white,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: size.width / 25,
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        viewControl = false;
+                      });
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Dont\'t have an account?',
+                            style: TextStyle(
+                              fontSize: size.width / 25,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black45,
+                            ),
+                          ),
+                          TextSpan(
+                            text: '  Register',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: size.width / 25,
+                              color: Colors.black,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+//signIn widget
   SafeArea signInScreen(Size size) {
     return SafeArea(
       child: Scaffold(
@@ -188,7 +400,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                           _pass.isNotEmpty &&
                           _username.isNotEmpty) {
                         if (image == null) {
-                          showMyDialog(context,
+                          showMyDialog(context,size,
                               'Are you sure to proceed without uploading the profile picture?',
                               () async {
                             await signupProsess();
@@ -261,169 +473,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
     );
   }
 
-  SafeArea loginScreen(Size size) {
-    return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: size.height / 5,
-              ),
-              Center(
-                child: Text(
-                  'Planla',
-                  style: TextStyle(
-                      fontSize: size.width / 9,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.black),
-                ),
-              ),
-              Center(
-                child: Text(
-                  'Login',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: size.width / 18,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: size.height / 25,
-                ),
-                child: TextInputField(
-                  hintColor: Colors.black,
-                  hintText: 'Enter your email address please...',
-                  iconWidget: Padding(
-                    padding: EdgeInsets.only(right: size.width / 25),
-                    child: const Icon(Icons.mail),
-                  ),
-                  labelTextWidget: const Text('E-Mail'),
-                  obscrueText: false,
-                  onchange: (String s) {
-                    _email = s;
-                  },
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: size.height / 25,
-                  bottom: size.height / 25,
-                ),
-                child: TextInputField(
-                  hintColor: Colors.black,
-                  hintText: 'Enter your password please...',
-                  iconWidget: Padding(
-                    padding: EdgeInsets.only(right: size.width / 25),
-                    child: const Icon(Icons.lock),
-                  ),
-                  labelTextWidget: const Text('Password'),
-                  obscrueText: true,
-                  onchange: (String s) {
-                    _pass = s;
-                  },
-                ),
-              ),
-              InkWell(
-                onTap: () async {
-                  if (_email.isNotEmpty && _pass.isNotEmpty) {
-                    await loginFunction();
-                  } else {
-                    setState(() {
-                      showSnackBar(
-                        context,
-                        'Please fill in all fields',
-                        Colors.red,
-                      );
-                    });
-                  }
-                },
-                child: /*Container(
-                  width: size.width / 1.1,
-                  height: size.height / 13,
-                  decoration: const BoxDecoration(
-                    color: Color(0xff803c48),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Login',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: size.width / 18,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                ),*/
-                    const LoginSigninButtonWidget(
-                  color: Color(0xff673031),
-                  txt: 'Log in',
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: size.height / 50),
-                child: InkWell(
-                  onTap: () async {
-                    bool res = await Auth().signInWithGoogle(context);
-                    if (res) {
-                      setState(() {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                                type: PageTransitionType.bottomToTop,
-                                child: const NavigatorScreen()));
-                      });
-                    }
-                  },
-                  child: const AccountButtonWidget(
-                    buttonColor: Colors.blue,
-                    txt: 'Login with Google',
-                    textColor: Colors.white,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: size.width / 25,
-                ),
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      viewControl = false;
-                    });
-                  },
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Dont\'t have an account?',
-                          style: TextStyle(
-                            fontSize: size.width / 25,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                          ),
-                        ),
-                        TextSpan(
-                          text: '  Register',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: size.width / 22,
-                            color: const Color(0xff673031),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  //functions
   Future<void> loginFunction() async {
     lottieProgressDialog(context);
     bool res = await Auth().loginUser(_email, _pass, context);
@@ -440,10 +490,11 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
       });
     }
   }
+
   Future<void> signupProsess() async {
     lottieProgressDialog(context);
     bool res =
-    await Auth().signupUser(_email, _username, _pass, context, image);
+        await Auth().signupUser(_email, _username, _pass, context, image);
     Navigator.of(context).pop();
     if (res) {
       setState(() {
@@ -455,6 +506,4 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
       });
     }
   }
-
-
 }
