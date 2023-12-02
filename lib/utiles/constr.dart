@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:planla/screens/add_screen.dart';
 import 'package:planla/screens/profile_screen.dart';
 
 import '../screens/home_screen.dart';
@@ -15,12 +16,10 @@ import '../screens/home_screen.dart';
 //navigator pages
 List<Widget> screenList = [
   const HomeScreen(),
-  const Center(
-    child: Text('Add'),
-  ),
-  const Center(
+  const AddScreen(),
+/*  const Center(
     child: Text('Analize'),
-  ),
+  ),*/
   const ProfileScreen()
 ];
 

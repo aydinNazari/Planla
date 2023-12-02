@@ -32,8 +32,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Planla',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
+            .copyWith(background: const Color(0xff000000)),
       ),
       home: FutureBuilder(
         future: Auth()
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasData) {
-            return NavigatorScreen();
+            return const NavigatorScreen();
           }
           return const LoginSignInScreen();
         },

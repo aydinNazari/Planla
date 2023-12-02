@@ -33,6 +33,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
   SafeArea loginScreen(Size size) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.only(top: size.height / 30),
