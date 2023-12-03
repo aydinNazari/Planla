@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class TodayModel {
   String text;
-  DateTime dateTime;
+  Timestamp dateTime;
   bool done;
   bool important;
   String typeWork;
