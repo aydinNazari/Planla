@@ -18,7 +18,7 @@ class NavigatorScreen extends StatefulWidget {
 }
 
 class _NavigatorScreenState extends State<NavigatorScreen> {
-  int currentIndex = 1;
+  int currentIndex = 0;
 
   void navigatorIndex(int value) {
     setState(() {

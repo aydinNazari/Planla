@@ -35,7 +35,7 @@ class _AddPageCardWidgetState extends State<AddPageCardWidget> {
         width: size.width,
         height: size.height / 10,
         decoration: BoxDecoration(
-            color: navigatorColor,
+            color: primeryColor,
             borderRadius: BorderRadius.all(Radius.circular(size.width / 25))),
         child: Padding(
           padding: EdgeInsets.only(left: size.width / 25),
@@ -70,7 +70,7 @@ class _AddPageCardWidgetState extends State<AddPageCardWidget> {
                               width: size.width / 23,
                               height: size.width / 23,
                               decoration: BoxDecoration(
-                                  color: navigatorColor,
+                                  color: primeryColor,
                                   shape: BoxShape.circle),
                             ),
                           ),

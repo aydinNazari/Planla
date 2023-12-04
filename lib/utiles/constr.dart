@@ -20,9 +20,17 @@ List<Widget> screenList = [
 /*  const Center(
     child: Text('Analize'),
   ),*/
-  const ProfileScreen()
+  const ProfileScreen(control: false,)
 ];
 
+
+//dropdown items
+final List<String> items = [
+  'Study',
+  'Work',
+  'Sport',
+  'other',
+];
 //firebase instances
 FirebaseAuth auth = FirebaseAuth.instance;
 FirebaseFirestore firestore = FirebaseFirestore.instance;

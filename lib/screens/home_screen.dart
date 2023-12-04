@@ -1,9 +1,11 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:planla/controls/providersClass/provider_user.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:planla/screens/profile_screen.dart';
 import 'package:planla/widgets/homepage_type_container_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../controls/providersClass/provider_user.dart';
+import '../widgets/chart_widget.dart';
 import '../widgets/profile_img_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -28,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 Text(
-                  'Hi Aydın!',
+                  'Hi ${user.user.name}!',
                   style: TextStyle(shadows: const <Shadow>[
                     Shadow(
                         color: Colors.white,
@@ -48,8 +50,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: EdgeInsets.only(
                     right: size.width / 25,
                   ),
-                  child: const ProgileImgWidget(
-                    type: 1,
+                  child: InkWell(
+                    autofocus: true,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          PageTransition(
+                              type: PageTransitionType.rightToLeft,
+                              child: const ProfileScreen(control:true),
+                              isIos: true));
+                    },
+                    child: const ProgileImgWidget(
+                      type: 1,
+                    ),
                   ),
                 )
               ],
@@ -62,85 +75,45 @@ class _HomeScreenState extends State<HomeScreen> {
                     TextStyle(fontSize: size.width / 25, color: Colors.white60),
               ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(right: size.width / 50),
-                    child: const TypeContainerWidget(
-                        txt: '5h', imgUrl: 'assets/images/work.png'),
+            Padding(
+              padding: EdgeInsets.only(top: size.height/50),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(right: size.width / 50),
+                      child: const TypeContainerWidget(
+                          txt: '5h', imgUrl: 'assets/images/work.png'),
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(right: size.width / 50),
-                    child: const TypeContainerWidget(
-                        txt: '2h', imgUrl: 'assets/images/sport.png'),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(right: size.width / 50),
+                      child: const TypeContainerWidget(
+                          txt: '2h', imgUrl: 'assets/images/sport.png'),
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(right: size.width / 50),
-                    child: const TypeContainerWidget(
-                        txt: '10h', imgUrl: 'assets/images/study.png'),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(right: size.width / 50),
+                      child: const TypeContainerWidget(
+                          txt: '10h', imgUrl: 'assets/images/study.png'),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             Padding(
               padding: EdgeInsets.only(top: size.height / 25),
               child: Text(
-                'Your Grafik',
+                'Your Chart',
                 style:
                     TextStyle(fontSize: size.width / 25, color: Colors.white60),
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: size.height / 30),
-              child: Container(
-                width: size.width / 1.1,
-                height: size.height / 3,
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white.withOpacity(0.13)),
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withOpacity(0.15),
-                        Colors.white.withOpacity(0.5),
-                      ],
-                    ),
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(size.width / 15))),
-                child: Center(
-                  child: PieChart(PieChartData(
-                      centerSpaceColor: Colors.black26,
-                      centerSpaceRadius: 5,
-                      borderData: FlBorderData(show: false),
-                      sectionsSpace: 2,
-                      sections: [
-                        PieChartSectionData(
-                          value: 20,
-                          color: const Color(0xff424874),
-                          title: 'Sport',
-                          titleStyle: const TextStyle(color: Colors.white),
-                          radius: size.width / 4,
-                        ),
-                        PieChartSectionData(
-                          title: 'Study',
-                          value: 80,
-                          color: const Color(0xffdcd6f7),
-                          radius: size.width / 4,
-                        ),
-                        PieChartSectionData(
-                          title: 'Work',
-                          value: 30,
-                          color: const Color(0xffa6b1e1),
-                          radius: size.width / 4,
-                        ),
-                      ])),
-                ),
-              ),
+              padding: EdgeInsets.only(top: size.height / 50),
+              child: const ChartWidget()
             ),
             Padding(
               padding: EdgeInsets.only(top: size.height / 30),
@@ -163,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         shadows: const <Shadow>[
                           Shadow(
                               color: Colors.black,
-                              blurRadius: 5,
+                              blurRadius: 3,
                               offset: Offset(0, 0))
                         ],
                       ),
@@ -177,8 +150,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         shadows: const <Shadow>[
                           Shadow(
                             color: Colors.black,
-                            blurRadius: 5,
-                            offset: Offset(1, 1),
+                            blurRadius: 2,
+                            offset: Offset(0, 0),
                           )
                         ],
                       ),
@@ -187,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 100,
             )
           ],
@@ -196,3 +169,5 @@ class _HomeScreenState extends State<HomeScreen> {
     ));
   }
 }
+
+

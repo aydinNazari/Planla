@@ -19,7 +19,7 @@ class LoginSignInScreen extends StatefulWidget {
 class _LoginSignInScreenState extends State<LoginSignInScreen> {
   String _email = '';
   String _pass = '';
-  String _username = '';
+  String _name = '';
   bool viewControl = true;
   Uint8List? image;
 
@@ -248,6 +248,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
   SafeArea signInScreen(Size size) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: size.height / 20),
@@ -344,15 +345,15 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                     ),
                     child: TextInputField(
                       hintColor: Colors.black,
-                      hintText: 'Enter your username please...',
+                      hintText: 'Enter your name please...',
                       iconWidget: Padding(
                         padding: EdgeInsets.only(right: size.width / 25),
                         child: const Icon(Icons.person),
                       ),
-                      labelTextWidget: const Text('Username'),
+                      labelTextWidget: const Text('Name'),
                       obscrueText: false,
                       onchange: (String s) {
-                        _username = s;
+                        _name = s;
                       },
                     ),
                   ),
@@ -399,7 +400,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                     onTap: () async {
                       if (_email.isNotEmpty &&
                           _pass.isNotEmpty &&
-                          _username.isNotEmpty) {
+                          _name.isNotEmpty) {
                         if (image == null) {
                           showMyDialog(context,size,
                               'Are you sure to proceed without uploading the profile picture?',
@@ -419,7 +420,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                       }
                     },
                     child: const LoginSigninButtonWidget(
-                      color: Color(0xff673031),
+                      color: Color(0xff000000),
                       txt: 'Sign in',
                     ),
                   ),
@@ -495,7 +496,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
   Future<void> signupProsess() async {
     lottieProgressDialog(context);
     bool res =
-        await Auth().signupUser(_email, _username, _pass, context, image);
+        await Auth().signupUser(_email, _name, _pass, context, image);
     Navigator.of(context).pop();
     if (res) {
       setState(() {

@@ -10,38 +10,25 @@ import '../../models/user.dart' as model;
 import '../providersClass/provider_user.dart';
 
 class FirestoreMethods {
-
   Future<bool> firestoreUpload(
       BuildContext context, model.User user, TodayModel todayModel) async {
     bool res = false;
     try {
-      //Timestamp timestamp = Timestamp.fromMillisecondsSinceEpoch(1641063600000);
-
-      // tarihi yanlış çeviriyor onu düzelt
-      
-
-      // DateTime'i Timestamp'e çevir
-      
-      
-     DateTime dateTime =DateTime.now();
-     String datetimeToCollect=getDatePart(dateTime.toString());
-     //Timestamp timestamp = Timestamp.fromDate(dateTime);
-      //DateTime dateTime = timestamp.toDate().toUtc();
-      //String timePart = getTimePart((dateTime).toString());
+      DateTime dateTime = DateTime.now();
+      String datetimeToCollect = getDatePart(dateTime.toString());
       var allDoc = await firestore
           .collection('todaytext')
           .doc(user.uid)
-          .collection('dates')
+          .collection(datetimeToCollect)
           .get();
       int count = allDoc.docs.length;
       await firestore
           .collection('todaytext')
           .doc(user.uid)
-          .collection('dates')
-          .doc('$datetimeToCollect-$count')
+          .collection(datetimeToCollect)
+          .doc(count.toString())
           .set(todayModel.toMap());
       res = true;
-
     } on FirebaseException catch (e) {
       showSnackBar(context, e.toString(), Colors.red);
       print(e.toString());
@@ -60,18 +47,19 @@ class FirestoreMethods {
 
   Future<bool> getFiresoreData(BuildContext context) async {
     bool res = false;
-    List<TodayModel> tempList=[];
-    final user=Provider.of<ProviderUser>(context,listen: false).user;
+    List<TodayModel> tempList = [];
+    final user = Provider.of<ProviderUser>(context, listen: false).user;
+    DateTime dateTime = DateTime.now();
+    String datetimeToCollect = getDatePart(dateTime.toString());
     try {
       var snap = await firestore
           .collection('todaytext')
           .doc(user.uid)
-          .collection('dates')
+          .collection(datetimeToCollect)
           .get();
 
       for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot
           in snap.docs) {
-
         Map<String, dynamic> data = documentSnapshot.data();
         Timestamp dateTime = data['dateTime'];
         bool done = data['done'];
@@ -84,22 +72,35 @@ class FirestoreMethods {
             dateTime: dateTime,
             done: done,
             important: important,
-            typeWork: typeWork);
+            typeWork: typeWork,
+            email: user.email,
+            uid: user.uid);
 
-       /* String documentId = documentSnapshot.id;
-        print('aaaaaaaaaaaaaaaaaaaaaaaaaaa');
-        print("Document ID: $documentId");
-        print("Document Data: $data");
-        print(todayModel.dateTime);
-        print(todayModel.text);
-        print(todayModel.done);
-        print(todayModel.important);
-        print(todayModel.typeWork);*/
-         tempList.add(todayModel);
+        tempList.add(todayModel);
       }
-      Provider.of<ProviderUser>(context,listen: false).setTodayList(tempList);
-      res=true;
+      Provider.of<ProviderUser>(context, listen: false).setTodayList(tempList);
+      res = true;
     } on FirebaseException catch (e) {
+      showSnackBar(context, e.toString(), Colors.red);
+    }
+    return res;
+  }
+
+  Future<bool> updateUser(BuildContext context) async {
+    bool res=false;
+    try{
+      final user = Provider.of<ProviderUser>(context, listen: false);
+      int taskCount= user.user.taskCount;
+      taskCount++;
+      await firestore.collection('users').doc(user.user.uid).update({
+        'taskCount' : taskCount
+      });
+      model.User temp=user.user;
+      temp.taskCount=taskCount;
+      user.setUser(temp);
+
+
+    }on FirebaseException catch(e){
       showSnackBar(context, e.toString(), Colors.red);
     }
     return res;

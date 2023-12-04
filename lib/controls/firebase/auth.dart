@@ -24,8 +24,12 @@ class Auth {
     model.User user = model.User(
         uid: uid!,
         email: (cred.data()! as dynamic)['email'],
-        username: (cred.data()! as dynamic)['username'],
-        imageurl: (cred.data()! as dynamic)['imageurl'] ?? '');
+        name: (cred.data()! as dynamic)['name'],
+        imageurl: (cred.data()! as dynamic)['imageurl'] ?? '',
+        doneCount: (cred.data()! as dynamic)['doneCount'] ?? 0,
+      taskCount: (cred.data()! as dynamic)['taskCount'] ?? 0,
+
+    );
     providerUser.setUser(user);
     return user;
   }
@@ -44,8 +48,11 @@ class Auth {
         model.User user = model.User(
             uid: cred.user!.uid,
             email: email.trim(),
-            username: username.trim(),
-            imageurl: image);
+            name: username.trim(),
+            imageurl: image,
+            doneCount: 0,
+          taskCount: 0
+        );
         await firestore
             .collection('users')
             .doc(cred.user!.uid)
@@ -90,6 +97,8 @@ class Auth {
               'profilePhoto': user.photoURL,
               'uid': user.uid,
               'username': user.displayName,
+              'doneCount': user.displayName,
+              'taskCount': user.displayName,
             },
           );
         }

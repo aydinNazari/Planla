@@ -6,20 +6,27 @@ class TodayModel {
   bool done;
   bool important;
   String typeWork;
+  String email;
+  String uid;
 
   TodayModel(
       {required this.text,
       required this.dateTime,
       required this.done,
       required this.important,
-        required this.typeWork});
+        required this.typeWork,
+      required this.email,
+        required this.uid
+      });
   Map<String, dynamic> toMap() {
     return {
       'text': text,
       'dateTime':dateTime,
       'done' : done,
       'important' : important,
-      'typeWork' : typeWork
+      'typeWork' : typeWork,
+      'email' : email,
+      'uid' : uid
     };
   }
 
@@ -29,6 +36,8 @@ class TodayModel {
         dateTime: map['dateTime'] ?? '',
         done: map['done'] ?? '',
         important: map['important'] ?? '',
-        typeWork: map['typeWork'] ?? '');
+        typeWork: map['typeWork'] ?? '',
+        email: map['email'] ?? '',
+        uid: map['uid'] ?? '');
   }
 }

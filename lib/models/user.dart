@@ -1,21 +1,29 @@
 class User {
   final String uid;
-  final String username;
+  final String name;
   final String email;
   final String imageurl;
+  late int doneCount;
+  late int taskCount;
 
-  User(
-      {required this.uid,
-      required this.email,
-      required this.username,
-      required this.imageurl});
+  User({
+    required this.uid,
+    required this.email,
+    required this.name,
+    required this.imageurl,
+    required this.doneCount,
+    required this.taskCount,
+  });
+
 
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
-      'username': username,
+      'name': name,
       'email': email,
-      'imageurl': imageurl
+      'imageurl': imageurl,
+      'doneCount': doneCount,
+      'taskCount': taskCount,
     };
   }
 
@@ -23,7 +31,11 @@ class User {
     return User(
         uid: map['uid'] ?? '',
         email: map['email'] ?? '',
-        username: map['username'] ?? '',
-        imageurl: map['imageurl'] ?? '');
+        name: map['name'] ?? '',
+        imageurl: map['imageurl'] ?? '',
+      doneCount: map['doneCount'] ?? '',
+      taskCount: map['taskCount'] ?? '',
+
+    );
   }
 }

@@ -4,8 +4,8 @@ import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/models/today_model.dart';
 import 'package:planla/utiles/constr.dart';
 import 'package:planla/widgets/addpage_card_widget.dart';
-import 'package:planla/widgets/dropdown_addpage_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:planla/models/user.dart' as model;
 
 import '../controls/firebase/firestore._methods.dart';
 import '../widgets/add_textfield_widget.dart';
@@ -19,10 +19,10 @@ class AddScreen extends StatefulWidget {
 
 class _AddScreenState extends State<AddScreen> {
   late TodayModel todayModel;
-
+  var selectedValue='';
   List<TodayModel> todayList = [];
 
-  String value = '';
+ // String value = '';
 
   String txt = '';
 
@@ -52,22 +52,31 @@ class _AddScreenState extends State<AddScreen> {
                 Expanded(
                   child: SizedBox(
                     width: size.width,
-                    child: AddTextfieldWidget(onSubmit: (value) async {
+                    child: AddTextfieldWidget(
+                        onSubmit: (value) async {
                       txt = value;
                       value = '';
-                      DateTime dateTime = DateTime.now();
-                      // DateTime'i Timestamp'e çevir
-                      Timestamp timestamp = Timestamp.fromDate(dateTime);
-                      todayModel = TodayModel(
-                          text: txt,
-                          dateTime: timestamp,
-                          done: false,
-                          important: false,
-                          typeWork: 'uncertain');
-                      bool res = await FirestoreMethods()
-                          .firestoreUpload(context, user, todayModel);
-                      if (res) {
-                        getFirestore();
+                      if(txt.isNotEmpty){
+                        DateTime dateTime = DateTime.now();
+                        // DateTime'i Timestamp'e çevirir
+                        Timestamp timestamp = Timestamp.fromDate(dateTime);
+                        todayModel = TodayModel(
+                            text: txt,
+                            dateTime: timestamp,
+                            done: false,
+                            important: false,
+                            typeWork: selectedValue,
+                        email: user.email,
+                          uid: user.uid
+                        );
+                        bool res = await FirestoreMethods()
+                            .firestoreUpload(context, user, todayModel);
+                        if (res) {
+                          updateFirestore();
+                          getFirestore();
+                        }
+                      }else{
+                        showSnackBar(context,'Fill in all fields', Colors.red);
                       }
                     }),
                   ),
@@ -76,13 +85,18 @@ class _AddScreenState extends State<AddScreen> {
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const DropdownAddpageWidget(),
+                     /*DropdownAddpageWidget(onChange: (value){
+
+                       setState(() {
+                         selectedValue = value!;
+                       });
+                    }, selectedValue: selectedValue),*/
                     Padding(
                       padding: EdgeInsets.only(top: size.height / 30),
                       child: InkWell(
                         onTap: () async {
-                          txt='5564';
                           if (txt.isNotEmpty) {
+
                             DateTime dateTime = DateTime.now();
                             // DateTime'i Timestamp'e çevir
                             Timestamp timestamp = Timestamp.fromDate(dateTime);
@@ -92,10 +106,14 @@ class _AddScreenState extends State<AddScreen> {
                                 dateTime: timestamp,
                                 done: false,
                                 important: false,
-                                typeWork: 'uncertain');
+                                typeWork: selectedValue,
+                            email: user.email,
+                              uid: user.uid
+                            );
                             bool res = await FirestoreMethods()
                                 .firestoreUpload(context, user, todayModel);
                             if (res) {
+                              updateFirestore();
                               getFirestore();
                             }
                           } else {
@@ -153,5 +171,8 @@ class _AddScreenState extends State<AddScreen> {
         todayList = Provider.of<ProviderUser>(context, listen: false).todayList;
       });
     }
+  }
+  Future<void> updateFirestore()async{
+    bool updateControl= await FirestoreMethods().updateUser(context);
   }
 }

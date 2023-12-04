@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:planla/widgets/dropdown_addpage_widget.dart';
+
 
 class AddTextfieldWidget extends StatelessWidget {
  final void Function(String) onSubmit;
@@ -14,9 +14,10 @@ class AddTextfieldWidget extends StatelessWidget {
     return SizedBox(
       width: size.width,
       child: TextField(
-        maxLines: 5,
+        //maxLines: 5,
+        //onEditingComplete: onSubmit,
         controller: txtControoler,
-       // onSubmitted: onSubmit,
+        onSubmitted: onSubmit,
         style: const TextStyle(color: Colors.white),
         decoration: const InputDecoration(
           hintText: 'Add...',
@@ -25,10 +26,11 @@ class AddTextfieldWidget extends StatelessWidget {
             color: Colors.white,
           ),
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.red), // Kenarlık rengi
+            borderSide: BorderSide(width: 2,color: Colors.white), // Kenarlık rengi
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
+              width: 2,
                 color: Color(
                     0xff424874)), // İç kenarlık rengi (odaklandığında)
           ),
