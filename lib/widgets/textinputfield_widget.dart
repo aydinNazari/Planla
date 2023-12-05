@@ -24,6 +24,7 @@ class TextInputField extends StatelessWidget {
       width: size.width / 1.1,
       height: size.height / 10,
       child: TextField(
+        textCapitalization: TextCapitalization.words,
         onChanged: onchange,
         obscureText: obscrueText,
         decoration: InputDecoration(

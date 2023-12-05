@@ -17,6 +17,10 @@ class ProviderUser with ChangeNotifier {
     notifyListeners();
   }
 
+  setstat(){
+    notifyListeners();
+  }
+
 
   setTodayList(List<TodayModel> todayModelList){
     _todayList=todayModelList;

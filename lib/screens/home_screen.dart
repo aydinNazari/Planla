@@ -16,6 +16,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+   /* var r=Provider.of<ProviderUser>(context,listen: false);
+    var user=r.user;
+    user.doneCount=0;
+    user.taskCount=0;
+    r.setUser(user);*/
+  }
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<ProviderUser>(context, listen: false);

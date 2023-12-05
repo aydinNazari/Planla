@@ -19,10 +19,10 @@ class AddScreen extends StatefulWidget {
 
 class _AddScreenState extends State<AddScreen> {
   late TodayModel todayModel;
-  var selectedValue='';
+  var selectedValue = '';
   List<TodayModel> todayList = [];
 
- // String value = '';
+  // String value = '';
 
   String txt = '';
 
@@ -52,11 +52,10 @@ class _AddScreenState extends State<AddScreen> {
                 Expanded(
                   child: SizedBox(
                     width: size.width,
-                    child: AddTextfieldWidget(
-                        onSubmit: (value) async {
+                    child: AddTextfieldWidget(onSubmit: (value) async {
                       txt = value;
                       value = '';
-                      if(txt.isNotEmpty){
+                      if (txt.isNotEmpty) {
                         DateTime dateTime = DateTime.now();
                         // DateTime'i Timestamp'e çevirir
                         Timestamp timestamp = Timestamp.fromDate(dateTime);
@@ -66,17 +65,16 @@ class _AddScreenState extends State<AddScreen> {
                             done: false,
                             important: false,
                             typeWork: selectedValue,
-                        email: user.email,
-                          uid: user.uid
-                        );
+                            email: user.email,
+                            uid: user.uid);
                         bool res = await FirestoreMethods()
                             .firestoreUpload(context, user, todayModel);
                         if (res) {
-                          updateFirestore();
+                          updateFirestore(true, false, false, user, 0);
                           getFirestore();
                         }
-                      }else{
-                        showSnackBar(context,'Fill in all fields', Colors.red);
+                      } else {
+                        showSnackBar(context, 'Fill in all fields', Colors.red);
                       }
                     }),
                   ),
@@ -85,18 +83,11 @@ class _AddScreenState extends State<AddScreen> {
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                     /*DropdownAddpageWidget(onChange: (value){
-
-                       setState(() {
-                         selectedValue = value!;
-                       });
-                    }, selectedValue: selectedValue),*/
                     Padding(
                       padding: EdgeInsets.only(top: size.height / 30),
                       child: InkWell(
                         onTap: () async {
-                          if (txt.isNotEmpty) {
-
+                          /* if (txt.isNotEmpty) {
                             DateTime dateTime = DateTime.now();
                             // DateTime'i Timestamp'e çevir
                             Timestamp timestamp = Timestamp.fromDate(dateTime);
@@ -107,13 +98,12 @@ class _AddScreenState extends State<AddScreen> {
                                 done: false,
                                 important: false,
                                 typeWork: selectedValue,
-                            email: user.email,
-                              uid: user.uid
-                            );
+                                email: user.email,
+                                uid: user.uid);
                             bool res = await FirestoreMethods()
                                 .firestoreUpload(context, user, todayModel);
                             if (res) {
-                              updateFirestore();
+                              updateFirestore(true,false,false,false,user,0);
                               getFirestore();
                             }
                           } else {
@@ -121,7 +111,7 @@ class _AddScreenState extends State<AddScreen> {
                               showSnackBar(
                                   context, 'Fill in all fields', Colors.red);
                             });
-                          }
+                          }*/
                         },
                         child: Container(
                           width: size.width / 4,
@@ -151,11 +141,36 @@ class _AddScreenState extends State<AddScreen> {
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, index) {
-                    return InkWell(
-                        onTap: () {},
+                    return Padding(
+                      padding: EdgeInsets.only(
+                          top: size.height / 50, right: size.width / 25),
+                      child: InkWell(
                         child: AddPageCardWidget(
+                          tikOntap: () {
+                            if (todayList[index].done) {
+                              updateFirestore(false, true, false, user, index);
+                            } else {
+                              updateFirestore(false, true, true, user, index);
+                            }
+                          },
+                          doneControl: todayList[index].done,
                           todayModel: todayList[index],
-                        ));
+                          importOntap: () async {
+                            if (todayList[index].important) {
+                              bool updateTodayTextImportantControl =
+                                  await FirestoreMethods()
+                                      .updateTodayTextImportant(
+                                          context, false, user, index);
+                            } else {
+                              bool updateTodayTextImportantControl =
+                                  await FirestoreMethods()
+                                      .updateTodayTextImportant(
+                                          context, true, user, index);
+                            }
+                          },
+                        ),
+                      ),
+                    );
                   }),
             )
           ],
@@ -172,7 +187,12 @@ class _AddScreenState extends State<AddScreen> {
       });
     }
   }
-  Future<void> updateFirestore()async{
-    bool updateControl= await FirestoreMethods().updateUser(context);
+
+  Future<void> updateFirestore(bool taskProcess, bool doneProcess, bool value,
+      model.User user, int index) async {
+    bool updateUserControl = await FirestoreMethods()
+        .updateUser(context, taskProcess, doneProcess, value);
+    bool updateTodayTextDoneControl = await FirestoreMethods()
+        .updateTodayTextDone(context, value, user, index);
   }
 }
