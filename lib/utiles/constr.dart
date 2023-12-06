@@ -1,17 +1,19 @@
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:planla/screens/add_screen.dart';
 import 'package:planla/screens/profile_screen.dart';
 
+import '../controls/firebase/auth.dart';
 import '../screens/home_screen.dart';
+import '../screens/login_signin_screen.dart';
 
 //navigator pages
 List<Widget> screenList = [
@@ -20,9 +22,10 @@ List<Widget> screenList = [
 /*  const Center(
     child: Text('Analize'),
   ),*/
-  const ProfileScreen(control: false,)
+  const ProfileScreen(
+    control: false,
+  )
 ];
-
 
 //dropdown items
 final List<String> items = [
@@ -53,7 +56,7 @@ showSnackBar(BuildContext context, String txt, Color color) {
 //for picking photo
 Future<Uint8List?> pickImager() async {
   FilePickerResult? pickedImage =
-      await FilePicker.platform.pickFiles(type: FileType.image);
+  await FilePicker.platform.pickFiles(type: FileType.image);
   if (kIsWeb) {
     return pickedImage?.files.single.bytes;
   }
@@ -64,7 +67,7 @@ Future<Uint8List?> pickImager() async {
 }
 
 //dialog
-Future<void> showMyDialog(BuildContext context,Size size, String txt,
+Future<void> showMyDialog(BuildContext context, Size size, String txt,
     void Function() yesFunction, void Function() noFunction) async {
   return showDialog<void>(
     context: context,
@@ -76,15 +79,15 @@ Future<void> showMyDialog(BuildContext context,Size size, String txt,
           child: ListBody(
             children: <Widget>[
               SizedBox(
-                width: size.width/6,
-                height: size.width/6,
+                width: size.width / 6,
+                height: size.width / 6,
                 child: Image.asset('assets/images/goals_dialog.png'),
               ),
               SizedBox(
-                height: size.height/50,
+                height: size.height / 50,
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: size.width/25),
+                padding: EdgeInsets.symmetric(horizontal: size.width / 25),
                 child: Text(txt),
               ),
             ],
@@ -96,15 +99,17 @@ Future<void> showMyDialog(BuildContext context,Size size, String txt,
             children: [
               TextButton(
                   onPressed: yesFunction,
-                  child:  Text(
+                  child: Text(
                     'Yes',
-                    style: TextStyle(color: Colors.black,fontSize: size.width/25),
+                    style: TextStyle(
+                        color: Colors.black, fontSize: size.width / 25),
                   )),
               TextButton(
                   onPressed: noFunction,
-                  child:  Text(
+                  child: Text(
                     'No',
-                    style: TextStyle(color: Colors.black,fontSize: size.width/25),
+                    style: TextStyle(
+                        color: Colors.black, fontSize: size.width / 25),
                   )),
             ],
           )
@@ -122,11 +127,57 @@ void lottieProgressDialog(BuildContext context) {
     builder: (context) {
       return Center(
         child: SizedBox(
-          width: MediaQuery.of(context).size.width / 2.2,
-          height: MediaQuery.of(context).size.width / 2.2,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width / 2.2,
+          height: MediaQuery
+              .of(context)
+              .size
+              .width / 2.2,
           child: Lottie.asset('assets/json/progress.json'),
         ),
       );
     },
   );
+}
+
+Future<void> logOutFunc(BuildContext context, Size size, bool exitType) async {
+  // exittype==true -> logOut
+  // exittype==false -> exit from app
+  if (exitType) {
+    showMyDialog(context, size, 'Are you sure you want to log out?', () async {
+      await Auth().signOut();
+      if(context.mounted){
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.topToBottom,
+            child: const LoginSignInScreen(),
+          ),
+        );
+      }
+    }, () {
+      Navigator.of(context).pop();
+    });
+  } else {
+    showMyDialog(
+        context, size, 'Are you sure you want to exit the application??', () {
+      exit(0);
+    }, () {
+      Navigator.of(context).pop();
+    });
+  }
+}
+
+void connectionKontrol(BuildContext context) async {
+  final connectivityResult = await (Connectivity().checkConnectivity());
+ if (connectivityResult == ConnectivityResult.none) {
+   if(context.mounted){
+      showSnackBar(
+          context, 'Please check your internet connection', Colors.red);
+    }
+    // I am not connected to any network.
+  }
+
 }

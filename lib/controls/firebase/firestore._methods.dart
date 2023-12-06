@@ -26,8 +26,9 @@ class FirestoreMethods {
           .set(todayModel.toMap());
       res = true;
     } on FirebaseException catch (e) {
-      showSnackBar(context, e.toString(), Colors.red);
-      print(e.toString());
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
     }
 
     return res;
@@ -58,7 +59,8 @@ class FirestoreMethods {
       for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot
           in snap.docs) {
         Map<String, dynamic> data = documentSnapshot.data();
-        Timestamp dateTime = data['dateTime'] ?? Timestamp.fromMillisecondsSinceEpoch(0);
+        Timestamp dateTime =
+            data['dateTime'] ?? Timestamp.fromMillisecondsSinceEpoch(0);
         bool done = data['done'] ?? false;
         bool important = data['important'] ?? false;
         String text = data['text'] ?? '';
@@ -75,10 +77,15 @@ class FirestoreMethods {
 
         tempList.add(todayModel);
       }
-      Provider.of<ProviderUser>(context, listen: false).setTodayList(tempList);
+      if (context.mounted) {
+        Provider.of<ProviderUser>(context, listen: false)
+            .setTodayList(tempList);
+      }
       res = true;
     } on FirebaseException catch (e) {
-      showSnackBar(context, e.toString(), Colors.red);
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
     }
     return res;
   }
@@ -115,7 +122,9 @@ class FirestoreMethods {
         user.setUser(temp);
       }
     } on FirebaseException catch (e) {
-      showSnackBar(context, e.toString(), Colors.red);
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
     }
     return res;
   }
@@ -131,12 +140,22 @@ class FirestoreMethods {
           .collection(datetimeToCollect)
           .doc(index.toString())
           .update({'done': value});
-
+      if (context.mounted) {
+        var p = Provider.of<ProviderUser>(context, listen: false);
+        var s = p.todayList;
+        TodayModel temp = s[index];
+        temp.done = value;
+        s[index] = temp;
+        p.setTodayList(s);
+      }
     } on FirebaseException catch (e) {
-      showSnackBar(context, e.toString(), Colors.red);
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
     }
     return res;
   }
+
   Future<bool> updateTodayTextImportant(
       BuildContext context, bool value, model.User user, int index) async {
     bool res = false;
@@ -148,9 +167,96 @@ class FirestoreMethods {
           .collection(datetimeToCollect)
           .doc(index.toString())
           .update({'important': value});
-
+      if (context.mounted) {
+        var p = Provider.of<ProviderUser>(context, listen: false);
+        var s = p.todayList;
+        TodayModel temp = s[index];
+        temp.important = value;
+        s[index] = temp;
+        p.setTodayList(s);
+      }
     } on FirebaseException catch (e) {
-      showSnackBar(context, e.toString(), Colors.red);
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
+    }
+    return res;
+  }
+
+  Future<bool> deletetodayTextitem(
+      BuildContext context, int index, model.User user) async {
+    bool res = false;
+    try {
+      String datetimeToCollect = getDatePart();
+      await firestore
+          .collection('todaytext')
+          .doc(user.uid)
+          .collection(datetimeToCollect)
+          .doc(index.toString())
+          .delete();
+
+
+//------------------------------------------------------
+
+      // Silinen belgeden sonraki tüm belgelerin index değerini güncelle
+      var document = await FirebaseFirestore.instance
+          .collection('todaytext')
+          .doc(user.uid)
+          .collection(datetimeToCollect)
+          .doc(index.toString())
+          .get();
+
+      await FirebaseFirestore.instance
+          .collection('todaytext')
+          .doc(user.uid)
+          .collection(datetimeToCollect)
+          .where('index', isGreaterThan: document['index'])
+          .get()
+          .then((snapshot) {
+        for (QueryDocumentSnapshot doc in snapshot.docs) {
+          doc.reference.update({'index': FieldValue.increment(-1)});
+        }
+      });
+
+      //-----------------------------------------------
+
+
+
+
+      getFiresoreData(context);
+
+      var allDoc = await firestore
+          .collection('todaytext')
+          .doc(user.uid)
+          .collection(datetimeToCollect)
+          .get();
+
+
+
+
+
+
+      int count = allDoc.docs.length;
+     for(int i=0;i< count; i++){
+       await firestore
+           .collection('todaytext')
+           .doc(user.uid)
+           .collection(datetimeToCollect).doc().update({
+
+       });
+     }
+
+
+      if (context.mounted) {
+        var p = Provider.of<ProviderUser>(context, listen: false);
+        List<TodayModel> todayListTemp = p.todayList;
+        todayListTemp.removeAt(index);
+        p.setTodayList(todayListTemp);
+      }
+    } on FirebaseException catch (e) {
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
     }
     return res;
   }

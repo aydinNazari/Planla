@@ -5,6 +5,8 @@ import 'package:planla/widgets/homepage_type_container_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../controls/providersClass/provider_user.dart';
+import '../utiles/colors.dart';
+import '../utiles/constr.dart';
 import '../widgets/chart_widget.dart';
 import '../widgets/profile_img_widget.dart';
 
@@ -16,169 +18,204 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-   /* var r=Provider.of<ProviderUser>(context,listen: false);
+    connectionKontrol(context);
+    /* var r=Provider.of<ProviderUser>(context,listen: false);
     var user=r.user;
     user.doneCount=0;
     user.taskCount=0;
     r.setUser(user);*/
   }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<ProviderUser>(context, listen: false);
     var size = MediaQuery.of(context).size;
-    return Scaffold(
-        body: Padding(
-      padding: EdgeInsets.only(left: size.width / 25),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  'Hi ${user.user.name}!',
-                  style: TextStyle(shadows: const <Shadow>[
-                    Shadow(
-                        color: Colors.white,
-                        blurRadius: 5,
-                        offset: Offset(0, 0))
-                  ], color: Colors.white, fontSize: size.width / 15),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: size.width / 50),
-                  child: SizedBox(
-                      width: size.width / 10,
-                      height: size.height / 10,
-                      child: Image.asset('assets/icons/hand_hello.png')),
-                ),
-                const Spacer(),
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: size.width / 25,
-                  ),
-                  child: InkWell(
-                    autofocus: true,
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          PageTransition(
-                              type: PageTransitionType.rightToLeft,
-                              child: const ProfileScreen(control:true),
-                              isIos: true));
-                    },
-                    child: const ProgileImgWidget(
-                      type: 1,
-                    ),
-                  ),
-                )
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: size.height / 25),
-              child: Text(
-                'Last Week Result',
-                style:
-                    TextStyle(fontSize: size.width / 25, color: Colors.white60),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: size.height/50),
-              child: Row(
+    return WillPopScope(
+      onWillPop: ()async{
+        logOutFunc(context, size,false);
+        return false;
+      },
+      child: Scaffold(
+          body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: size.height / 40,
+            left: size.width / 50,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(right: size.width / 50),
-                      child: const TypeContainerWidget(
-                          txt: '5h', imgUrl: 'assets/images/work.png'),
-                    ),
+                  Text(
+                    'Hi ${user.user.name}!',
+                    style: TextStyle(shadows: const <Shadow>[
+                      Shadow(
+                          color: Colors.black,
+                          blurRadius: 5,
+                          offset: Offset(0, 0))
+                    ], color: textColor, fontSize: size.width / 15),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(right: size.width / 50),
-                      child: const TypeContainerWidget(
-                          txt: '2h', imgUrl: 'assets/images/sport.png'),
-                    ),
+                  Padding(
+                    padding: EdgeInsets.only(left: size.width / 50),
+                    child: SizedBox(
+                        width: size.width / 10,
+                        height: size.height / 10,
+                        child: Image.asset('assets/icons/hand_hello.png')),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(right: size.width / 50),
-                      child: const TypeContainerWidget(
-                          txt: '10h', imgUrl: 'assets/images/study.png'),
+                  const Spacer(),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: size.width / 25,
                     ),
-                  ),
+                    child: InkWell(
+                      autofocus: true,
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                                type: PageTransitionType.rightToLeft,
+                                child: const ProfileScreen(control: true),
+                                isIos: true));
+                      },
+                      child: const ProgileImgWidget(
+                        type: 1,
+                      ),
+                    ),
+                  )
                 ],
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: size.height / 25),
-              child: Text(
-                'Your Chart',
-                style:
-                    TextStyle(fontSize: size.width / 25, color: Colors.white60),
+              Padding(
+                padding: EdgeInsets.only(top: size.height / 25),
+                child: Text(
+                  'Last Week Result',
+                  style: TextStyle(fontSize: size.width / 25, color: textColor,fontWeight: FontWeight.w600),
+                ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: size.height / 50),
-              child: const ChartWidget()
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: size.height / 30),
-              child: Container(
-                width: size.width / 1.1,
-                height: size.height / 5,
-                decoration: BoxDecoration(
-                    color: const Color(0xffe0ff63),
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(size.width / 15))),
+              Padding(
+                padding: EdgeInsets.only(top: size.height / 50),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      'Your Record',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: size.width / 15,
-                        shadows: const <Shadow>[
-                          Shadow(
-                              color: Colors.black,
-                              blurRadius: 3,
-                              offset: Offset(0, 0))
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(right: size.width / 50),
+                              child: const TypeContainerWidget(
+                                  typeWidget: 1,
+                                  txt: '5h',
+                                  imgUrl: 'assets/images/work.png'),
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(right: size.width / 50),
+                              child: const TypeContainerWidget(
+                                  typeWidget: 2,
+                                  txt: '2h',
+                                  imgUrl: 'assets/images/study.png'),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    Text(
-                      '100h',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: size.width / 15,
-                        shadows: const <Shadow>[
-                          Shadow(
-                            color: Colors.black,
-                            blurRadius: 2,
-                            offset: Offset(0, 0),
-                          )
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(right: size.width / 50),
+                              child: const TypeContainerWidget(
+                                  typeWidget: 3,
+                                  txt: '5h',
+                                  imgUrl: 'assets/images/sport.png'),
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(right: size.width / 50),
+                              child: const TypeContainerWidget(
+                                  typeWidget: 4,
+                                  txt: '2h',
+                                  imgUrl: 'assets/images/other.png'),
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 100,
-            )
-          ],
+              Padding(
+                padding: EdgeInsets.only(top: size.height / 25),
+                child: Text(
+                  'Your Chart',
+                  style: TextStyle(fontSize: size.width / 25, color: textColor,fontWeight: FontWeight.w600
+                  ),
+                ),
+              ),
+              Padding(
+                  padding: EdgeInsets.only(top: size.height / 50),
+                  child: const ChartWidget()),
+              Padding(
+                padding: EdgeInsets.only(top: size.height / 30),
+                child: Container(
+                  width: size.width / 1.1,
+                  height: size.height / 5,
+                  decoration: BoxDecoration(
+                      color: const Color(0xff4855e5),
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(size.width / 15))),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Your Record',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: size.width / 15,
+                          shadows: const <Shadow>[
+                            Shadow(
+                                color: Colors.white,
+                                blurRadius: 3,
+                                offset: Offset(0, 0))
+                          ],
+                        ),
+                      ),
+                      Text(
+                        '100h',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontWeight: FontWeight.w600,
+                          fontSize: size.width / 15,
+                          shadows: const <Shadow>[
+                            Shadow(
+                              color: Colors.white70,
+                              blurRadius: 2,
+                              offset: Offset(0, 0),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 100,
+              )
+            ],
+          ),
         ),
-      ),
-    ));
+      )),
+    );
   }
 }
-
-

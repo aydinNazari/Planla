@@ -5,13 +5,14 @@ class ChartWidget extends StatelessWidget {
   const ChartWidget({
     super.key,
   });
+
   @override
   Widget build(BuildContext context) {
-    var size=MediaQuery.of(context).size;
+    var size = MediaQuery.of(context).size;
     return Container(
       width: size.width / 1.1,
       height: size.height / 3,
-      decoration: BoxDecoration(
+      /*decoration: BoxDecoration(
           border: Border.all(color: Colors.white.withOpacity(0.13)),
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -22,8 +23,8 @@ class ChartWidget extends StatelessWidget {
             ],
           ),
           borderRadius:
-          BorderRadius.all(Radius.circular(size.width / 15))),
-      child:  Center(
+          BorderRadius.all(Radius.circular(size.width / 15))),*/
+      child: Center(
         child: PieChart(PieChartData(
             centerSpaceColor: Colors.black26,
             centerSpaceRadius: 5,
@@ -47,6 +48,12 @@ class ChartWidget extends StatelessWidget {
                 title: 'Work',
                 value: 30,
                 color: const Color(0xffa6b1e1),
+                radius: size.width / 4,
+              ),
+              PieChartSectionData(
+                title: 'Other',
+                value: 30,
+                color: const Color(0xff8591c5),
                 radius: size.width / 4,
               ),
             ])),

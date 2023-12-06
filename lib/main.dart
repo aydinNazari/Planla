@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
-            .copyWith(background: const Color(0xff000000)),
+            .copyWith(background: const Color(0xffffffff)),
       ),
       home: FutureBuilder(
         future: Auth()

@@ -20,11 +20,11 @@ class TasksCountWidget extends StatelessWidget {
         Text(
           txt,
           style:
-          TextStyle(fontWeight: FontWeight.w600, fontSize: size.width / 20,color: Colors.white),
+          TextStyle(fontWeight: FontWeight.w600, fontSize: size.width / 20,color: Colors.black),
         ),
         Text(
           count,
-          style: TextStyle(fontSize: size.width / 25,color: Colors.white),
+          style: TextStyle(fontSize: size.width / 25,color: Colors.black),
         ),
       ],
     );

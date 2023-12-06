@@ -19,15 +19,15 @@ class AddTextfieldWidget extends StatelessWidget {
         //onEditingComplete: onSubmit,
         controller: txtControoler,
         onSubmitted: onSubmit,
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.black,fontWeight: FontWeight.w600),
         decoration: const InputDecoration(
           hintText: 'Add...',
           //icon: Icon(Icons.task_alt),
           hintStyle: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
           ),
           border: OutlineInputBorder(
-            borderSide: BorderSide(width: 2,color: Colors.white), // Kenarlık rengi
+            borderSide: BorderSide(width: 2,color: Colors.black), // Kenarlık rengi
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
