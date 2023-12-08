@@ -23,8 +23,8 @@ class Auth {
     DocumentSnapshot cred = await firestore.collection('users').doc(uid).get();
     model.User user = model.User(
         uid: uid!,
-        email: (cred.data()! as dynamic)['email'],
-        name: (cred.data()! as dynamic)['name'],
+        email: (cred.data()! as dynamic)['email'] ?? '',
+        name: (cred.data()! as dynamic)['name'] ?? '',
         imageurl: (cred.data()! as dynamic)['imageurl'] ?? '',
         doneCount: (cred.data()! as dynamic)['doneCount'] ?? 0,
       taskCount: (cred.data()! as dynamic)['taskCount'] ?? 0,

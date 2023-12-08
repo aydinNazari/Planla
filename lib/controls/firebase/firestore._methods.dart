@@ -131,9 +131,8 @@ class FirestoreMethods {
     return res;
   }
 
-  Future<bool> updateTodayTextDone(
+  Future<void> updateTodayTextDone(
       BuildContext context, bool value, model.User user, int index) async {
-    bool res = false;
     String datetimeToCollect = getDatePart();
     try {
       await firestore
@@ -143,24 +142,22 @@ class FirestoreMethods {
           .doc(index.toString())
           .update({'done': value});
       if (context.mounted) {
-        var p = Provider.of<ProviderUser>(context, listen: false);
+        /*var p = Provider.of<ProviderUser>(context, listen: false);
         var s = p.todayList;
         TodayModel temp = s[index];
         temp.done = value;
         s[index] = temp;
-        p.setTodayList(s);
+        p.setTodayList(s);*/
       }
     } on FirebaseException catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);
       }
     }
-    return res;
   }
 
-  Future<bool> updateTodayTextImportant(
+  Future<void> updateTodayTextImportant(
       BuildContext context, bool value, model.User user, int index) async {
-    bool res = false;
     String datetimeToCollect = getDatePart();
     try {
       await firestore
@@ -170,19 +167,19 @@ class FirestoreMethods {
           .doc(index.toString())
           .update({'important': value});
       if (context.mounted) {
-        var p = Provider.of<ProviderUser>(context, listen: false);
+        /*var p = Provider.of<ProviderUser>(context, listen: false);
         var s = p.todayList;
         TodayModel temp = s[index];
         temp.important = value;
         s[index] = temp;
-        p.setTodayList(s);
+        p.setTodayList(s);*/
       }
     } on FirebaseException catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);
       }
     }
-    return res;
+
   }
 
   Future<bool> deletetodayTextitem(
@@ -191,7 +188,7 @@ class FirestoreMethods {
     List<TodayModel> todayModelListTemp = [];
     try {
       String datetimeToCollect = getDatePart();
-      await firestore
+      /*    await firestore
           .collection('todaytext')
           .doc(providerUser.user.uid)
           .collection(datetimeToCollect)
@@ -204,20 +201,23 @@ class FirestoreMethods {
         'text': '',
         'typeWork': '',
         'uid': ''
-      });
-      var a= await firestore
+      });*/
+      /* var a= await firestore
           .collection('todaytext')
           .doc(providerUser.user.uid)
-          .collection(datetimeToCollect).get();
+          .collection(datetimeToCollect).get();*/
+
       todayModelListTemp = providerUser.todayList;
       todayModelListTemp.removeAt(index);
       providerUser.setTodayList(todayModelListTemp);
-      for (int i = index; i < a.docs.length; i++) {
+      print('provider da olan liste boyutu : ${todayModelListTemp.length}');
+
+      for (int i = index; i < todayModelListTemp.length; i++) {
         await firestore
             .collection('todaytext')
             .doc(providerUser.user.uid)
             .collection(datetimeToCollect)
-            .doc(index.toString())
+            .doc(i.toString())
             .update({
           'dateTime': todayModelListTemp[i].dateTime,
           'done': todayModelListTemp[i].done,
@@ -228,12 +228,51 @@ class FirestoreMethods {
           'uid': todayModelListTemp[i].uid
         });
       }
+
+      var snap = await firestore
+          .collection('todaytext')
+          .doc(providerUser.user.uid)
+          .collection(datetimeToCollect)
+          .get();
+
+
+
+
+
+      var i=0;
+
+      for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot
+          in snap.docs) {
+        print('----------------------------------------');
+        i++;
+        Map<String, dynamic> data = documentSnapshot.data();
+        print(i);
+        print('done : ${data['done']}');
+        print('text : ${data['text']}');
+        print('impo : ${data['important']}');
+        print('----------------------------------------');
+      }
+
       await firestore
           .collection('todaytext')
           .doc(providerUser.user.uid)
           .collection(datetimeToCollect)
-          .doc((a.docs.length).toString()).delete();
+          .doc((todayModelListTemp.length).toString())
+          .delete();
 
+      print('afterrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+
+      for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot
+      in snap.docs) {
+        print('----------------------------------------');
+        i++;
+        Map<String, dynamic> data = documentSnapshot.data();
+        print(i);
+        print('done : ${data['done']}');
+        print('text : ${data['text']}');
+        print('impo : ${data['important']}');
+        print('----------------------------------------');
+      }
 
 /*//------------------------------------------------------
 

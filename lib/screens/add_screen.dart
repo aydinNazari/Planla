@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/models/today_model.dart';
 import 'package:planla/utiles/constr.dart';
@@ -121,63 +122,60 @@ class _AddScreenState extends State<AddScreen> {
               //const AddPageCardWidget(),
               Expanded(
                 child: ListView.builder(
-                    itemCount: todayList.length,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (context, index) {
-                      return Padding(
+                  itemCount: todayList.length,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (context, index) {
+                    return Dismissible(
+                      key: ValueKey<TodayModel>(todayList[index]),
+                      onDismissed: (DismissDirection direction) async {
+                        await FirestoreMethods()
+                            .deletetodayTextitem(context, index, user);
+                        setState(() {
+                          todayList = user.todayList;
+                        });
+                      },
+                      background: Container(
+                        //color: Colors.black.withOpacity(0.3),
+                        color: Colors.transparent,
+                        child: Lottie.asset('assets/json/recycling.json'),
+                      ),
+                      child: Padding(
                         padding: EdgeInsets.only(
                             top: size.height / 50, right: size.width / 25),
-                        child: InkWell(
-                          onTap: (){
-                            print('///----');
-                            print(index);
-                            print(todayList.length);
+                        child: AddPageCardWidget(
+                          index: index,
+                          tikOntap: () {
+                            if (todayList[index].done) {
+                              updateFirestore(
+                                  false, true, false, user.user, index);
+                              user.todayList[index].done = false;
+                            } else {
+                              updateFirestore(
+                                  false, true, true, user.user, index);
+                              user.todayList[index].done = true;
+                            }
+                            setState(() {});
                           },
-                          onLongPress: () async {
-                            print('****************************');
-                            print(todayList[index].text);
-                            print(todayList.length);
-                            print('****************************');
-                            await FirestoreMethods()
-                                .deletetodayTextitem(context, index, user);
-                            todayList.removeAt(index);
-                            print(todayList.length);
-                            print(index);
-                            print('////////////////////////////');
-                            print(index);
-                            setState(() {
-
-                            });
+                          importOntap: () async {
+                            if (todayList[index].important) {
+                              await FirestoreMethods()
+                                  .updateTodayTextImportant(
+                                      context, false, user.user, index);
+                              user.todayList[index].important = false;
+                            } else {
+                              await FirestoreMethods()
+                                  .updateTodayTextImportant(
+                                      context, true, user.user, index);
+                              user.todayList[index].important = true;
+                            }
+                            setState(() {});
                           },
-                          child: AddPageCardWidget(
-                            tikOntap: () {
-                              if (todayList[index].done) {
-                                updateFirestore(
-                                    false, true, false, user.user, index);
-                              } else {
-                                updateFirestore(false, true, true, user.user, index);
-                              }
-                            },
-                            doneControl: todayList[index].done,
-                            todayModel: todayList[index],
-                            importOntap: () async {
-                              if (todayList[index].important) {
-                                bool updateTodayTextImportantControl =
-                                    await FirestoreMethods()
-                                        .updateTodayTextImportant(
-                                            context, false, user.user, index);
-                              } else {
-                                bool updateTodayTextImportantControl =
-                                    await FirestoreMethods()
-                                        .updateTodayTextImportant(
-                                            context, true, user.user, index);
-                              }
-                            },
-                          ),
                         ),
-                      );
-                    }),
+                      ),
+                    );
+                  },
+                ),
               )
             ],
           ),
@@ -201,8 +199,7 @@ class _AddScreenState extends State<AddScreen> {
         .updateUser(context, taskProcess, doneProcess, value);
 
     if (context.mounted) {
-      bool updateTodayTextDoneControl = await FirestoreMethods()
-          .updateTodayTextDone(context, value, user, index);
+      await FirestoreMethods().updateTodayTextDone(context, value, user, index);
     }
   }
 }
