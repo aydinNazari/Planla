@@ -40,7 +40,7 @@ class _AddScreenState extends State<AddScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final user = Provider.of<ProviderUser>(context, listen: false).user;
+    final user = Provider.of<ProviderUser>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
         logOutFunc(context, size, false);
@@ -73,12 +73,12 @@ class _AddScreenState extends State<AddScreen> {
                               done: false,
                               important: false,
                               typeWork: selectedValue,
-                              email: user.email,
-                              uid: user.uid);
+                              email: user.user.email,
+                              uid: user.user.uid);
                           bool res = await FirestoreMethods()
-                              .firestoreUpload(context, user, todayModel);
+                              .firestoreUpload(context, user.user, todayModel);
                           if (res) {
-                            updateFirestore(true, false, false, user, 0);
+                            updateFirestore(true, false, false, user.user, 0);
                             getFirestore();
                           }
                         } else {
@@ -154,9 +154,9 @@ class _AddScreenState extends State<AddScreen> {
                             tikOntap: () {
                               if (todayList[index].done) {
                                 updateFirestore(
-                                    false, true, false, user, index);
+                                    false, true, false, user.user, index);
                               } else {
-                                updateFirestore(false, true, true, user, index);
+                                updateFirestore(false, true, true, user.user, index);
                               }
                             },
                             doneControl: todayList[index].done,
@@ -166,12 +166,12 @@ class _AddScreenState extends State<AddScreen> {
                                 bool updateTodayTextImportantControl =
                                     await FirestoreMethods()
                                         .updateTodayTextImportant(
-                                            context, false, user, index);
+                                            context, false, user.user, index);
                               } else {
                                 bool updateTodayTextImportantControl =
                                     await FirestoreMethods()
                                         .updateTodayTextImportant(
-                                            context, true, user, index);
+                                            context, true, user.user, index);
                               }
                             },
                           ),

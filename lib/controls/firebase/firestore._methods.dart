@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:planla/models/today_model.dart';
@@ -184,19 +186,56 @@ class FirestoreMethods {
   }
 
   Future<bool> deletetodayTextitem(
-      BuildContext context, int index, model.User user) async {
+      BuildContext context, int index, ProviderUser providerUser) async {
     bool res = false;
+    List<TodayModel> todayModelListTemp = [];
     try {
       String datetimeToCollect = getDatePart();
       await firestore
           .collection('todaytext')
-          .doc(user.uid)
+          .doc(providerUser.user.uid)
           .collection(datetimeToCollect)
           .doc(index.toString())
-          .delete();
+          .update({
+        'dateTime': null,
+        'done': false,
+        'email': '',
+        'important': false,
+        'text': '',
+        'typeWork': '',
+        'uid': ''
+      });
+      var a= await firestore
+          .collection('todaytext')
+          .doc(providerUser.user.uid)
+          .collection(datetimeToCollect).get();
+      todayModelListTemp = providerUser.todayList;
+      todayModelListTemp.removeAt(index);
+      providerUser.setTodayList(todayModelListTemp);
+      for (int i = index; i < a.docs.length; i++) {
+        await firestore
+            .collection('todaytext')
+            .doc(providerUser.user.uid)
+            .collection(datetimeToCollect)
+            .doc(index.toString())
+            .update({
+          'dateTime': todayModelListTemp[i].dateTime,
+          'done': todayModelListTemp[i].done,
+          'email': todayModelListTemp[i].email,
+          'important': todayModelListTemp[i].important,
+          'text': todayModelListTemp[i].text,
+          'typeWork': todayModelListTemp[i].typeWork,
+          'uid': todayModelListTemp[i].uid
+        });
+      }
+      await firestore
+          .collection('todaytext')
+          .doc(providerUser.user.uid)
+          .collection(datetimeToCollect)
+          .doc((a.docs.length).toString()).delete();
 
 
-//------------------------------------------------------
+/*//------------------------------------------------------
 
       // Silinen belgeden sonraki tüm belgelerin index değerini güncelle
       var document = await FirebaseFirestore.instance
@@ -217,46 +256,53 @@ class FirestoreMethods {
           doc.reference.update({'index': FieldValue.increment(-1)});
         }
       });
+      //-----------------------------------------------*/
 
-      //-----------------------------------------------
+      /* final DocumentSnapshot deletedDoc = await firestore.collection('todaytext').doc(index.toString()).get();
+      // Silinen belge indeksinden sonraki tüm belgelerin indeksini güncelle
+      QuerySnapshot snapshot = await firestore.collection('todaytext').orderBy(FieldPath.documentId).get();
 
+      for (QueryDocumentSnapshot doc in snapshot.docs) {
+        int currentIndex = int.parse(doc.id);
 
+        // Eğer silinen belge indeksinden sonraki bir belge ise, indeksi güncelle
+        if (currentIndex > index) {
+          await firestore.collection('todaytext').doc(user.uid).collection(datetimeToCollect).set;
+          await firestore.collection('todaytext').doc(currentIndex.toString()).delete();
+        }
+      }*/
 
+      //-------------------------------------------------------------
 
-      getFiresoreData(context);
+      /*    getFiresoreData(context);
 
       var allDoc = await firestore
           .collection('todaytext')
-          .doc(user.uid)
+          .doc(providerUser.user.uid)
           .collection(datetimeToCollect)
           .get();
 
-
-
-
-
-
       int count = allDoc.docs.length;
-     for(int i=0;i< count; i++){
-       await firestore
-           .collection('todaytext')
-           .doc(user.uid)
-           .collection(datetimeToCollect).doc().update({
-
-       });
-     }
-
+      for (int i = 0; i < count; i++) {
+        await firestore
+            .collection('todaytext')
+            .doc(providerUser.user.uid)
+            .collection(datetimeToCollect)
+            .doc()
+            .update({});
+      }
 
       if (context.mounted) {
         var p = Provider.of<ProviderUser>(context, listen: false);
         List<TodayModel> todayListTemp = p.todayList;
         todayListTemp.removeAt(index);
         p.setTodayList(todayListTemp);
-      }
+      }*/
     } on FirebaseException catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);
       }
+      print(e.toString());
     }
     return res;
   }
