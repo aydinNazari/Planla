@@ -59,37 +59,40 @@ class _AddScreenState extends State<AddScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: SizedBox(
-                      width: size.width,
-                      child: AddTextfieldWidget(onSubmit: (value) async {
-                        txt = value;
-                        value = '';
-                        if (txt.isNotEmpty) {
-                          DateTime dateTime = DateTime.now();
-                          // DateTime'i Timestamp'e çevirir
-                          Timestamp timestamp = Timestamp.fromDate(dateTime);
-                          todayModel = TodayModel(
-                              text: txt,
-                              dateTime: timestamp,
-                              done: false,
-                              important: false,
-                              typeWork: selectedValue,
-                              email: user.user.email,
-                              uid: user.user.uid);
-                          bool res = await FirestoreMethods()
-                              .firestoreUpload(context, user.user, todayModel);
-                          if (res) {
-                            updateFirestore(true, false, false, user.user, 0);
-                            getFirestore();
+                    child: Padding(
+                      padding: EdgeInsets.only(right: size.width/25),
+                      child: SizedBox(
+                        width: size.width,
+                        child: AddTextfieldWidget(onSubmit: (value) async {
+                          txt = value;
+                          value = '';
+                          if (txt.isNotEmpty) {
+                            DateTime dateTime = DateTime.now();
+                            // DateTime'i Timestamp'e çevirir
+                            Timestamp timestamp = Timestamp.fromDate(dateTime);
+                            todayModel = TodayModel(
+                                text: txt,
+                                dateTime: timestamp,
+                                done: false,
+                                important: false,
+                                typeWork: selectedValue,
+                                email: user.user.email,
+                                uid: user.user.uid);
+                            bool res = await FirestoreMethods()
+                                .firestoreUpload(context, user, todayModel);
+                            if (res) {
+                              updateFirestore(true, false, false, user.user, 0);
+                              getFirestore();
+                            }
+                          } else {
+                            showSnackBar(
+                                context, 'Fill in all fields', Colors.red);
                           }
-                        } else {
-                          showSnackBar(
-                              context, 'Fill in all fields', Colors.red);
-                        }
-                      }),
+                        }),
+                      ),
                     ),
                   ),
-                  Expanded(
+                  /*Expanded(
                       child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -115,7 +118,7 @@ class _AddScreenState extends State<AddScreen> {
                         ),
                       )
                     ],
-                  ))
+                  ))*/
                 ],
               ),
               //DropdownAddpageWidget(),

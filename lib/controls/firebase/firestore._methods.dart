@@ -10,29 +10,32 @@ import '../providersClass/provider_user.dart';
 
 class FirestoreMethods {
   Future<bool> firestoreUpload(
-      BuildContext context, model.User user, TodayModel todayModel) async {
+      BuildContext context, ProviderUser user, TodayModel todayModel) async {
     bool res = false;
     try {
       String datetimeToCollect = getDatePart();
       var allDoc = await firestore
           .collection('todaytext')
-          .doc(user.uid)
+          .doc(user.user.uid)
           .collection(datetimeToCollect)
           .get();
       int count = allDoc.docs.length;
       await firestore
           .collection('todaytext')
-          .doc(user.uid)
+          .doc(user.user.uid)
           .collection(datetimeToCollect)
           .doc(count.toString())
           .set(todayModel.toMap());
-      res = true;
+      bool res2 = false;
+      if (context.mounted) {
+        await updateTank(context, user, todayModel);
+        res = true;
+      }
     } on FirebaseException catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);
       }
     }
-
     return res;
   }
 
@@ -179,7 +182,6 @@ class FirestoreMethods {
         showSnackBar(context, e.toString(), Colors.red);
       }
     }
-
   }
 
   Future<bool> deletetodayTextitem(
@@ -188,29 +190,9 @@ class FirestoreMethods {
     List<TodayModel> todayModelListTemp = [];
     try {
       String datetimeToCollect = getDatePart();
-      /*    await firestore
-          .collection('todaytext')
-          .doc(providerUser.user.uid)
-          .collection(datetimeToCollect)
-          .doc(index.toString())
-          .update({
-        'dateTime': null,
-        'done': false,
-        'email': '',
-        'important': false,
-        'text': '',
-        'typeWork': '',
-        'uid': ''
-      });*/
-      /* var a= await firestore
-          .collection('todaytext')
-          .doc(providerUser.user.uid)
-          .collection(datetimeToCollect).get();*/
-
       todayModelListTemp = providerUser.todayList;
       todayModelListTemp.removeAt(index);
       providerUser.setTodayList(todayModelListTemp);
-      print('provider da olan liste boyutu : ${todayModelListTemp.length}');
 
       for (int i = index; i < todayModelListTemp.length; i++) {
         await firestore
@@ -228,115 +210,12 @@ class FirestoreMethods {
           'uid': todayModelListTemp[i].uid
         });
       }
-
-      var snap = await firestore
-          .collection('todaytext')
-          .doc(providerUser.user.uid)
-          .collection(datetimeToCollect)
-          .get();
-
-
-
-
-
-      var i=0;
-
-      for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot
-          in snap.docs) {
-        print('----------------------------------------');
-        i++;
-        Map<String, dynamic> data = documentSnapshot.data();
-        print(i);
-        print('done : ${data['done']}');
-        print('text : ${data['text']}');
-        print('impo : ${data['important']}');
-        print('----------------------------------------');
-      }
-
       await firestore
           .collection('todaytext')
           .doc(providerUser.user.uid)
           .collection(datetimeToCollect)
           .doc((todayModelListTemp.length).toString())
           .delete();
-
-      print('afterrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
-
-      for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot
-      in snap.docs) {
-        print('----------------------------------------');
-        i++;
-        Map<String, dynamic> data = documentSnapshot.data();
-        print(i);
-        print('done : ${data['done']}');
-        print('text : ${data['text']}');
-        print('impo : ${data['important']}');
-        print('----------------------------------------');
-      }
-
-/*//------------------------------------------------------
-
-      // Silinen belgeden sonraki tüm belgelerin index değerini güncelle
-      var document = await FirebaseFirestore.instance
-          .collection('todaytext')
-          .doc(user.uid)
-          .collection(datetimeToCollect)
-          .doc(index.toString())
-          .get();
-
-      await FirebaseFirestore.instance
-          .collection('todaytext')
-          .doc(user.uid)
-          .collection(datetimeToCollect)
-          .where('index', isGreaterThan: document['index'])
-          .get()
-          .then((snapshot) {
-        for (QueryDocumentSnapshot doc in snapshot.docs) {
-          doc.reference.update({'index': FieldValue.increment(-1)});
-        }
-      });
-      //-----------------------------------------------*/
-
-      /* final DocumentSnapshot deletedDoc = await firestore.collection('todaytext').doc(index.toString()).get();
-      // Silinen belge indeksinden sonraki tüm belgelerin indeksini güncelle
-      QuerySnapshot snapshot = await firestore.collection('todaytext').orderBy(FieldPath.documentId).get();
-
-      for (QueryDocumentSnapshot doc in snapshot.docs) {
-        int currentIndex = int.parse(doc.id);
-
-        // Eğer silinen belge indeksinden sonraki bir belge ise, indeksi güncelle
-        if (currentIndex > index) {
-          await firestore.collection('todaytext').doc(user.uid).collection(datetimeToCollect).set;
-          await firestore.collection('todaytext').doc(currentIndex.toString()).delete();
-        }
-      }*/
-
-      //-------------------------------------------------------------
-
-      /*    getFiresoreData(context);
-
-      var allDoc = await firestore
-          .collection('todaytext')
-          .doc(providerUser.user.uid)
-          .collection(datetimeToCollect)
-          .get();
-
-      int count = allDoc.docs.length;
-      for (int i = 0; i < count; i++) {
-        await firestore
-            .collection('todaytext')
-            .doc(providerUser.user.uid)
-            .collection(datetimeToCollect)
-            .doc()
-            .update({});
-      }
-
-      if (context.mounted) {
-        var p = Provider.of<ProviderUser>(context, listen: false);
-        List<TodayModel> todayListTemp = p.todayList;
-        todayListTemp.removeAt(index);
-        p.setTodayList(todayListTemp);
-      }*/
     } on FirebaseException catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);
@@ -344,5 +223,44 @@ class FirestoreMethods {
       print(e.toString());
     }
     return res;
+  }
+
+  Future<bool> updateTank(BuildContext context, ProviderUser providerUser,
+      TodayModel todayModel, bool type) async {
+    //type==1 -> add
+    //type==0 -> delete
+    bool res = false;
+
+    if (type) {
+      try {
+        var t = await firestore
+            .collection('tank')
+            .doc(providerUser.user.uid)
+            .collection('all')
+            .get();
+        int tankListLenght = t.docs.length;
+        firestore
+            .collection('tank')
+            .doc(providerUser.user.uid)
+            .collection('all')
+            .doc((tankListLenght).toString())
+            .set(todayModel.toMap());
+        res = true;
+      } on FirebaseException catch (e) {
+        if (context.mounted) {
+          showSnackBar(context, e.toString(), Colors.red);
+        }
+      }
+    } else {
+      try{
+
+      }on FirebaseException catch(e){
+        if (context.mounted) {
+          showSnackBar(context, e.toString(), Colors.red);
+        }
+      }
+    }
+
+    return false;
   }
 }

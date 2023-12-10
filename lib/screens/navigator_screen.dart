@@ -18,7 +18,7 @@ class NavigatorScreen extends StatefulWidget {
 }
 
 class _NavigatorScreenState extends State<NavigatorScreen> {
-  int currentIndex = 0;
+  int currentIndex = 2;
 
   void navigatorIndex(int value) {
     setState(() {
@@ -28,7 +28,9 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
     //final user = Provider.of<ProviderUser>(context, listen: false);
     return SafeArea(
       child: Scaffold(
@@ -72,7 +74,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                     Icons.add_outlined,
                     size: size.width / 17,
                   ),*/
-                      SizedBox(
+                  SizedBox(
                     width: size.width / 10,
                     height: size.width / 10,
                     child: Lottie.asset('assets/json/add.json', repeat: false),
@@ -103,12 +105,12 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                     Icons.person_outline,
                     size: size.width / 17,
                   )*/
-                      ProgileImgWidget(type: 0),
+                  ProgileImgWidget(type: 0),
                   activeIcon: /*Icon(
                     Icons.person,
                     size: size.width / 14,
                   ),*/
-                      /*  Container(
+                  /*  Container(
                     width: size.width / 14,
                     height: size.width / 14,
                     decoration: BoxDecoration(
@@ -121,7 +123,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                       ),
                     ),
                   ),*/
-                      ProgileImgWidget(type: 0),
+                  ProgileImgWidget(type: 0),
                   /*CachedNetworkImage(
          imageUrl: "http://via.placeholder.com/350x150",
          progressIndicatorBuilder: (context, url, downloadProgress) =>

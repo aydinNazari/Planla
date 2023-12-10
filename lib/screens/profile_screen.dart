@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/utiles/colors.dart';
 import 'package:provider/provider.dart';
 
+import '../controls/firebase/firestore._methods.dart';
+import '../models/today_model.dart';
 import '../utiles/constr.dart';
+import '../widgets/addpage_card_widget.dart';
 import '../widgets/profile_img_widget.dart';
 import '../widgets/task_done_widget.dart';
 
@@ -18,6 +22,13 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    connectionKontrol(context);
+  }
+
   String userName = '';
 
   @override
@@ -27,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     userName = (user.user.email).substring(0, (user.user.email).indexOf('@'));
     return WillPopScope(
       onWillPop: () async {
-        logOutFunc(context, size,false);
+        logOutFunc(context, size, false);
         return false;
       },
       child: Scaffold(
@@ -54,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: InkWell(
                 onTap: () {
-                  logOutFunc(context, size,true);
+                  logOutFunc(context, size, true);
                 },
                 child: Icon(
                   Icons.logout,
@@ -122,7 +133,77 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const Spacer()
                 ],
               ),
-            )
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  right: size.width / 25,
+                  left: size.width / 25,
+                  top: size.height / 80),
+              child: Container(
+                width: size.width,
+                height: size.height / 130,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(size.width / 25),
+                    )),
+              ),
+            ),
+            /*Expanded(
+              child: ListView.builder(
+                itemCount: user.todayList.length,
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  return Dismissible(
+                    key: ValueKey<TodayModel>(user.todayList[index]),
+                    onDismissed: (DismissDirection direction) async {
+                      await FirestoreMethods()
+                          .deletetodayTextitem(context, index, user);
+                      setState(() {
+                        todayList = user.todayList;
+                      });
+                    },
+                    background: Container(
+                      //color: Colors.black.withOpacity(0.3),
+                      color: Colors.transparent,
+                      child: Lottie.asset('assets/json/recycling.json'),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          top: size.height / 50, right: size.width / 25),
+                      child: AddPageCardWidget(
+                        index: index,
+                        tikOntap: () {
+                          if (todayList[index].done) {
+                            updateFirestore(
+                                false, true, false, user.user, index);
+                            user.todayList[index].done = false;
+                          } else {
+                            updateFirestore(
+                                false, true, true, user.user, index);
+                            user.todayList[index].done = true;
+                          }
+                          setState(() {});
+                        },
+                        importOntap: () async {
+                          if (todayList[index].important) {
+                            await FirestoreMethods().updateTodayTextImportant(
+                                context, false, user.user, index);
+                            user.todayList[index].important = false;
+                          } else {
+                            await FirestoreMethods().updateTodayTextImportant(
+                                context, true, user.user, index);
+                            user.todayList[index].important = true;
+                          }
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )*/
           ],
         ),
       ),
