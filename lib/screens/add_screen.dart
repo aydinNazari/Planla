@@ -9,6 +9,7 @@ import 'package:planla/utiles/constr.dart';
 import 'package:planla/widgets/addpage_card_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:planla/models/user.dart' as model;
+import 'package:uuid/uuid.dart';
 
 import '../controls/firebase/firestore._methods.dart';
 import '../widgets/add_textfield_widget.dart';
@@ -60,12 +61,14 @@ class _AddScreenState extends State<AddScreen> {
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(right: size.width/25),
+                      padding: EdgeInsets.only(right: size.width / 25),
                       child: SizedBox(
                         width: size.width,
                         child: AddTextfieldWidget(onSubmit: (value) async {
                           txt = value;
                           value = '';
+                          var uuid = const Uuid();
+                          var id = uuid.v4();
                           if (txt.isNotEmpty) {
                             DateTime dateTime = DateTime.now();
                             // DateTime'i Timestamp'e çevirir
@@ -77,11 +80,13 @@ class _AddScreenState extends State<AddScreen> {
                                 important: false,
                                 typeWork: selectedValue,
                                 email: user.user.email,
-                                uid: user.user.uid);
+                                textUid: id,
+                                firestorId: '');
                             bool res = await FirestoreMethods()
-                                .firestoreUpload(context, user, todayModel);
+                                .firestoreUpload(context, user, todayModel, id);
                             if (res) {
-                              updateFirestore(true, false, false, user.user, 0);
+                              updateFirestore(
+                                  true, false, false, user, todayModel);
                               getFirestore();
                             }
                           } else {
@@ -132,10 +137,14 @@ class _AddScreenState extends State<AddScreen> {
                     return Dismissible(
                       key: ValueKey<TodayModel>(todayList[index]),
                       onDismissed: (DismissDirection direction) async {
-                        await FirestoreMethods()
-                            .deletetodayTextitem(context, index, user);
+                        await FirestoreMethods().deletetodayTextitem(
+                            context, user, todayList[index]);
+                        /*  if(context.mounted){
+                          await FirestoreMethods().updateTank(context, user,
+                              todayList[index], false, todayList[index].textUid);
+                        }*/
                         setState(() {
-                          todayList = user.todayList;
+                          todayList = user.getTodayList;
                         });
                       },
                       background: Container(
@@ -151,26 +160,23 @@ class _AddScreenState extends State<AddScreen> {
                           tikOntap: () {
                             if (todayList[index].done) {
                               updateFirestore(
-                                  false, true, false, user.user, index);
-                              user.todayList[index].done = false;
+                                  false, true, false, user, todayList[index]);
+                              user.getTodayList[index].done = false;
                             } else {
-                              updateFirestore(
-                                  false, true, true, user.user, index);
-                              user.todayList[index].done = true;
+                              updateFirestore(false, true, true, user, todayList[index]);
+                              user.getTodayList[index].done = true;
                             }
                             setState(() {});
                           },
                           importOntap: () async {
                             if (todayList[index].important) {
-                              await FirestoreMethods()
-                                  .updateTodayTextImportant(
-                                      context, false, user.user, index);
-                              user.todayList[index].important = false;
+                              await FirestoreMethods().updateTodayTextImportant(
+                                  context, false, user,todayList[index]);
+                              user.getTodayList[index].important = false;
                             } else {
-                              await FirestoreMethods()
-                                  .updateTodayTextImportant(
-                                      context, true, user.user, index);
-                              user.todayList[index].important = true;
+                              await FirestoreMethods().updateTodayTextImportant(
+                                  context, true, user,todayList[index]);
+                              user.getTodayList[index].important = true;
                             }
                             setState(() {});
                           },
@@ -191,18 +197,20 @@ class _AddScreenState extends State<AddScreen> {
     bool res = await FirestoreMethods().getFiresoreData(context);
     if (res) {
       setState(() {
-        todayList = Provider.of<ProviderUser>(context, listen: false).todayList;
+        todayList =
+            Provider.of<ProviderUser>(context, listen: false).getTodayList;
       });
     }
   }
 
   Future<void> updateFirestore(bool taskProcess, bool doneProcess, bool value,
-      model.User user, int index) async {
+      ProviderUser user, TodayModel todayModel) async {
     bool updateUserControl = await FirestoreMethods()
         .updateUser(context, taskProcess, doneProcess, value);
 
     if (context.mounted) {
-      await FirestoreMethods().updateTodayTextDone(context, value, user, index);
+      await FirestoreMethods()
+          .updateTodayTextDone(context, value, user, todayModel);
     }
   }
 }

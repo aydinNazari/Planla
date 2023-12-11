@@ -41,7 +41,7 @@ class AddPageCardWidget extends StatelessWidget {
 
                 });*/
               ,
-              child: user.todayList[index].done
+              child: user.getTodayList[index].done
                   ? SizedBox(
                       width: size.width / 12,
                       height: size.width / 12,
@@ -73,14 +73,14 @@ class AddPageCardWidget extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(
                   left:
-                      user.todayList[index].done ? 0 : size.width / 70),
+                      user.getTodayList[index].done ? 0 : size.width / 70),
               child: Text(
-                user.todayList[index].text,
+                user.getTodayList[index].text,
                 style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
                     fontSize: size.width / 28,
-                    decoration: user.todayList[index].done
+                    decoration: user.getTodayList[index].done
                         ? TextDecoration.lineThrough
                         : TextDecoration.none),
               ),
@@ -88,12 +88,12 @@ class AddPageCardWidget extends StatelessWidget {
             const Spacer(),
             Padding(
               padding: EdgeInsets.only(
-                  right: user.todayList[index].important
+                  right: user.getTodayList[index].important
                       ? size.width / 50
                       : size.width / 25),
               child: InkWell(
                 onTap: importOntap,
-                child: user.todayList[index].important
+                child: user.getTodayList[index].important
                     ? SizedBox(
                         width: size.width / 10,
                         height: size.width / 10,

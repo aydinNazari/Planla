@@ -6,14 +6,14 @@ import '../../models/user.dart';
 class ProviderUser with ChangeNotifier {
   User _user = User(uid: '', email: '', name: '', imageurl: '',doneCount: 0,taskCount:0);
   List<TodayModel> _todayList=[];
-  List<TodayModel> _doneList=[];
-  List<TodayModel> _taskList=[];
+  //List<TodayModel> _doneList=[];
+  List<TodayModel> _tankList=[];
 
 
   User get user => _user;
-  List<TodayModel> get todayList=>_todayList;
-  List<TodayModel> get todayDonList=>_doneList;
-  List<TodayModel> get todayTaskList=>_taskList;
+  List<TodayModel> get getTodayList=>_todayList;
+  //List<TodayModel> get todayDonList=>_doneList;
+  List<TodayModel> get getTankList=>_tankList;
 
   setUser(User user) {
     _user = user;
@@ -25,13 +25,13 @@ class ProviderUser with ChangeNotifier {
     notifyListeners();
   }
 
-  setDonList(List<TodayModel> doneList){
+/*  setDonList(List<TodayModel> doneList){
     _doneList=doneList;
     notifyListeners();
-  }
+  }*/
 
-  setTaskList(List<TodayModel> taskList){
-    _taskList=taskList;
+  setTankList(List<TodayModel> taskList){
+    _tankList=taskList;
     notifyListeners();
   }
 

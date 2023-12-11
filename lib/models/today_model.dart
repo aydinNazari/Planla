@@ -7,7 +7,8 @@ class TodayModel {
   bool important;
   String typeWork;
   String email;
-  String uid;
+  String textUid;
+  String firestorId;
 
   TodayModel(
       {required this.text,
@@ -16,7 +17,8 @@ class TodayModel {
       required this.important,
         required this.typeWork,
       required this.email,
-        required this.uid
+        required this.textUid,
+        required this.firestorId,
       });
   Map<String, dynamic> toMap() {
     return {
@@ -26,7 +28,8 @@ class TodayModel {
       'important' : important,
       'typeWork' : typeWork,
       'email' : email,
-      'uid' : uid
+      'uid' : textUid,
+      'firestorId' : firestorId,
     };
   }
 
@@ -38,6 +41,8 @@ class TodayModel {
         important: map['important'] ?? '',
         typeWork: map['typeWork'] ?? '',
         email: map['email'] ?? '',
-        uid: map['uid'] ?? '');
+        textUid: map['uid'] ?? '',
+      firestorId: map['firestorId'] ?? '',
+    );
   }
 }

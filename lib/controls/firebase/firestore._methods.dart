@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:planla/models/today_model.dart';
@@ -9,27 +7,26 @@ import '../../models/user.dart' as model;
 import '../providersClass/provider_user.dart';
 
 class FirestoreMethods {
-  Future<bool> firestoreUpload(
-      BuildContext context, ProviderUser user, TodayModel todayModel) async {
+  Future<bool> firestoreUpload(BuildContext context, ProviderUser user,
+      TodayModel todayModel, String id) async {
     bool res = false;
     try {
       String datetimeToCollect = getDatePart();
-      var allDoc = await firestore
+      /* var allDoc = await firestore
           .collection('todaytext')
           .doc(user.user.uid)
           .collection(datetimeToCollect)
           .get();
-      int count = allDoc.docs.length;
+      int count = allDoc.docs.length;*/
+
       await firestore
           .collection('todaytext')
           .doc(user.user.uid)
           .collection(datetimeToCollect)
-          .doc(count.toString())
+          .doc(/*count.toString()*/ id)
           .set(todayModel.toMap());
-      bool res2 = false;
       if (context.mounted) {
-        await updateTank(context, user, todayModel);
-        res = true;
+        res = await updateTank(context, user, todayModel, true, id);
       }
     } on FirebaseException catch (e) {
       if (context.mounted) {
@@ -70,6 +67,7 @@ class FirestoreMethods {
         bool important = data['important'] ?? false;
         String text = data['text'] ?? '';
         String typeWork = data['typeWork'] ?? '';
+        String firestorId = data['firestorId'] ?? '';
 
         TodayModel todayModel = TodayModel(
             text: text,
@@ -78,7 +76,8 @@ class FirestoreMethods {
             important: important,
             typeWork: typeWork,
             email: user.email,
-            uid: user.uid);
+            textUid: user.uid,
+            firestorId: firestorId);
 
         tempList.add(todayModel);
       }
@@ -134,88 +133,97 @@ class FirestoreMethods {
     return res;
   }
 
-  Future<void> updateTodayTextDone(
-      BuildContext context, bool value, model.User user, int index) async {
+  Future<void> updateTodayTextDone(BuildContext context, bool value,
+      ProviderUser providerUser, TodayModel todayModel) async {
     String datetimeToCollect = getDatePart();
     try {
-      await firestore
-          .collection('todaytext')
-          .doc(user.uid)
-          .collection(datetimeToCollect)
-          .doc(index.toString())
-          .update({'done': value});
-      if (context.mounted) {
-        /*var p = Provider.of<ProviderUser>(context, listen: false);
-        var s = p.todayList;
-        TodayModel temp = s[index];
-        temp.done = value;
-        s[index] = temp;
-        p.setTodayList(s);*/
-      }
-    } on FirebaseException catch (e) {
-      if (context.mounted) {
-        showSnackBar(context, e.toString(), Colors.red);
-      }
-    }
-  }
-
-  Future<void> updateTodayTextImportant(
-      BuildContext context, bool value, model.User user, int index) async {
-    String datetimeToCollect = getDatePart();
-    try {
-      await firestore
-          .collection('todaytext')
-          .doc(user.uid)
-          .collection(datetimeToCollect)
-          .doc(index.toString())
-          .update({'important': value});
-      if (context.mounted) {
-        /*var p = Provider.of<ProviderUser>(context, listen: false);
-        var s = p.todayList;
-        TodayModel temp = s[index];
-        temp.important = value;
-        s[index] = temp;
-        p.setTodayList(s);*/
-      }
-    } on FirebaseException catch (e) {
-      if (context.mounted) {
-        showSnackBar(context, e.toString(), Colors.red);
-      }
-    }
-  }
-
-  Future<bool> deletetodayTextitem(
-      BuildContext context, int index, ProviderUser providerUser) async {
-    bool res = false;
-    List<TodayModel> todayModelListTemp = [];
-    try {
-      String datetimeToCollect = getDatePart();
-      todayModelListTemp = providerUser.todayList;
-      todayModelListTemp.removeAt(index);
-      providerUser.setTodayList(todayModelListTemp);
-
-      for (int i = index; i < todayModelListTemp.length; i++) {
-        await firestore
-            .collection('todaytext')
-            .doc(providerUser.user.uid)
-            .collection(datetimeToCollect)
-            .doc(i.toString())
-            .update({
-          'dateTime': todayModelListTemp[i].dateTime,
-          'done': todayModelListTemp[i].done,
-          'email': todayModelListTemp[i].email,
-          'important': todayModelListTemp[i].important,
-          'text': todayModelListTemp[i].text,
-          'typeWork': todayModelListTemp[i].typeWork,
-          'uid': todayModelListTemp[i].uid
-        });
-      }
       await firestore
           .collection('todaytext')
           .doc(providerUser.user.uid)
           .collection(datetimeToCollect)
-          .doc((todayModelListTemp.length).toString())
-          .delete();
+          .doc(todayModel.textUid)
+          .update({'done': value});
+
+      String firestoreId='';
+      List<TodayModel> tempList = [];
+      tempList = providerUser.getTankList;
+      for (int i = 0; i > tempList.length; i++) {
+        if (tempList[i].textUid == todayModel.textUid) {
+          firestoreId=tempList[i].firestorId;
+        }
+      }
+
+      await firestore
+          .collection('tank')
+          .doc(providerUser.user.uid)
+          .collection(todayModel.textUid)
+          .doc(firestoreId)
+          .update({'done': value});
+    } on FirebaseException catch (e) {
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
+    }
+  }
+
+  Future<void> updateTodayTextImportant(BuildContext context, bool value,
+      ProviderUser providerUser, TodayModel todayModel) async {
+    String datetimeToCollect = getDatePart();
+    try {
+      await firestore
+          .collection('todaytext')
+          .doc(providerUser.user.uid)
+          .collection(datetimeToCollect)
+          .doc(todayModel.textUid)
+          .update({'important': value});
+
+      String firestoreId='';
+      List<TodayModel> tempList = [];
+      tempList = providerUser.getTankList;
+      for (int i = 0; i > tempList.length; i++) {
+        if (tempList[i].textUid == todayModel.textUid) {
+          firestoreId=tempList[i].firestorId;
+        }
+      }
+
+      await firestore
+          .collection('tank')
+          .doc(providerUser.user.uid)
+          .collection(todayModel.textUid)
+          .doc(firestoreId)
+          .update({'important': value});
+    } on FirebaseException catch (e) {
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
+    }
+  }
+
+  Future<bool> deletetodayTextitem(BuildContext context,
+      ProviderUser providerUser, TodayModel todayModel) async {
+    bool res = false;
+    List<TodayModel> todayModelListTemp = [];
+    List<TodayModel> todayModelListTemp2 = [];
+    try {
+      //String datetimeToCollect = getDatePart();
+      todayModelListTemp = providerUser.getTodayList;
+      for (int i = 0; i < todayModelListTemp.length; i++) {
+        if (todayModelListTemp[i].textUid != todayModel.textUid) {
+          todayModelListTemp2.add(todayModelListTemp[i]);
+        }
+      }
+      providerUser.setTodayList(todayModelListTemp2);
+      await updateTank(
+          context, providerUser, todayModel, false, todayModel.textUid);
+      /* todayModelListTemp.clear();
+      todayModelListTemp2.clear();
+      await firestore
+          .collection('todaytext')
+          .doc(providerUser.user.uid)
+          .collection(datetimeToCollect)
+          .doc(todayModel.textUid)
+          .delete();*/
+      res = true;
     } on FirebaseException catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);
@@ -226,25 +234,31 @@ class FirestoreMethods {
   }
 
   Future<bool> updateTank(BuildContext context, ProviderUser providerUser,
-      TodayModel todayModel, bool type) async {
+      TodayModel todayModel, bool type, String id) async {
     //type==1 -> add
     //type==0 -> delete
     bool res = false;
 
+    List<TodayModel> tempModelList = [];
     if (type) {
       try {
-        var t = await firestore
+        tempModelList.clear();
+        var documentReference = await firestore
             .collection('tank')
             .doc(providerUser.user.uid)
-            .collection('all')
-            .get();
-        int tankListLenght = t.docs.length;
-        firestore
+            .collection(id)
+            .add(todayModel.toMap());
+        var documentId = documentReference.id;
+        todayModel.firestorId = documentId;
+        await firestore
             .collection('tank')
             .doc(providerUser.user.uid)
-            .collection('all')
-            .doc((tankListLenght).toString())
+            .collection(id)
+            .doc(documentId)
             .set(todayModel.toMap());
+        tempModelList = providerUser.getTankList;
+        tempModelList.add(todayModel);
+        providerUser.setTankList(tempModelList);
         res = true;
       } on FirebaseException catch (e) {
         if (context.mounted) {
@@ -252,15 +266,34 @@ class FirestoreMethods {
         }
       }
     } else {
-      try{
-
-      }on FirebaseException catch(e){
+      try {
+        // delet process
+        await firestore
+            .collection('tank')
+            .doc(providerUser.user.uid)
+            .collection(id)
+            .get()
+            .then((querySnapshot) {
+          for (var doc in querySnapshot.docs) {
+            doc.reference.delete();
+          }
+        });
+        tempModelList.clear();
+        List<TodayModel> tempModelList2 = [];
+        tempModelList = providerUser.getTankList;
+        for (int i = 0; i < tempModelList.length; i++) {
+          if (tempModelList[i].textUid != id) {
+            tempModelList2.add(tempModelList[i]);
+          }
+        }
+        providerUser.setTankList(tempModelList2);
+        res = true;
+      } on FirebaseException catch (e) {
         if (context.mounted) {
           showSnackBar(context, e.toString(), Colors.red);
         }
       }
     }
-
-    return false;
+    return res;
   }
 }
