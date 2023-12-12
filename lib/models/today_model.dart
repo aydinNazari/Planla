@@ -28,7 +28,7 @@ class TodayModel {
       'important' : important,
       'typeWork' : typeWork,
       'email' : email,
-      'uid' : textUid,
+      'textUid' : textUid,
       'firestorId' : firestorId,
     };
   }
@@ -41,7 +41,7 @@ class TodayModel {
         important: map['important'] ?? '',
         typeWork: map['typeWork'] ?? '',
         email: map['email'] ?? '',
-        textUid: map['uid'] ?? '',
+        textUid: map['textUid'] ?? '',
       firestorId: map['firestorId'] ?? '',
     );
   }

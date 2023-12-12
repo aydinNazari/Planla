@@ -25,6 +25,14 @@ class ProviderUser with ChangeNotifier {
     notifyListeners();
   }
 
+  setDoneCount(int s){
+    _user.doneCount=s;
+    notifyListeners();
+  }
+  setTaskCount(int s){
+    _user.taskCount=s;
+    notifyListeners();
+  }
 /*  setDonList(List<TodayModel> doneList){
     _doneList=doneList;
     notifyListeners();

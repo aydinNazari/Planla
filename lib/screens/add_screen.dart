@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -8,7 +6,6 @@ import 'package:planla/models/today_model.dart';
 import 'package:planla/utiles/constr.dart';
 import 'package:planla/widgets/addpage_card_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:planla/models/user.dart' as model;
 import 'package:uuid/uuid.dart';
 
 import '../controls/firebase/firestore._methods.dart';
@@ -43,6 +40,8 @@ class _AddScreenState extends State<AddScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final user = Provider.of<ProviderUser>(context, listen: false);
+    print('uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu');
+    print(user.getTankList.length);
     return WillPopScope(
       onWillPop: () async {
         logOutFunc(context, size, false);
@@ -85,9 +84,13 @@ class _AddScreenState extends State<AddScreen> {
                             bool res = await FirestoreMethods()
                                 .firestoreUpload(context, user, todayModel, id);
                             if (res) {
-                              updateFirestore(
-                                  true, false, false, user, todayModel);
+                              /*  updateFirestore(
+                                  true, false, false, user, todayModel);*/
                               getFirestore();
+                            }
+                            if (context.mounted) {
+                              FirestoreMethods()
+                                  .updateTaskDoneCount(context, true, false, true);
                             }
                           } else {
                             showSnackBar(
@@ -139,11 +142,19 @@ class _AddScreenState extends State<AddScreen> {
                       onDismissed: (DismissDirection direction) async {
                         await FirestoreMethods().deletetodayTextitem(
                             context, user, todayList[index]);
+
                         /*  if(context.mounted){
                           await FirestoreMethods().updateTank(context, user,
                               todayList[index], false, todayList[index].textUid);
                         }*/
+
                         setState(() {
+                          if (todayList[index].done) {
+                            FirestoreMethods()
+                                .updateTaskDoneCount(context, false, true, false);
+                          }
+                          FirestoreMethods()
+                              .updateTaskDoneCount(context, true, false, false);
                           todayList = user.getTodayList;
                         });
                       },
@@ -162,20 +173,26 @@ class _AddScreenState extends State<AddScreen> {
                               updateFirestore(
                                   false, true, false, user, todayList[index]);
                               user.getTodayList[index].done = false;
+                              FirestoreMethods()
+                                  .updateTaskDoneCount(context, false, true, false);
                             } else {
-                              updateFirestore(false, true, true, user, todayList[index]);
+                              updateFirestore(
+                                  false, true, true, user, todayList[index]);
                               user.getTodayList[index].done = true;
+                              FirestoreMethods()
+                                  .updateTaskDoneCount(context, false, true, true);
                             }
                             setState(() {});
                           },
                           importOntap: () async {
                             if (todayList[index].important) {
-                              await FirestoreMethods().updateTodayTextImportant(
-                                  context, false, user,todayList[index]);
+                              updateFirestore(
+                                  true, false, false, user, todayList[index]);
+
                               user.getTodayList[index].important = false;
                             } else {
-                              await FirestoreMethods().updateTodayTextImportant(
-                                  context, true, user,todayList[index]);
+                              updateFirestore(
+                                  true, false, true, user, todayList[index]);
                               user.getTodayList[index].important = true;
                             }
                             setState(() {});
@@ -203,14 +220,19 @@ class _AddScreenState extends State<AddScreen> {
     }
   }
 
-  Future<void> updateFirestore(bool taskProcess, bool doneProcess, bool value,
-      ProviderUser user, TodayModel todayModel) async {
-    bool updateUserControl = await FirestoreMethods()
-        .updateUser(context, taskProcess, doneProcess, value);
-
-    if (context.mounted) {
+  Future<void> updateFirestore(bool importantProcess, bool doneProcess,
+      bool value, ProviderUser user, TodayModel todayModel) async {
+    /* bool updateUserControl = await FirestoreMethods()
+        .updateUser(context, taskProcess, doneProcess, value);*/
+    if (doneProcess) {
       await FirestoreMethods()
           .updateTodayTextDone(context, value, user, todayModel);
+    }
+    if (importantProcess) {
+      if (context.mounted) {
+        await FirestoreMethods()
+            .updateTodayTextImportant(context, value, user, todayModel);
+      }
     }
   }
 }

@@ -8,7 +8,7 @@ import '../providersClass/provider_user.dart';
 
 class FirestoreMethods {
   Future<bool> firestoreUpload(BuildContext context, ProviderUser user,
-      TodayModel todayModel, String id) async {
+      TodayModel todayModel, String textId) async {
     bool res = false;
     try {
       String datetimeToCollect = getDatePart();
@@ -18,15 +18,8 @@ class FirestoreMethods {
           .collection(datetimeToCollect)
           .get();
       int count = allDoc.docs.length;*/
-
-      await firestore
-          .collection('todaytext')
-          .doc(user.user.uid)
-          .collection(datetimeToCollect)
-          .doc(/*count.toString()*/ id)
-          .set(todayModel.toMap());
       if (context.mounted) {
-        res = await updateTank(context, user, todayModel, true, id);
+        res = await updateTank(context, user, todayModel, true, textId);
       }
     } on FirebaseException catch (e) {
       if (context.mounted) {
@@ -67,6 +60,7 @@ class FirestoreMethods {
         bool important = data['important'] ?? false;
         String text = data['text'] ?? '';
         String typeWork = data['typeWork'] ?? '';
+        String textUid = data['textUid'] ?? '';
         String firestorId = data['firestorId'] ?? '';
 
         TodayModel todayModel = TodayModel(
@@ -76,7 +70,7 @@ class FirestoreMethods {
             important: important,
             typeWork: typeWork,
             email: user.email,
-            textUid: user.uid,
+            textUid: textUid,
             firestorId: firestorId);
 
         tempList.add(todayModel);
@@ -94,36 +88,107 @@ class FirestoreMethods {
     return res;
   }
 
-  Future<bool> updateUser(BuildContext context, bool taskProcess,
-      bool doneProcess, bool statueValue) async {
-    bool res = false;
+  Future<void> getTankList(
+      BuildContext context, ProviderUser providerUser) async {
+   // String datetimeToCollect = getDatePart();
+    List<TodayModel> tanklist=[];
     try {
-      final user = Provider.of<ProviderUser>(context, listen: false);
+      var snap = await firestore.collection('tank').doc(providerUser.user.uid).get();
+
+      if (snap.exists) {
+        Map<String, dynamic>? data = snap.data();
+        Timestamp dateTime = data['dateTime'] ?? Timestamp.fromMillisecondsSinceEpoch(0);
+        bool done = data['done'] ?? false;
+        bool important = data['important'] ?? false;
+        String text = data['text'] ?? '';
+        String typeWork = data['typeWork'] ?? '';
+        String textUid = data['textUid'] ?? '';
+        String firestorId = data['firestorId'] ?? '';
+        TodayModel todayModel = TodayModel(
+            text: text,
+            dateTime: dateTime,
+            done: done,
+            important: important,
+            typeWork: typeWork,
+            email: providerUser.user.email,
+            textUid: textUid,
+            firestorId: firestorId);
+        tanklist.add(todayModel);
+
+      }
+
+
+   /*   for (Map<String, dynamic> data
+          in snap.docs) {
+        Map<String, dynamic> data = documentSnapshot.data();
+        Timestamp dateTime =
+            data['dateTime'] ?? Timestamp.fromMillisecondsSinceEpoch(0);
+        bool done = data['done'] ?? false;
+        bool important = data['important'] ?? false;
+        String text = data['text'] ?? '';
+        String typeWork = data['typeWork'] ?? '';
+        String textUid = data['textUid'] ?? '';
+        String firestorId = data['firestorId'] ?? '';
+        print('ttttttttttttttttttttt');
+        TodayModel todayModel = TodayModel(
+            text: text,
+            dateTime: dateTime,
+            done: done,
+            important: important,
+            typeWork: typeWork,
+            email: providerUser.user.email,
+            textUid: textUid,
+            firestorId: firestorId);
+        tanklist.add(todayModel);
+      }
+      providerUser.setTankList(tanklist);
+      print('8888888888888888888');
+      print(tanklist.length);*/
+    } on FirebaseException catch (e) {
+      if(context.mounted){
+        showSnackBar(context, e.toString(), Colors.red);
+      }
+    }
+  }
+
+  Future<bool> updateTaskDoneCount(BuildContext context, bool taskProcess,
+      bool doneProcess, bool status) async {
+    bool res = false;
+    int count = 0;
+    try {
+      final providerUser = Provider.of<ProviderUser>(context, listen: false);
       if (taskProcess) {
-        int taskCount = user.user.taskCount;
-        taskCount++;
-        await firestore
-            .collection('users')
-            .doc(user.user.uid)
-            .update({'taskCount': taskCount});
-        model.User temp = user.user;
-        temp.taskCount = taskCount;
-        user.setUser(temp);
-      } else if (doneProcess) {
-        int doneCount = user.user.doneCount;
-        if (statueValue) {
-          //true işlemoeri
-          doneCount++;
+        count = providerUser.user.taskCount;
+        if (status) {
+          count++;
         } else {
-          doneCount--;
+          count--;
         }
         await firestore
             .collection('users')
-            .doc(user.user.uid)
-            .update({'doneCount': doneCount});
-        model.User temp = user.user;
-        temp.doneCount = doneCount;
-        user.setUser(temp);
+            .doc(providerUser.user.uid)
+            .update({'taskCount': count});
+        providerUser.setTaskCount(count);
+
+        /*model.User temp = providerUser.user;
+        temp.taskCount = taskCount;
+        providerUser.setUser(temp);*/
+      } else if (doneProcess) {
+        count = providerUser.user.doneCount;
+        if (status) {
+          //true işlemoeri
+          count++;
+        } else {
+          count--;
+        }
+        await firestore
+            .collection('users')
+            .doc(providerUser.user.uid)
+            .update({'doneCount': count});
+        providerUser.setDoneCount(count);
+        /*model.User temp = providerUser.user;
+        temp.doneCount = count;
+        providerUser.setUser(temp);*/
       }
     } on FirebaseException catch (e) {
       if (context.mounted) {
@@ -144,12 +209,12 @@ class FirestoreMethods {
           .doc(todayModel.textUid)
           .update({'done': value});
 
-      String firestoreId='';
+      String firestoreId = '';
       List<TodayModel> tempList = [];
       tempList = providerUser.getTankList;
-      for (int i = 0; i > tempList.length; i++) {
+      for (int i = 0; i < tempList.length; i++) {
         if (tempList[i].textUid == todayModel.textUid) {
-          firestoreId=tempList[i].firestorId;
+          firestoreId = todayModel.firestorId;
         }
       }
 
@@ -177,15 +242,14 @@ class FirestoreMethods {
           .doc(todayModel.textUid)
           .update({'important': value});
 
-      String firestoreId='';
+      String firestoreId = '';
       List<TodayModel> tempList = [];
       tempList = providerUser.getTankList;
-      for (int i = 0; i > tempList.length; i++) {
+      for (int i = 0; i < tempList.length; i++) {
         if (tempList[i].textUid == todayModel.textUid) {
-          firestoreId=tempList[i].firestorId;
+          firestoreId = tempList[i].firestorId;
         }
       }
-
       await firestore
           .collection('tank')
           .doc(providerUser.user.uid)
@@ -200,21 +264,32 @@ class FirestoreMethods {
   }
 
   Future<bool> deletetodayTextitem(BuildContext context,
-      ProviderUser providerUser, TodayModel todayModel) async {
+      ProviderUser providerUser, TodayModel toBeDeletedModel) async {
     bool res = false;
     List<TodayModel> todayModelListTemp = [];
     List<TodayModel> todayModelListTemp2 = [];
     try {
-      //String datetimeToCollect = getDatePart();
+      //today textleri silmek için
+      String datetimeToCollect = getDatePart();
+      for (int i = 0; i < providerUser.getTodayList.length; i++) {
+        if (toBeDeletedModel.textUid == providerUser.getTodayList[i].textUid) {
+          firestore
+              .collection('todaytext')
+              .doc(providerUser.user.uid)
+              .collection(datetimeToCollect)
+              .doc(toBeDeletedModel.textUid)
+              .delete();
+        }
+      }
       todayModelListTemp = providerUser.getTodayList;
       for (int i = 0; i < todayModelListTemp.length; i++) {
-        if (todayModelListTemp[i].textUid != todayModel.textUid) {
+        if (todayModelListTemp[i].textUid != toBeDeletedModel.textUid) {
           todayModelListTemp2.add(todayModelListTemp[i]);
         }
       }
       providerUser.setTodayList(todayModelListTemp2);
-      await updateTank(
-          context, providerUser, todayModel, false, todayModel.textUid);
+      await updateTank(context, providerUser, toBeDeletedModel, false,
+          toBeDeletedModel.textUid);
       /* todayModelListTemp.clear();
       todayModelListTemp2.clear();
       await firestore
@@ -234,11 +309,11 @@ class FirestoreMethods {
   }
 
   Future<bool> updateTank(BuildContext context, ProviderUser providerUser,
-      TodayModel todayModel, bool type, String id) async {
+      TodayModel todayModel, bool type, String textId) async {
     //type==1 -> add
     //type==0 -> delete
     bool res = false;
-
+    String datetimeToCollect = getDatePart();
     List<TodayModel> tempModelList = [];
     if (type) {
       try {
@@ -246,16 +321,24 @@ class FirestoreMethods {
         var documentReference = await firestore
             .collection('tank')
             .doc(providerUser.user.uid)
-            .collection(id)
+            .collection(textId)
             .add(todayModel.toMap());
         var documentId = documentReference.id;
         todayModel.firestorId = documentId;
         await firestore
             .collection('tank')
             .doc(providerUser.user.uid)
-            .collection(id)
+            .collection(textId)
             .doc(documentId)
             .set(todayModel.toMap());
+
+        await firestore
+            .collection('todaytext')
+            .doc(providerUser.user.uid)
+            .collection(datetimeToCollect)
+            .doc(/*count.toString()*/ textId)
+            .set(todayModel.toMap());
+
         tempModelList = providerUser.getTankList;
         tempModelList.add(todayModel);
         providerUser.setTankList(tempModelList);
@@ -271,7 +354,7 @@ class FirestoreMethods {
         await firestore
             .collection('tank')
             .doc(providerUser.user.uid)
-            .collection(id)
+            .collection(textId)
             .get()
             .then((querySnapshot) {
           for (var doc in querySnapshot.docs) {
@@ -282,7 +365,7 @@ class FirestoreMethods {
         List<TodayModel> tempModelList2 = [];
         tempModelList = providerUser.getTankList;
         for (int i = 0; i < tempModelList.length; i++) {
-          if (tempModelList[i].textUid != id) {
+          if (tempModelList[i].textUid != textId) {
             tempModelList2.add(tempModelList[i]);
           }
         }

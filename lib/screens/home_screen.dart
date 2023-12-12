@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:planla/controls/firebase/firestore._methods.dart';
 import 'package:planla/screens/profile_screen.dart';
 import 'package:planla/widgets/homepage_type_container_widget.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,10 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     connectionKontrol(context);
+    getTank();
+    setState(() {
+
+    });
     /* var r=Provider.of<ProviderUser>(context,listen: false);
     var user=r.user;
     user.doneCount=0;
@@ -30,13 +35,17 @@ class _HomeScreenState extends State<HomeScreen> {
     r.setUser(user);*/
   }
 
+  getTank() async {
+    await FirestoreMethods().getTankList(
+        context, Provider.of<ProviderUser>(context, listen: false));
+  }
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<ProviderUser>(context, listen: false);
     var size = MediaQuery.of(context).size;
     return WillPopScope(
-      onWillPop: ()async{
-        logOutFunc(context, size,false);
+      onWillPop: () async {
+        logOutFunc(context, size, false);
         return false;
       },
       child: Scaffold(
@@ -93,7 +102,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.only(top: size.height / 25),
                 child: Text(
                   'Last Week Result',
-                  style: TextStyle(fontSize: size.width / 25, color: textColor,fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                      fontSize: size.width / 25,
+                      color: textColor,
+                      fontWeight: FontWeight.w600),
                 ),
               ),
               Padding(
@@ -157,8 +169,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.only(top: size.height / 25),
                 child: Text(
                   'Your Chart',
-                  style: TextStyle(fontSize: size.width / 25, color: textColor,fontWeight: FontWeight.w600
-                  ),
+                  style: TextStyle(
+                      fontSize: size.width / 25,
+                      color: textColor,
+                      fontWeight: FontWeight.w600),
                 ),
               ),
               Padding(

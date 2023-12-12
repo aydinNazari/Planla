@@ -27,9 +27,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // TODO: implement initState
     super.initState();
     connectionKontrol(context);
+    todayList1.clear();
+    getFirestore();
+  }
+
+  Future<void> getFirestore() async {
+    bool res = await FirestoreMethods().getFiresoreData(context);
+    if (res) {
+      setState(() {
+        todayList1 =
+            Provider.of<ProviderUser>(context, listen: false).getTankList;
+        print('ssssssssssssssssssssssssssssssssss');
+        print(todayList1.length);
+        for (int i = 0; i < todayList1.length; i++) {
+          if (todayList1[i].done) {
+            todayList2.add(todayList1[i]);
+
+          }
+        }
+      });
+    }
   }
 
   String userName = '';
+  bool typeScreen = true;
+  List<TodayModel> todayList1 = [];
+  List<TodayModel> todayList2 = [];
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Scaffold(
         appBar: AppBar(
           actions: [
-            widget.control
+            widget.control //for back button
                 ? Padding(
                     padding: EdgeInsets.only(left: size.width / 25),
                     child: InkWell(
@@ -119,15 +142,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Row(
                 children: [
                   const Spacer(),
-                  TasksCountWidget(
-                      size: size,
-                      txt: 'Done',
-                      count: (user.user.doneCount).toString()),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        typeScreen = true;
+                      });
+                    },
+                    child: TasksCountWidget(
+                        size: size,
+                        txt: 'Task',
+                        count: (user.user.taskCount).toString()),
+                  ),
                   const Spacer(),
-                  TasksCountWidget(
-                      size: size,
-                      txt: 'Task',
-                      count: (user.user.taskCount).toString()),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        typeScreen = false;
+                      });
+                    },
+                    child: TasksCountWidget(
+                        size: size,
+                        txt: 'Done',
+                        count: (user.user.doneCount).toString()),
+                  ),
                   const Spacer(),
                   TasksCountWidget(size: size, txt: 'Plaka', count: '***'),
                   const Spacer()
@@ -136,8 +173,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Padding(
               padding: EdgeInsets.only(
-                  right: size.width / 25,
-                  left: size.width / 25,
+                  right: size.width / 50,
+                  left: size.width / 50,
                   top: size.height / 80),
               child: Container(
                 width: size.width,
@@ -149,64 +186,102 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     )),
               ),
             ),
-            /*Expanded(
-              child: ListView.builder(
-                itemCount: user.todayList.length,
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (context, index) {
-                  return Dismissible(
-                    key: ValueKey<TodayModel>(user.todayList[index]),
-                    onDismissed: (DismissDirection direction) async {
-                      await FirestoreMethods()
-                          .deletetodayTextitem(context, index, user);
-                      setState(() {
-                        todayList = user.todayList;
-                      });
-                    },
-                    background: Container(
-                      //color: Colors.black.withOpacity(0.3),
-                      color: Colors.transparent,
-                      child: Lottie.asset('assets/json/recycling.json'),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          top: size.height / 50, right: size.width / 25),
-                      child: AddPageCardWidget(
-                        index: index,
-                        tikOntap: () {
-                          if (todayList[index].done) {
-                            updateFirestore(
-                                false, true, false, user.user, index);
-                            user.todayList[index].done = false;
-                          } else {
-                            updateFirestore(
-                                false, true, true, user.user, index);
-                            user.todayList[index].done = true;
-                          }
-                          setState(() {});
-                        },
-                        importOntap: () async {
-                          if (todayList[index].important) {
-                            await FirestoreMethods().updateTodayTextImportant(
-                                context, false, user.user, index);
-                            user.todayList[index].important = false;
-                          } else {
-                            await FirestoreMethods().updateTodayTextImportant(
-                                context, true, user.user, index);
-                            user.todayList[index].important = true;
-                          }
-                          setState(() {});
-                        },
-                      ),
-                    ),
-                  );
-                },
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: size.width / 50, right: size.width / 50),
+                child: typeScreen
+                    ? cards(user, size, todayList1)
+                    : cards(user, size, todayList2),
               ),
-            )*/
+            )
           ],
         ),
       ),
     );
+  }
+
+  ListView cards(ProviderUser user, Size size, List<TodayModel> todayList) {
+    return ListView.builder(
+      itemCount: todayList.length,
+      shrinkWrap: true,
+      scrollDirection: Axis.vertical,
+      itemBuilder: (context, index) {
+        return Dismissible(
+          key: ValueKey<TodayModel>(todayList[index]),
+          onDismissed: (DismissDirection direction) async {
+            await FirestoreMethods()
+                .deletetodayTextitem(context, user, todayList[index]);
+
+            /*  if(context.mounted){
+                          await FirestoreMethods().updateTank(context, user,
+                              todayList[index], false, todayList[index].textUid);
+                        }*/
+
+            setState(() {
+              if (todayList[index].done) {
+                FirestoreMethods()
+                    .updateTaskDoneCount(context, false, true, false);
+              }
+              FirestoreMethods()
+                  .updateTaskDoneCount(context, true, false, false);
+              todayList = user.getTodayList;
+            });
+          },
+          background: Container(
+            //color: Colors.black.withOpacity(0.3),
+            color: Colors.transparent,
+            child: Lottie.asset('assets/json/recycling.json'),
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(top: size.height / 50),
+            child: AddPageCardWidget(
+              index: index,
+              tikOntap: () {
+                if (todayList[index].done) {
+                  updateFirestore(false, true, false, user, todayList[index]);
+                  user.getTodayList[index].done = false;
+                  FirestoreMethods()
+                      .updateTaskDoneCount(context, false, true, false);
+                } else {
+                  updateFirestore(false, true, true, user, todayList[index]);
+                  user.getTodayList[index].done = true;
+                  FirestoreMethods()
+                      .updateTaskDoneCount(context, false, true, true);
+                }
+                setState(() {});
+              },
+              importOntap: () async {
+                if (todayList[index].important) {
+                  updateFirestore(true, false, false, user, todayList[index]);
+
+                  user.getTodayList[index].important = false;
+                } else {
+                  updateFirestore(true, false, true, user, todayList[index]);
+                  user.getTodayList[index].important = true;
+                }
+                setState(() {});
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> updateFirestore(bool importantProcess, bool doneProcess,
+      bool value, ProviderUser user, TodayModel todayModel) async {
+    /* bool updateUserControl = await FirestoreMethods()
+        .updateUser(context, taskProcess, doneProcess, value);*/
+    if (doneProcess) {
+      await FirestoreMethods()
+          .updateTodayTextDone(context, value, user, todayModel);
+    }
+    if (importantProcess) {
+      if (context.mounted) {
+        await FirestoreMethods()
+            .updateTodayTextImportant(context, value, user, todayModel);
+      }
+    }
   }
 }
