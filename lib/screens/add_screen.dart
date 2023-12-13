@@ -218,6 +218,8 @@ class _AddScreenState extends State<AddScreen> {
             Provider.of<ProviderUser>(context, listen: false).getTodayList;
       });
     }
+    await FirestoreMethods().deneme();
+    print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
   }
 
   Future<void> updateFirestore(bool importantProcess, bool doneProcess,

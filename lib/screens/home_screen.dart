@@ -24,10 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     connectionKontrol(context);
-    getTank();
-    setState(() {
-
-    });
+    //getTank();
     /* var r=Provider.of<ProviderUser>(context,listen: false);
     var user=r.user;
     user.doneCount=0;
@@ -35,10 +32,10 @@ class _HomeScreenState extends State<HomeScreen> {
     r.setUser(user);*/
   }
 
-  getTank() async {
+  /*getTank() async {
     await FirestoreMethods().getTankList(
         context, Provider.of<ProviderUser>(context, listen: false));
-  }
+  }*/
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<ProviderUser>(context, listen: false);
