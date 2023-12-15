@@ -1,14 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:planla/controls/firebase/firestore._methods.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/models/today_model.dart';
 import 'package:planla/utiles/constr.dart';
 import 'package:planla/widgets/addpage_card_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-
-import '../controls/firebase/firestore._methods.dart';
 import '../widgets/add_textfield_widget.dart';
 
 class AddScreen extends StatefulWidget {
@@ -21,27 +20,24 @@ class AddScreen extends StatefulWidget {
 class _AddScreenState extends State<AddScreen> {
   late TodayModel todayModel;
   var selectedValue = '';
-  List<TodayModel> todayList = [];
-
-  // String value = '';
+/*  List<TodayModel> todayList = [];*/
 
   String txt = '';
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     connectionKontrol(context);
-    todayList.clear();
-    getFirestore();
+    getData();
+  }
+  getData() async {
+    await FirestoreMethods().getData(context);
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final user = Provider.of<ProviderUser>(context, listen: false);
-    print('uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu');
-    print(user.getTankList.length);
     return WillPopScope(
       onWillPop: () async {
         logOutFunc(context, size, false);
@@ -66,32 +62,20 @@ class _AddScreenState extends State<AddScreen> {
                         child: AddTextfieldWidget(onSubmit: (value) async {
                           txt = value;
                           value = '';
-                          var uuid = const Uuid();
-                          var id = uuid.v4();
+                          DateTime dateTime = DateTime.now();
+                          // DateTime'i Timestamp'e çevirir
+                          Timestamp timestamp = Timestamp.fromDate(dateTime);
                           if (txt.isNotEmpty) {
-                            DateTime dateTime = DateTime.now();
-                            // DateTime'i Timestamp'e çevirir
-                            Timestamp timestamp = Timestamp.fromDate(dateTime);
                             todayModel = TodayModel(
                                 text: txt,
-                                dateTime: timestamp,
+                                dateTime:  timestamp,
                                 done: false,
                                 important: false,
                                 typeWork: selectedValue,
                                 email: user.user.email,
-                                textUid: id,
+                                textUid: '',
                                 firestorId: '');
-                            bool res = await FirestoreMethods()
-                                .firestoreUpload(context, user, todayModel, id);
-                            if (res) {
-                              /*  updateFirestore(
-                                  true, false, false, user, todayModel);*/
-                              getFirestore();
-                            }
-                            if (context.mounted) {
-                              FirestoreMethods()
-                                  .updateTaskDoneCount(context, true, false, true);
-                            }
+                            await FirestoreMethods().textSave(context, todayModel);
                           } else {
                             showSnackBar(
                                 context, 'Fill in all fields', Colors.red);
@@ -100,48 +84,21 @@ class _AddScreenState extends State<AddScreen> {
                       ),
                     ),
                   ),
-                  /*Expanded(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: size.height / 30),
-                        child: InkWell(
-                          onTap: () async {},
-                          child: Container(
-                            width: size.width / 4,
-                            height: size.height / 13,
-                            decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(size.width / 50))),
-                            child: Center(
-                                child: Text(
-                              'Add',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: size.width / 24),
-                            )),
-                          ),
-                        ),
-                      )
-                    ],
-                  ))*/
                 ],
               ),
               //DropdownAddpageWidget(),
               //const AddPageCardWidget(),
               Expanded(
                 child: ListView.builder(
-                  itemCount: todayList.length,
+                  itemCount: user.getTankList.length,
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, index) {
                     return Dismissible(
-                      key: ValueKey<TodayModel>(todayList[index]),
+                      key: ValueKey<TodayModel>(user.getTankList[index]),
                       onDismissed: (DismissDirection direction) async {
-                        await FirestoreMethods().deletetodayTextitem(
-                            context, user, todayList[index]);
+                     /*   await FirestoreMethods().deletetodayTextitem(   buuuuuuu
+                            context, user, todayList[index]);*/
 
                         /*  if(context.mounted){
                           await FirestoreMethods().updateTank(context, user,
@@ -149,13 +106,13 @@ class _AddScreenState extends State<AddScreen> {
                         }*/
 
                         setState(() {
-                          if (todayList[index].done) {
-                            FirestoreMethods()
-                                .updateTaskDoneCount(context, false, true, false);
+                          if (user.getTankList[index].done) {
+                          /*  FirestoreMethods()
+                                .updateTaskDoneCount(context, false, true, false);*/
                           }
-                          FirestoreMethods()
-                              .updateTaskDoneCount(context, true, false, false);
-                          todayList = user.getTodayList;
+                        /*  FirestoreMethods()
+                              .updateTaskDoneCount(context, true, false, false);*/
+
                         });
                       },
                       background: Container(
@@ -169,30 +126,30 @@ class _AddScreenState extends State<AddScreen> {
                         child: AddPageCardWidget(
                           index: index,
                           tikOntap: () {
-                            if (todayList[index].done) {
-                              updateFirestore(
-                                  false, true, false, user, todayList[index]);
+                            if (user.getTankList[index].done) {
+                              /*updateFirestore(
+                                  false, true, false, user, todayList[index]);*/
                               user.getTodayList[index].done = false;
-                              FirestoreMethods()
-                                  .updateTaskDoneCount(context, false, true, false);
+                            /*  FirestoreMethods()
+                                  .updateTaskDoneCount(context, false, true, false);*/
                             } else {
-                              updateFirestore(
-                                  false, true, true, user, todayList[index]);
+                              /*updateFirestore(
+                                  false, true, true, user, todayList[index]);*/
                               user.getTodayList[index].done = true;
-                              FirestoreMethods()
-                                  .updateTaskDoneCount(context, false, true, true);
+                             /* FirestoreMethods()
+                                  .updateTaskDoneCount(context, false, true, true);*/
                             }
                             setState(() {});
                           },
                           importOntap: () async {
-                            if (todayList[index].important) {
-                              updateFirestore(
-                                  true, false, false, user, todayList[index]);
+                            if (user.getTankList[index].important) {
+                              /*updateFirestore(
+                                  true, false, false, user, todayList[index]);*/
 
                               user.getTodayList[index].important = false;
                             } else {
-                              updateFirestore(
-                                  true, false, true, user, todayList[index]);
+                              /*updateFirestore(
+                                  true, false, true, user, todayList[index]);*/
                               user.getTodayList[index].important = true;
                             }
                             setState(() {});
@@ -210,31 +167,29 @@ class _AddScreenState extends State<AddScreen> {
     );
   }
 
-  Future<void> getFirestore() async {
-    bool res = await FirestoreMethods().getFiresoreData(context);
-    if (res) {
+/*  Future<void> getFirestore() async {
+   // bool res = await FirestoreMethods().getFiresoreData(context);
+*//*    if (res) {
       setState(() {
         todayList =
             Provider.of<ProviderUser>(context, listen: false).getTodayList;
       });
-    }
-    await FirestoreMethods().deneme();
-    print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-  }
+    }*//*
+  }*/
 
-  Future<void> updateFirestore(bool importantProcess, bool doneProcess,
+/*  Future<void> updateFirestore(bool importantProcess, bool doneProcess,
       bool value, ProviderUser user, TodayModel todayModel) async {
-    /* bool updateUserControl = await FirestoreMethods()
-        .updateUser(context, taskProcess, doneProcess, value);*/
+    *//* bool updateUserControl = await FirestoreMethods()
+        .updateUser(context, taskProcess, doneProcess, value);*//*
     if (doneProcess) {
-      await FirestoreMethods()
-          .updateTodayTextDone(context, value, user, todayModel);
+      *//*await FirestoreMethods()
+          .updateTodayTextDone(context, value, user, todayModel);*//*
     }
     if (importantProcess) {
       if (context.mounted) {
-        await FirestoreMethods()
-            .updateTodayTextImportant(context, value, user, todayModel);
+     *//*   await FirestoreMethods()
+            .updateTodayTextImportant(context, value, user, todayModel);*//*
       }
     }
-  }
+  }*/
 }

@@ -28,25 +28,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     connectionKontrol(context);
     todayList1.clear();
-    getFirestore();
   }
 
-  Future<void> getFirestore() async {
-    bool res = await FirestoreMethods().getFiresoreData(context);
-    if (res) {
-      setState(() {
+  List<TodayModel> getFirestore(){
+    /*  setState(() {
         todayList1 =
-            Provider.of<ProviderUser>(context, listen: false).getTankList;
-        print('ssssssssssssssssssssssssssssssssss');
-        print(todayList1.length);
-        for (int i = 0; i < todayList1.length; i++) {
-          if (todayList1[i].done) {
-            todayList2.add(todayList1[i]);
-
-          }
-        }
-      });
-    }
+            FirestoreMethods().profileScreenGetTodayList(context);
+      });*/
+      return todayList1;
+   // }
   }
 
   String userName = '';
@@ -191,7 +181,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: EdgeInsets.only(
                     left: size.width / 50, right: size.width / 50),
                 child: typeScreen
-                    ? cards(user, size, todayList1)
+                    ? cards(user, size, getFirestore())
                     : cards(user, size, todayList2),
               ),
             )
@@ -207,62 +197,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       itemBuilder: (context, index) {
-        return Dismissible(
-          key: ValueKey<TodayModel>(todayList[index]),
-          onDismissed: (DismissDirection direction) async {
-            await FirestoreMethods()
-                .deletetodayTextitem(context, user, todayList[index]);
-
-            /*  if(context.mounted){
-                          await FirestoreMethods().updateTank(context, user,
-                              todayList[index], false, todayList[index].textUid);
-                        }*/
-
-            setState(() {
+        return Padding(
+          padding: EdgeInsets.only(top: size.height / 50),
+          child: AddPageCardWidget(
+            index: index,
+            tikOntap: () {
               if (todayList[index].done) {
-                FirestoreMethods()
-                    .updateTaskDoneCount(context, false, true, false);
+                updateFirestore(false, true, false, user, todayList[index]);
+                user.getTodayList[index].done = false;
+               /* FirestoreMethods()
+                    .updateTaskDoneCount(context, false, true, false);*/
+              } else {
+                updateFirestore(false, true, true, user, todayList[index]);
+                user.getTodayList[index].done = true;
+               /* FirestoreMethods()
+                    .updateTaskDoneCount(context, false, true, true);*/
               }
-              FirestoreMethods()
-                  .updateTaskDoneCount(context, true, false, false);
-              todayList = user.getTodayList;
-            });
-          },
-          background: Container(
-            //color: Colors.black.withOpacity(0.3),
-            color: Colors.transparent,
-            child: Lottie.asset('assets/json/recycling.json'),
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(top: size.height / 50),
-            child: AddPageCardWidget(
-              index: index,
-              tikOntap: () {
-                if (todayList[index].done) {
-                  updateFirestore(false, true, false, user, todayList[index]);
-                  user.getTodayList[index].done = false;
-                  FirestoreMethods()
-                      .updateTaskDoneCount(context, false, true, false);
-                } else {
-                  updateFirestore(false, true, true, user, todayList[index]);
-                  user.getTodayList[index].done = true;
-                  FirestoreMethods()
-                      .updateTaskDoneCount(context, false, true, true);
-                }
-                setState(() {});
-              },
-              importOntap: () async {
-                if (todayList[index].important) {
-                  updateFirestore(true, false, false, user, todayList[index]);
+              setState(() {});
+            },
+            importOntap: () async {
+              if (todayList[index].important) {
+                updateFirestore(true, false, false, user, todayList[index]);
 
-                  user.getTodayList[index].important = false;
-                } else {
-                  updateFirestore(true, false, true, user, todayList[index]);
-                  user.getTodayList[index].important = true;
-                }
-                setState(() {});
-              },
-            ),
+                user.getTodayList[index].important = false;
+              } else {
+                updateFirestore(true, false, true, user, todayList[index]);
+                user.getTodayList[index].important = true;
+              }
+              setState(() {});
+            },
           ),
         );
       },
@@ -274,13 +237,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     /* bool updateUserControl = await FirestoreMethods()
         .updateUser(context, taskProcess, doneProcess, value);*/
     if (doneProcess) {
-      await FirestoreMethods()
-          .updateTodayTextDone(context, value, user, todayModel);
+   /*   await FirestoreMethods()
+          .updateTodayTextDone(context, value, user, todayModel);*/
     }
     if (importantProcess) {
       if (context.mounted) {
-        await FirestoreMethods()
-            .updateTodayTextImportant(context, value, user, todayModel);
+       /* await FirestoreMethods()
+            .updateTodayTextImportant(context, value, user, todayModel);*/
       }
     }
   }
