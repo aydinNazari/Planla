@@ -477,9 +477,11 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
 
   //functions
   Future<void> loginFunction() async {
-    lottieProgressDialog(context);
+    lottieProgressDialog(context,'assets/json/progress.json');
     bool res = await Auth().loginUser(_email, _pass, context);
-    Navigator.of(context).pop();
+    if(context.mounted){
+      Navigator.of(context).pop();
+    }
     if (res) {
       setState(() {
         Navigator.push(
@@ -494,10 +496,12 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
   }
 
   Future<void> signupProsess() async {
-    lottieProgressDialog(context);
+    lottieProgressDialog(context,'assets/json/progress.json');
     bool res =
         await Auth().signupUser(_email, _name, _pass, context, image);
-    Navigator.of(context).pop();
+    if(context.mounted){
+      Navigator.of(context).pop();
+    }
     if (res) {
       setState(() {
         Navigator.push(

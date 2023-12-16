@@ -23,20 +23,22 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    connectionKontrol(context);
-    //getTank();
-    /* var r=Provider.of<ProviderUser>(context,listen: false);
-    var user=r.user;
-    user.doneCount=0;
-    user.taskCount=0;
-    r.setUser(user);*/
+    Future.delayed(Duration.zero, () {
+      connectionKontrol(context);
+      if (Provider.of<ProviderUser>(context, listen: false).getControlFirestore) {
+        lottieProgressDialog(context,'assets/json/loading.json');
+        getFirestoreData();
+        Navigator.of(context).pop();
+        Provider.of<ProviderUser>(context, listen: false)
+            .setControlFirestore(false);
+      }
+    });
   }
 
+  getFirestoreData() async {
+    await FirestoreMethods().getFirestoreData(context);
+  }
 
-  /*getTank() async {
-    await FirestoreMethods().getTankList(
-        context, Provider.of<ProviderUser>(context, listen: false));
-  }*/
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<ProviderUser>(context, listen: false);

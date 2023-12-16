@@ -9,6 +9,10 @@ class ProviderUser with ChangeNotifier {
   //List<TodayModel> _doneList=[];
   List<TodayModel> _tankList=[];
   List<String> _idList=[];
+  bool _controlGetFirestore=true;
+  int _doneCount=0;
+  int _taskCount=0;
+
 
 
   User get user => _user;
@@ -16,6 +20,14 @@ class ProviderUser with ChangeNotifier {
   //List<TodayModel> get todayDonList=>_doneList;
   List<TodayModel> get getTankList=>_tankList;
   List<String> get getIdList=>_idList;
+  bool get getControlFirestore=>_controlGetFirestore;
+  int get getDoneCount=> _doneCount;
+  int get getTaskCount=> _taskCount;
+
+  setControlFirestore(bool control){
+    _controlGetFirestore=control;
+  }
+
 
   setUser(User user) {
     _user = user;
@@ -28,18 +40,13 @@ class ProviderUser with ChangeNotifier {
   }
 
   setDoneCount(int s){
-    _user.doneCount=s;
+    _doneCount=s;
     notifyListeners();
   }
   setTaskCount(int s){
-    _user.taskCount=s;
+    _taskCount=s;
     notifyListeners();
   }
-/*  setDonList(List<TodayModel> doneList){
-    _doneList=doneList;
-    notifyListeners();
-  }*/
-
   setTankList(List<TodayModel> taskList){
     _tankList=taskList;
     notifyListeners();

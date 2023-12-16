@@ -120,7 +120,7 @@ Future<void> showMyDialog(BuildContext context, Size size, String txt,
 }
 
 //progress lottie
-void lottieProgressDialog(BuildContext context) {
+void lottieProgressDialog(BuildContext context,String url) {
   showDialog(
     barrierDismissible: false,
     context: context,
@@ -135,7 +135,7 @@ void lottieProgressDialog(BuildContext context) {
               .of(context)
               .size
               .width / 2.2,
-          child: Lottie.asset('assets/json/progress.json'),
+          child: Lottie.asset(url),
         ),
       );
     },
