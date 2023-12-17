@@ -15,6 +15,7 @@ class ProfileScreen extends StatefulWidget {
   final bool control;
 
   //control ==true back arrow icon=true : back arrow icon=false
+
   const ProfileScreen({Key? key, required this.control}) : super(key: key);
 
   @override
@@ -27,28 +28,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // TODO: implement initState
     super.initState();
     connectionKontrol(context);
-    todayList1.clear();
   }
 
-  List<TodayModel> getFirestore(){
-    /*  setState(() {
-        todayList1 =
-            FirestoreMethods().profileScreenGetTodayList(context);
-      });*/
-      return todayList1;
-   // }
-  }
-
-  String userName = '';
   bool typeScreen = true;
-  List<TodayModel> todayList1 = [];
-  List<TodayModel> todayList2 = [];
+
+  // typeScree == true -> taskScreen
+  // typeScree == false -> DoneScreen
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<ProviderUser>(context, listen: false);
     Size size = MediaQuery.of(context).size;
-    userName = (user.user.email).substring(0, (user.user.email).indexOf('@'));
     return WillPopScope(
       onWillPop: () async {
         logOutFunc(context, size, false);
@@ -109,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          '@$userName',
+                          '@${(user.user.email).substring(0, (user.user.email).indexOf('@'))}',
                           style: TextStyle(
                               color: Colors.black38,
                               fontSize: size.width / 23,
@@ -139,9 +129,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       });
                     },
                     child: TasksCountWidget(
-                        size: size,
-                        txt: 'Task',
-                        count: (user.user.taskCount).toString()),
+                      size: size,
+                      txt: 'Task',
+                      count: (user.user.taskCount).toString(),
+                    ),
                   ),
                   const Spacer(),
                   InkWell(
@@ -178,12 +169,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.only(
-                    left: size.width / 50, right: size.width / 50),
-                child: typeScreen
-                    ? cards(user, size, getFirestore())
-                    : cards(user, size, todayList2),
-              ),
+                  padding: EdgeInsets.only(
+                      left: size.width / 50, right: size.width / 50),
+                  child: cards(user, size)),
             )
           ],
         ),
@@ -191,60 +179,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  ListView cards(ProviderUser user, Size size, List<TodayModel> todayList) {
+  ListView cards(ProviderUser user, Size size) {
     return ListView.builder(
-      itemCount: todayList.length,
+      itemCount: typeScreen ? user.getTankList.length : user.getDoneList.length,
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       itemBuilder: (context, index) {
         return Padding(
           padding: EdgeInsets.only(top: size.height / 50),
           child: AddPageCardWidget(
+            cardList: typeScreen ? user.getTankList : user.getDoneList,
             index: index,
-            tikOntap: () {
-              if (todayList[index].done) {
-                updateFirestore(false, true, false, user, todayList[index]);
-                user.getTodayList[index].done = false;
-               /* FirestoreMethods()
-                    .updateTaskDoneCount(context, false, true, false);*/
+            tikOntap: () async {
+              if (typeScreen
+                  ? user.getTankList[index].done
+                  : user.getDoneList[index].done) {
+                if (typeScreen
+                    ? user.getTankList[index].done
+                    : user.getDoneList[index].done) {
+                  if (typeScreen) {
+                    await FirestoreMethods().doneImportantUpdate(
+                        context, true, false, user.getTankList[index].textUid);
+                    if (context.mounted) {
+                      await FirestoreMethods()
+                          .userDoneImpotantUpdate(context, true, false);
+                    }
+                  } else {
+                    await FirestoreMethods().doneImportantUpdate(
+                        context, true, true, user.getDoneList[index].textUid);
+                    if (context.mounted) {
+                      await FirestoreMethods()
+                          .userDoneImpotantUpdate(context, true, true);
+                    }
+                  }
+                }
+                setState(() {});
               } else {
-                updateFirestore(false, true, true, user, todayList[index]);
-                user.getTodayList[index].done = true;
-               /* FirestoreMethods()
-                    .updateTaskDoneCount(context, false, true, true);*/
+
               }
               setState(() {});
             },
             importOntap: () async {
-              if (todayList[index].important) {
-                updateFirestore(true, false, false, user, todayList[index]);
-
-                user.getTodayList[index].important = false;
-              } else {
-                updateFirestore(true, false, true, user, todayList[index]);
-                user.getTodayList[index].important = true;
-              }
+              if (typeScreen
+                  ? user.getTankList[index].important
+                  : user.getDoneList[index].important) {
+              } else {}
               setState(() {});
             },
           ),
         );
       },
     );
-  }
-
-  Future<void> updateFirestore(bool importantProcess, bool doneProcess,
-      bool value, ProviderUser user, TodayModel todayModel) async {
-    /* bool updateUserControl = await FirestoreMethods()
-        .updateUser(context, taskProcess, doneProcess, value);*/
-    if (doneProcess) {
-   /*   await FirestoreMethods()
-          .updateTodayTextDone(context, value, user, todayModel);*/
-    }
-    if (importantProcess) {
-      if (context.mounted) {
-       /* await FirestoreMethods()
-            .updateTodayTextImportant(context, value, user, todayModel);*/
-      }
-    }
   }
 }

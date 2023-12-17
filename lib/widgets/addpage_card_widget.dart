@@ -11,18 +11,19 @@ class AddPageCardWidget extends StatelessWidget {
   final void Function() tikOntap;
   final void Function() importOntap;
   final int index;
+  final List<TodayModel> cardList;
 
 
   const AddPageCardWidget(
       {Key? key,
       required this.tikOntap,
       required this.importOntap,
-      required this.index})
+      required this.index, required this.cardList})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<ProviderUser>(context, listen: false);
+    //final user = Provider.of<ProviderUser>(context, listen: false);
     final size = MediaQuery.of(context).size;
     return Container(
       width: size.width,
@@ -41,7 +42,7 @@ class AddPageCardWidget extends StatelessWidget {
 
                 });*/
               ,
-              child: user.getTodayList[index].done
+              child: cardList[index].done
                   ? SizedBox(
                       width: size.width / 12,
                       height: size.width / 12,
@@ -73,14 +74,14 @@ class AddPageCardWidget extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(
                   left:
-                      user.getTodayList[index].done ? 0 : size.width / 70),
+                  cardList[index].done ? 0 : size.width / 70),
               child: Text(
-                user.getTodayList[index].text,
+                cardList[index].text,
                 style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
                     fontSize: size.width / 28,
-                    decoration: user.getTodayList[index].done
+                    decoration: cardList[index].done
                         ? TextDecoration.lineThrough
                         : TextDecoration.none),
               ),
@@ -88,12 +89,12 @@ class AddPageCardWidget extends StatelessWidget {
             const Spacer(),
             Padding(
               padding: EdgeInsets.only(
-                  right: user.getTodayList[index].important
+                  right: cardList[index].important
                       ? size.width / 50
                       : size.width / 25),
               child: InkWell(
                 onTap: importOntap,
-                child: user.getTodayList[index].important
+                child: cardList[index].important
                     ? SizedBox(
                         width: size.width / 10,
                         height: size.width / 10,

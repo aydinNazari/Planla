@@ -34,8 +34,6 @@ class _AddScreenState extends State<AddScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final user = Provider.of<ProviderUser>(context, listen: false);
-    print('sssssssssssssssssssss');
-    print(Provider.of<ProviderUser>(context, listen: false).getTankList.length);
     return WillPopScope(
       onWillPop: () async {
         logOutFunc(context, size, false);
@@ -72,6 +70,9 @@ class _AddScreenState extends State<AddScreen> {
                                 firestorId: '');
                             await FirestoreMethods()
                                 .textSave(context, todayModel);
+                            if(context.mounted){
+                              await FirestoreMethods().userDoneImpotantUpdate(context,false,true);
+                            }
                             setState(() {});
                           } else {
                             showSnackBar(
@@ -99,6 +100,9 @@ class _AddScreenState extends State<AddScreen> {
                         await FirestoreMethods().deleteCard(
                             context, user.getTodayList[index].textUid);
                         if (context.mounted) {
+                          await FirestoreMethods().userDoneImpotantUpdate(context,false,false);
+                        }
+                        if(context.mounted){
                           Navigator.of(context).pop();
                         }
                       },
@@ -111,6 +115,7 @@ class _AddScreenState extends State<AddScreen> {
                         padding: EdgeInsets.only(
                             top: size.height / 50, right: size.width / 25),
                         child: AddPageCardWidget(
+                          cardList: user.getTodayList,
                           index: index,
                           tikOntap: () async {
                             if (user.getTodayList[index].done) {
@@ -119,6 +124,9 @@ class _AddScreenState extends State<AddScreen> {
                                   true,
                                   false,
                                   user.getTodayList[index].textUid);
+                              if(context.mounted){
+                                await FirestoreMethods().userDoneImpotantUpdate(context,true,false);
+                              }
 
                             } else {
                               await FirestoreMethods().doneImportantUpdate(
@@ -126,6 +134,9 @@ class _AddScreenState extends State<AddScreen> {
                                   true,
                                   true,
                                   user.getTodayList[index].textUid);
+                              if(context.mounted){
+                                await FirestoreMethods().userDoneImpotantUpdate(context,true,true);
+                              }
                             }
                             setState(() {});
                           },
@@ -136,6 +147,7 @@ class _AddScreenState extends State<AddScreen> {
                                   false,
                                   false,
                                   user.getTodayList[index].textUid);
+
                             } else {
                               await FirestoreMethods().doneImportantUpdate(
                                   context,

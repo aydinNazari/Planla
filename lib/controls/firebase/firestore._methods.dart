@@ -96,14 +96,23 @@ class FirestoreMethods {
       }
 
       List<TodayModel> todayList = [];
+      List<TodayModel> tempList = [];
       for (int i = 0; i < tankList.length; i++) {
         String timestamp = _twoDigits(tankList[i].dateTime);
         if (getDatePart() == timestamp) {
           todayList.add(tankList[i]);
         }
+        if(tankList[i].done){
+          tempList.add(tankList[i]);
+        }
       }
       providerUser.setTankList(tankList);
       providerUser.setTodayList(todayList);
+      providerUser.setDoneList(tempList);
+
+
+
+
     } on FirebaseException catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);
@@ -219,13 +228,37 @@ class FirestoreMethods {
     }
   }
 
-  Future<void> userDoneImpotantUpdate(BuildContext context) async {
+  Future<void> userDoneImpotantUpdate(BuildContext context,bool typeProcess,bool decreasIncreasing) async {
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: false);
+    //typeProcess==true -> done process
+    //typeProcess==false -> task process
+    // decreasIncreasing==false -> -- process
+    // decreasIncreasing==true -> ++ process
     try {
-      int doneCount=providerUser.getDoneCount;
-      int taskCount=providerUser.getTaskCount; bu fonksiyonu çağır add lşstesinde
-      firestore.collection('users').doc(providerUser.user.uid).update({});
+      if(typeProcess){
+        int doneCount=providerUser.getDoneCount;
+        if(decreasIncreasing){
+          doneCount++;
+        }else{
+          doneCount--;
+        }
+        firestore.collection('users').doc(providerUser.user.uid).update({
+          'doneCount' : doneCount
+        });
+        providerUser.setDoneCount(doneCount);
+      }else{
+        int taskCount=providerUser.getTaskCount;
+        if(decreasIncreasing){
+          taskCount++;
+        }else{
+          taskCount--;
+        }
+        firestore.collection('users').doc(providerUser.user.uid).update({
+          'taskCount' : taskCount
+        });
+        providerUser.setTaskCount(taskCount);
+      }
     } on FirebaseException catch (e) {
       showSnackBar(context, e.toString(), Colors.red);
     }
