@@ -37,12 +37,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final user = Provider.of<ProviderUser>(context, listen: false);
     Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        logOutFunc(context, size, false);
-        return false;
+        if(widget.control==false){
+          logOutFunc(context, size, false);
+          return false;
+        }else{
+          Navigator.of(context).pop();
+          return true;
+        }
+
       },
       child: Scaffold(
         appBar: AppBar(
@@ -131,7 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: TasksCountWidget(
                       size: size,
                       txt: 'Task',
-                      count: (user.user.taskCount).toString(),
+                      count: (user.getTankList.length).toString(),
                     ),
                   ),
                   const Spacer(),
@@ -144,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: TasksCountWidget(
                         size: size,
                         txt: 'Done',
-                        count: (user.user.doneCount).toString()),
+                        count: (user.getDoneList.length).toString()),
                   ),
                   const Spacer(),
                   TasksCountWidget(size: size, txt: 'Plaka', count: '***'),
@@ -188,42 +195,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return Padding(
           padding: EdgeInsets.only(top: size.height / 50),
           child: AddPageCardWidget(
+            color: primeryColor,
             cardList: typeScreen ? user.getTankList : user.getDoneList,
             index: index,
             tikOntap: () async {
-              if (typeScreen
-                  ? user.getTankList[index].done
-                  : user.getDoneList[index].done) {
-                if (typeScreen
-                    ? user.getTankList[index].done
-                    : user.getDoneList[index].done) {
-                  if (typeScreen) {
-                    await FirestoreMethods().doneImportantUpdate(
-                        context, true, false, user.getTankList[index].textUid);
-                    if (context.mounted) {
-                      await FirestoreMethods()
-                          .userDoneImpotantUpdate(context, true, false);
-                    }
-                  } else {
-                    await FirestoreMethods().doneImportantUpdate(
-                        context, true, true, user.getDoneList[index].textUid);
-                    if (context.mounted) {
-                      await FirestoreMethods()
-                          .userDoneImpotantUpdate(context, true, true);
-                    }
-                  }
+              if (typeScreen) {
+                if (user.getTankList[index].done) {
+                  await FirestoreMethods().doneImportantUpdate(
+                      context, true, false, user.getTankList[index].textUid);
+                } else {
+                  await FirestoreMethods().doneImportantUpdate(
+                      context, true, true, user.getTankList[index].textUid);
                 }
-                setState(() {});
               } else {
-
+                if (user.getDoneList[index].done) {
+                  await FirestoreMethods().doneImportantUpdate(
+                      context, true, false, user.getDoneList[index].textUid);
+                } else {
+                  await FirestoreMethods().doneImportantUpdate(
+                      context, true, true, user.getDoneList[index].textUid);
+                }
               }
               setState(() {});
             },
             importOntap: () async {
-              if (typeScreen
-                  ? user.getTankList[index].important
-                  : user.getDoneList[index].important) {
-              } else {}
+              if (typeScreen) {
+                if (user.getTankList[index].important) {
+                  await FirestoreMethods().doneImportantUpdate(
+                      context, false, false, user.getTankList[index].textUid);
+                } else {
+                  await FirestoreMethods().doneImportantUpdate(
+                      context, false, true, user.getTankList[index].textUid);
+                }
+              } else {
+                if (user.getDoneList[index].important) {
+                  await FirestoreMethods().doneImportantUpdate(
+                      context, false, false, user.getDoneList[index].textUid);
+                } else {
+                  await FirestoreMethods().doneImportantUpdate(
+                      context, false, true, user.getDoneList[index].textUid);
+                }
+              }
               setState(() {});
             },
           ),

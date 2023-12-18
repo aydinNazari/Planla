@@ -26,9 +26,6 @@ class Auth {
         email: (cred.data()! as dynamic)['email'],
         name: (cred.data()! as dynamic)['name'],
         imageurl: (cred.data()! as dynamic)['imageurl'],
-        doneCount: (cred.data()! as dynamic)['doneCount'] ?? 0,
-      taskCount: (cred.data()! as dynamic)['taskCount'] ?? 0,
-
     );
     providerUser.setUser(user);
     return user;
@@ -50,8 +47,6 @@ class Auth {
             email: email.trim(),
             name: username.trim(),
             imageurl: image,
-            doneCount: 0,
-          taskCount: 0
         );
         await firestore
             .collection('users')

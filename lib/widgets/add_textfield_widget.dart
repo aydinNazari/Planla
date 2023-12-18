@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-
 class AddTextfieldWidget extends StatelessWidget {
- final void Function(String) onSubmit;
+  final void Function(String) onSubmit;
 
   AddTextfieldWidget({Key? key, required this.onSubmit}) : super(key: key);
 
@@ -19,21 +18,24 @@ class AddTextfieldWidget extends StatelessWidget {
         //onEditingComplete: onSubmit,
         controller: txtControoler,
         onSubmitted: onSubmit,
-        style: const TextStyle(color: Colors.black,fontWeight: FontWeight.w600),
-        decoration: const InputDecoration(
+        style:
+            const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+        decoration: InputDecoration(
           hintText: 'Add...',
           //icon: Icon(Icons.task_alt),
-          hintStyle: TextStyle(
+          hintStyle: const TextStyle(
             color: Colors.black,
           ),
           border: OutlineInputBorder(
-            borderSide: BorderSide(width: 2,color: Colors.black), // Kenarlık rengi
+            borderRadius: BorderRadius.all(Radius.circular(size.width / 50)),
+            borderSide: const BorderSide(
+                width: 2, color: Colors.black), // Kenarlık rengi
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              width: 2,
-                color: Color(
-                    0xff424874)), // İç kenarlık rengi (odaklandığında)
+            borderRadius: BorderRadius.all(Radius.circular(size.width / 50)),
+            borderSide: const BorderSide(
+                width: 3,
+                color: Color(0xff424874)), // İç kenarlık rengi (odaklandığında)
           ),
         ),
       ),
