@@ -43,7 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return WillPopScope(
       onWillPop: () async {
         if(widget.control==false){
-          logOutFunc(context, size, false);
+          logOutFunc(context, size, false,user);
           return false;
         }else{
           Navigator.of(context).pop();
@@ -75,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: InkWell(
                 onTap: () {
-                  logOutFunc(context, size, true);
+                  logOutFunc(context, size, true,user);
                 },
                 child: Icon(
                   Icons.logout,

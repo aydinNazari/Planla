@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
+import 'package:planla/screens/Intro_screen_page.dart';
 import 'package:planla/screens/login_signin_screen.dart';
 import 'package:planla/screens/navigator_screen.dart';
 import 'package:planla/utiles/constr.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Planla',
+      title: 'TargetToTarget',
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)

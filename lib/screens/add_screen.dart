@@ -33,7 +33,7 @@ class _AddScreenState extends State<AddScreen> {
     final user = Provider.of<ProviderUser>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
-        logOutFunc(context, size, false);
+        logOutFunc(context, size, false,user);
         return false;
       },
       child: Scaffold(

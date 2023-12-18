@@ -2,8 +2,9 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:planla/controls/firebase/auth.dart';
-import 'package:planla/screens/navigator_screen.dart';
+import 'package:planla/screens/Intro_screen_page.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:planla/screens/navigator_screen.dart';
 import 'package:planla/widgets/account_button.widget.dart';
 import '../utiles/constr.dart';
 import '../widgets/button_loginsignin_widget.dart';
@@ -277,7 +278,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                   ),*/
                   Center(
                     child: Text(
-                      'Planla',
+                      'TargetToTarget',
                       style: TextStyle(
                         fontSize: size.width / 9,
                         fontWeight: FontWeight.w900,
@@ -508,7 +509,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
             context,
             PageTransition(
                 type: PageTransitionType.bottomToTop,
-                child: const NavigatorScreen()));
+                child: const IntroScreen()));
       });
     }
   }

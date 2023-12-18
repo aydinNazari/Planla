@@ -10,8 +10,10 @@ import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:planla/screens/add_screen.dart';
 import 'package:planla/screens/profile_screen.dart';
+import 'package:planla/screens/timer_screen.dart';
 
 import '../controls/firebase/auth.dart';
+import '../controls/providersClass/provider_user.dart';
 import '../screens/home_screen.dart';
 import '../screens/login_signin_screen.dart';
 
@@ -22,9 +24,11 @@ List<Widget> screenList = [
 /*  const Center(
     child: Text('Analize'),
   ),*/
+  const TimerScreen(),
   const ProfileScreen(
     control: false,
-  )
+  ),
+
 ];
 
 //dropdown items
@@ -56,7 +60,7 @@ showSnackBar(BuildContext context, String txt, Color color) {
 //for picking photo
 Future<Uint8List?> pickImager() async {
   FilePickerResult? pickedImage =
-  await FilePicker.platform.pickFiles(type: FileType.image);
+      await FilePicker.platform.pickFiles(type: FileType.image);
   if (kIsWeb) {
     return pickedImage?.files.single.bytes;
   }
@@ -120,21 +124,15 @@ Future<void> showMyDialog(BuildContext context, Size size, String txt,
 }
 
 //progress lottie
-void lottieProgressDialog(BuildContext context,String url) {
+void lottieProgressDialog(BuildContext context, String url) {
   showDialog(
     barrierDismissible: false,
     context: context,
     builder: (context) {
       return Center(
         child: SizedBox(
-          width: MediaQuery
-              .of(context)
-              .size
-              .width / 2.2,
-          height: MediaQuery
-              .of(context)
-              .size
-              .width / 2.2,
+          width: MediaQuery.of(context).size.width / 2.2,
+          height: MediaQuery.of(context).size.width / 2.2,
           child: Lottie.asset(url),
         ),
       );
@@ -142,13 +140,19 @@ void lottieProgressDialog(BuildContext context,String url) {
   );
 }
 
-Future<void> logOutFunc(BuildContext context, Size size, bool exitType) async {
+Future<void> logOutFunc(BuildContext context, Size size, bool exitType,ProviderUser providerUser) async {
   // exittype==true -> logOut
   // exittype==false -> exit from app
   if (exitType) {
     showMyDialog(context, size, 'Are you sure you want to log out?', () async {
       await Auth().signOut();
-      if(context.mounted){
+      if (context.mounted) {
+        providerUser.setControlFirestore(true);
+        providerUser.setDoneList([]);
+        providerUser.setTodayList([]);
+        providerUser.setTankList([]);
+        providerUser.setIdList([]);
+        Navigator.of(context).pop();
         Navigator.push(
           context,
           PageTransition(
@@ -156,6 +160,10 @@ Future<void> logOutFunc(BuildContext context, Size size, bool exitType) async {
             child: const LoginSignInScreen(),
           ),
         );
+        print(providerUser.getTankList.length);
+        print(providerUser.getDoneList.length);
+        print(providerUser.getTodayList.length);
+        print(providerUser.getIdList.length);
       }
     }, () {
       Navigator.of(context).pop();
@@ -172,12 +180,11 @@ Future<void> logOutFunc(BuildContext context, Size size, bool exitType) async {
 
 void connectionKontrol(BuildContext context) async {
   final connectivityResult = await (Connectivity().checkConnectivity());
- if (connectivityResult == ConnectivityResult.none) {
-   if(context.mounted){
+  if (connectivityResult == ConnectivityResult.none) {
+    if (context.mounted) {
       showSnackBar(
           context, 'Please check your internet connection', Colors.red);
     }
     // I am not connected to any network.
   }
-
 }

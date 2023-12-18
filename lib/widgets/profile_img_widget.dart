@@ -36,6 +36,7 @@ class ProgileImgWidget extends StatelessWidget {
             print(error.toString());
             return Icon(
               CupertinoIcons.person,
+              color: Colors.black,
               size: size.width / 4,
             );
           },

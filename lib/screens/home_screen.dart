@@ -2,7 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:planla/controls/firebase/firestore._methods.dart';
+import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/widgets/home_screen_scafold_widget.dart';
+import 'package:provider/provider.dart';
 import '../utiles/constr.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -48,9 +50,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    ProviderUser providerUser=Provider.of<ProviderUser>(context,listen: false);
+    print(providerUser.getTankList.length);
+    print(providerUser.getDoneList.length);
+    print(providerUser.getTodayList.length);
+    print(providerUser.getIdList.length);
     return WillPopScope(
       onWillPop: () async {
-        logOutFunc(context, size, false);
+        logOutFunc(context, size, false,providerUser);
         return false;
       },
       child: FutureBuilder(

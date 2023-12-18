@@ -7,19 +7,19 @@ import 'package:provider/provider.dart';
 import '../utiles/colors.dart';
 
 class AddPageCardWidget extends StatelessWidget {
-
   final void Function() tikOntap;
   final void Function() importOntap;
   final int index;
   final List<TodayModel> cardList;
   final Color color;
 
-
   const AddPageCardWidget(
       {Key? key,
       required this.tikOntap,
       required this.importOntap,
-      required this.index, required this.cardList, required this.color})
+      required this.index,
+      required this.cardList,
+      required this.color})
       : super(key: key);
 
   @override
@@ -31,7 +31,9 @@ class AddPageCardWidget extends StatelessWidget {
       height: size.height / 10,
       decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.all(Radius.circular(size.width / 25))),
+          borderRadius: BorderRadius.all(
+            Radius.circular(size.width / 25),
+          )),
       child: Padding(
         padding: EdgeInsets.only(left: size.width / 25),
         child: Row(
@@ -74,8 +76,7 @@ class AddPageCardWidget extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.only(
-                  left:
-                  cardList[index].done ? 0 : size.width / 70),
+                  left: cardList[index].done ? 0 : size.width / 70),
               child: Text(
                 cardList[index].text,
                 style: TextStyle(

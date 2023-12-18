@@ -1,9 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
-import 'package:planla/screens/add_screen.dart';
 import 'package:planla/utiles/constr.dart';
 import 'package:provider/provider.dart';
 
@@ -21,21 +18,17 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
   int currentIndex = 0;
 
   void navigatorIndex(int value) {
-    if(Provider.of<ProviderUser>(context, listen: false).getControlFirestore){
-      value=0;
-    }
-    else{
+    if (Provider.of<ProviderUser>(context, listen: false).getControlFirestore) {
+      value = 0;
+    } else {
       currentIndex = value;
     }
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final user = Provider.of<ProviderUser>(context, listen: false);
     return SafeArea(
       child: Scaffold(
         extendBody: true,
@@ -44,8 +37,8 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
         bottomNavigationBar: Padding(
           padding: EdgeInsets.only(
             top: size.height / 5,
-            left: size.width / 3.5,
-            right: size.width / 3.5,
+            left: size.width / 4,
+            right: size.width / 4,
             bottom: size.height / 80,
           ),
           child: ClipRRect(
@@ -61,6 +54,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
               },
               items: [
                 BottomNavigationBarItem(
+                  backgroundColor: navigatorColor,
                   icon: Icon(
                     Icons.home_outlined,
                     size: size.width / 17,
@@ -74,11 +68,8 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                   label: '',
                 ),
                 BottomNavigationBarItem(
-                  icon: /* Icon(
-                    Icons.add_outlined,
-                    size: size.width / 17,
-                  ),*/
-                      SizedBox(
+                  backgroundColor: navigatorColor,
+                  icon: SizedBox(
                     width: size.width / 10,
                     height: size.width / 10,
                     child: Lottie.asset('assets/json/add.json', repeat: false),
@@ -90,6 +81,20 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                       'assets/json/add.json',
                       repeat: false,
                     ),
+                  ),
+                  label: '',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: navigatorColor,
+                  icon: Icon(
+                    Icons.timer_outlined,
+                    size: size.width / 17,
+                    color: const Color(0xffdcd6f7),
+                  ),
+                  activeIcon: Icon(
+                    Icons.timer,
+                    color: const Color(0xffa6b1e1),
+                    size: size.width / 14,
                   ),
                   label: '',
                 ),
