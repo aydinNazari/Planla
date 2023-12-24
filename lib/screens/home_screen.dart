@@ -51,17 +51,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     ProviderUser providerUser=Provider.of<ProviderUser>(context,listen: false);
-    print(providerUser.getTankList.length);
-    print(providerUser.getDoneList.length);
-    print(providerUser.getTodayList.length);
-    print(providerUser.getIdList.length);
     return WillPopScope(
       onWillPop: () async {
         logOutFunc(context, size, false,providerUser);
         return false;
       },
       child: FutureBuilder(
-        // Firebase'in başlatılmasını bekleyin
         future: _initialization,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {

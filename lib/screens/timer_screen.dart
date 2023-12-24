@@ -1,11 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:planla/utiles/colors.dart';
 import 'package:planla/widgets/add_textfield_widget.dart';
 import 'package:planla/widgets/timer_widget.dart';
-
 import '../widgets/button_loginsignin_widget.dart';
 
 class TimerScreen extends StatefulWidget {
@@ -44,7 +42,6 @@ class _TimerScreenState extends State<TimerScreen> {
       }
     });
   }
-
   void startTime({bool resets = true}) {
     if (resets) {
       reset();
@@ -78,19 +75,10 @@ class _TimerScreenState extends State<TimerScreen> {
   }
 
   Widget buildTimerCountScreen() {
-
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     String minutes = twoDigits(duration.inMinutes.remainder(60));
     String secends = twoDigits(duration.inSeconds.remainder(60));
     String hours = twoDigits(duration.inHours);
-
-
-
-
-    print('$hours   -  numeric:$hoursNumeric');
-    print('$minutes   -  numeric:$minuteNumeric');
-    print('$secends   -  numeric:$secendNumeric');
-
     Size size = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.only(top: size.height / 25),
@@ -109,7 +97,7 @@ class _TimerScreenState extends State<TimerScreen> {
             ),
             SizedBox(
               height: size.height / 2,
-              child: Center(child: Text('motivation cümleleri ve görselleri ')),
+              child: const Center(child: Text('motivation cümleleri ve görselleri ')),
             ),
             buildButton(),
           ],
@@ -202,14 +190,20 @@ class _TimerScreenState extends State<TimerScreen> {
             padding: EdgeInsets.only(
               top: size.height / 25,
             ),
-            child: InkWell(
-                onTap: () {
-                  setState(() {
-                    startTime(resets: false);
-                    typeScreen = false;
-                  });
-                },
-                child: LoginSigninButtonWidget(color: primeryColor, txt: 'Go')),
+            child: Row(
+              children: [
+                const Spacer(),
+                InkWell(
+                    onTap: () {
+                      setState(() {
+                        startTime(resets: false);
+                        typeScreen = false;
+                      });
+                    },
+                    child: LoginSigninButtonWidget(color: primeryColor, txt: 'Go')),
+                const Spacer()
+              ],
+            ),
           )
         ],
       ),

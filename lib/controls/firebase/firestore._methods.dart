@@ -174,8 +174,6 @@ class FirestoreMethods {
       //typeProcess==true -> don process
       //typeProcess==false -> important process
       if (typeProcess) {
-        print('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
-        print(providerUser.getDoneList);
         firestore
             .collection('text')
             .doc(providerUser.user.uid)

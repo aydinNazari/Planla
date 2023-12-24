@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:planla/utiles/colors.dart';
 
@@ -8,29 +6,63 @@ class TimerWidget extends StatelessWidget {
   final String minutes;
   final String secends;
 
-
-  const TimerWidget({Key? key, required this.hours, required this.minutes, required this.secends}) : super(key: key);
+  const TimerWidget(
+      {Key? key,
+      required this.hours,
+      required this.minutes,
+      required this.secends})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     Size size = MediaQuery.of(context).size;
     return Row(
       children: [
-        buildTimeCard(hours, 'HOURS',context),
-        SizedBox(
-          width: size.width / 50,
-        ),
-        buildTimeCard(minutes, 'MINUTES',context),
-        SizedBox(
-          width: size.width / 50,
-        ),
-        buildTimeCard(secends, 'SECENDS',context),
+
+        buildTimeCard(hours, 'HOURS', context),
+        buildColon(size),
+        buildTimeCard(minutes, 'MINUTES', context),
+        buildColon(size),
+        buildTimeCard(secends, 'SECENDS', context),
       ],
     );
   }
 
-  Widget buildTimeCard(String txt, String header,BuildContext context) {
+  Widget buildColon(Size size) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.only(bottom:size.height/35),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: size.height/50,
+                width: size.width / 20,
+                decoration:  BoxDecoration(
+                  color: primeryColor,
+                  shape: BoxShape.circle
+                ),
+
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: size.height/80),
+                child: Container(
+                  height: size.height/50,
+                  width: size.width / 20,
+                  decoration:  BoxDecoration(
+                      color: primeryColor,
+                      shape: BoxShape.circle
+                  ),
+
+                ),
+              ),
+            ],
+          ),
+      ),
+    );
+  }
+
+  Widget buildTimeCard(String txt, String header, BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Column(
       children: [
