@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:planla/controls/providersClass/timer_provider.dart';
 import 'package:planla/utiles/colors.dart';
 import 'package:planla/widgets/add_textfield_widget.dart';
 import 'package:planla/widgets/timer_widget.dart';
+import 'package:provider/provider.dart';
 import '../widgets/button_loginsignin_widget.dart';
 
 class TimerScreen extends StatefulWidget {
@@ -14,71 +16,28 @@ class TimerScreen extends StatefulWidget {
 }
 
 class _TimerScreenState extends State<TimerScreen> {
-  bool typeScreen = true;
   Timer? timer;
   int hoursNumeric = 0;
   int minuteNumeric = 0;
   int secendNumeric = 0;
-  Duration duration = const Duration();
 
   @override
   void initState() {
-
-    reset();
-    setState(() {});
+    Provider.of<TimerProvider>(context, listen: false).reset();
     super.initState();
-  }
-
-  static Duration countdownDuration = const Duration();
-
-  addTime() {
-    const addSecend = -1;
-    setState(() {
-      final secend = duration.inSeconds + addSecend;
-      if (secend < 0) {
-        timer?.cancel();
-      } else {
-        duration = Duration(seconds: secend);
-      }
-    });
-  }
-  void startTime({bool resets = true}) {
-    if (resets) {
-      reset();
-    }
-
-    timer = Timer.periodic(const Duration(seconds: 1), (_) => addTime());
-  }
-
-  stop({bool resets = true}) {
-    if (resets) {
-      reset();
-    }
-    setState(() => timer?.cancel());
-  }
-
-  reset() {
-    setState(() {
-      countdownDuration = Duration(
-          minutes: minuteNumeric,
-          seconds: secendNumeric,
-          hours: hoursNumeric);
-      duration = countdownDuration;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    TimerProvider providerTimer=Provider.of<TimerProvider>(context, listen: false);
     return Scaffold(
-      body: typeScreen ? buildTimerSetScreen() : buildTimerCountScreen(),
+      body: providerTimer.timerType ? buildTimerSetScreen() : buildTimerCountScreen(),
     );
   }
 
   Widget buildTimerCountScreen() {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    String minutes = twoDigits(duration.inMinutes.remainder(60));
-    String secends = twoDigits(duration.inSeconds.remainder(60));
-    String hours = twoDigits(duration.inHours);
+    TimerProvider timerProvider =
+        Provider.of<TimerProvider>(context, listen: true);
     Size size = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.only(top: size.height / 25),
@@ -90,14 +49,19 @@ class _TimerScreenState extends State<TimerScreen> {
               child: Row(
                 children: [
                   const Spacer(),
-                  TimerWidget(hours: hours, minutes: minutes, secends: secends),
+                  TimerWidget(
+                    hours: timerProvider.getRemainingHours(),
+                    minutes: timerProvider.getRemainingMinutes(),
+                    secends: timerProvider.getRemainingSeconds(),
+                  ),
                   const Spacer(),
                 ],
               ),
             ),
             SizedBox(
               height: size.height / 2,
-              child: const Center(child: Text('motivation cümleleri ve görselleri ')),
+              child: const Center(
+                  child: Text('motivation cümleleri ve görselleri ')),
             ),
             buildButton(),
           ],
@@ -107,6 +71,8 @@ class _TimerScreenState extends State<TimerScreen> {
   }
 
   SingleChildScrollView buildTimerSetScreen() {
+    TimerProvider timerProvider =
+        Provider.of<TimerProvider>(context, listen: true);
     Size size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
@@ -148,7 +114,7 @@ class _TimerScreenState extends State<TimerScreen> {
                     setState(() {
                       hoursNumeric = value;
                     });
-                    reset();
+                    timerProvider.reset();
                   },
                 )),
                 Expanded(
@@ -160,7 +126,7 @@ class _TimerScreenState extends State<TimerScreen> {
                       setState(() {
                         minuteNumeric = value;
                       });
-                      reset();
+                      timerProvider.reset();
                     },
                   ),
                 )),
@@ -171,7 +137,7 @@ class _TimerScreenState extends State<TimerScreen> {
                     setState(() {
                       secendNumeric = value;
                     });
-                    reset();
+                    timerProvider.reset();
                   },
                 )),
               ],
@@ -196,11 +162,18 @@ class _TimerScreenState extends State<TimerScreen> {
                 InkWell(
                     onTap: () {
                       setState(() {
-                        startTime(resets: false);
-                        typeScreen = false;
+
+                        timerProvider.setHours(hoursNumeric);
+                        timerProvider.setMinute(minuteNumeric);
+                        timerProvider.setSecends(secendNumeric);
+                        timerProvider.startTime(resets: false);
+                        timerProvider.setTimerScreenType(false);
+                        timerProvider.reset();
+                        //BackgroundService().initSercice(hoursNumeric,minuteNumeric,secendNumeric);
                       });
                     },
-                    child: LoginSigninButtonWidget(color: primeryColor, txt: 'Go')),
+                    child: LoginSigninButtonWidget(
+                        color: primeryColor, txt: 'Go')),
                 const Spacer()
               ],
             ),
@@ -211,9 +184,11 @@ class _TimerScreenState extends State<TimerScreen> {
   }
 
   Widget buildButton() {
-    bool type = timer == null ? false : timer!.isActive;
+    TimerProvider timerProvider =
+        Provider.of<TimerProvider>(context, listen: true);
+    bool type = timerProvider.timer == null ? false : timerProvider.timer!.isActive;
     Size size = MediaQuery.of(context).size;
-    final isComplated = duration.inSeconds == 0;
+    // final isComplated = duration.inSeconds == 0;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -221,13 +196,11 @@ class _TimerScreenState extends State<TimerScreen> {
           padding: EdgeInsets.symmetric(horizontal: size.width / 25),
           child: InkWell(
             onTap: () {
-              setState(() {
                 if (type) {
-                  stop(resets: false);
+                  timerProvider.stop(resets: false);
                 } else {
-                  startTime(resets: false);
+                  timerProvider.startTime(resets: false);
                 }
-              });
             },
             child: SizedBox(
               width: size.width / 3,
@@ -241,8 +214,8 @@ class _TimerScreenState extends State<TimerScreen> {
           child: GestureDetector(
             onTap: () {
               setState(() {
-                stop(resets: true);
-                typeScreen = true;
+                timerProvider.stop(resets: true);
+                timerProvider.setTimerScreenType(true);
               });
             },
             child: SizedBox(
