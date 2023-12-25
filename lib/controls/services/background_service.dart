@@ -5,6 +5,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:planla/controls/providersClass/timer_provider.dart';
+import 'package:provider/provider.dart';
 
 class BackgroundService {
   final FlutterLocalNotificationsPlugin flutterLocalPlugin =
@@ -14,7 +16,7 @@ class BackgroundService {
           description: 'This is a notificatiiiiiioooooon',
           importance: Importance.high);
 
-  Future<void> initSercice(int hours,int minute,int secend) async {
+  Future<void> initSercice(BuildContext context) async {
     FlutterBackgroundService service = FlutterBackgroundService();
     if (Platform.isIOS) {
       //ios cods
@@ -27,7 +29,7 @@ class BackgroundService {
         iosConfiguration: IosConfiguration(
             onBackground: iosBackground, onForeground: iosBackground),
         androidConfiguration: AndroidConfiguration(
-            onStart: onStart,
+            onStart: onStart(context),
             autoStart: true,
             isForegroundMode: true,
             notificationChannelId: 'coding',
@@ -35,7 +37,9 @@ class BackgroundService {
             initialNotificationContent: 'bu bir contant dir',
             foregroundServiceNotificationId: 90));
     service.startService();
-    Timer.periodic( Duration(hours: hours,seconds: secend,minutes: minute), (timer) {
+
+
+
       flutterLocalPlugin.show(
           90,
           'bu flutter title wardaş',
@@ -43,14 +47,17 @@ class BackgroundService {
           const NotificationDetails(
               android: AndroidNotificationDetails('coding', 'coding aydin',
                   ongoing: true, icon: 'app_icon')));
-    });
+
   }
 }
 
 @pragma('vm:enry-point')
-void onStart(ServiceInstance service) {
+void onStart(ServiceInstance service,BuildContext context) {
   DartPluginRegistrant.ensureInitialized();
   print('pppppppppppppoooooooooooooooooooooooooooooooooooooooooooooooooooo');
+  TimerProvider? timerProvider;
+  timerProvider=Provider.of<TimerProvider>(context);
+  timerProvider.startTime(resets: false);
 
   service.on('setAsForeground').listen((event) {
     print('Forgraunddddddddddddddddddddddddddddddddddddddd');

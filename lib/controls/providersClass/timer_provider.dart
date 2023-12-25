@@ -8,7 +8,7 @@ class TimerProvider with ChangeNotifier {
   int _hours = 0;
   int _minute = 0;
   int _secends = 0;
-  bool _timerType=true;
+  bool _timerScreenType=true;
   static Duration countdownDuration = const Duration();
 
   int get getHours=>_hours;
@@ -16,7 +16,7 @@ class TimerProvider with ChangeNotifier {
   int get getSecends=>_secends;
 
   Duration get getDuration=>duration;
-  bool get timerType=>_timerType;
+  bool get timerScreenType=>_timerScreenType;
 
   String twoDigits(int n) => n.toString().padLeft(2, '0');
 
@@ -63,7 +63,7 @@ class TimerProvider with ChangeNotifier {
     countdownDuration = Duration(
         minutes: _minute, seconds: _secends, hours: _hours);
     duration = countdownDuration;
-    notifyListeners();
+    //notifyListeners();
   }
 
   setHours(int hours){
@@ -79,7 +79,7 @@ class TimerProvider with ChangeNotifier {
     notifyListeners();
   }
   setTimerScreenType(bool type){
-    _timerType=type;
+    _timerScreenType=type;
     notifyListeners();
   }
 }

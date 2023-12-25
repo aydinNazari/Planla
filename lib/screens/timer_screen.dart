@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:planla/controls/providersClass/timer_provider.dart';
+import 'package:planla/controls/services/background_service.dart';
 import 'package:planla/utiles/colors.dart';
 import 'package:planla/widgets/add_textfield_widget.dart';
 import 'package:planla/widgets/timer_widget.dart';
@@ -31,13 +32,13 @@ class _TimerScreenState extends State<TimerScreen> {
   Widget build(BuildContext context) {
     TimerProvider providerTimer=Provider.of<TimerProvider>(context, listen: false);
     return Scaffold(
-      body: providerTimer.timerType ? buildTimerSetScreen() : buildTimerCountScreen(),
+      body: providerTimer.timerScreenType ? buildTimerSetScreen() : buildTimerCountScreen(),
     );
   }
 
   Widget buildTimerCountScreen() {
     TimerProvider timerProvider =
-        Provider.of<TimerProvider>(context, listen: true);
+    Provider.of<TimerProvider>(context, listen: true);
     Size size = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.only(top: size.height / 25),
@@ -72,7 +73,7 @@ class _TimerScreenState extends State<TimerScreen> {
 
   SingleChildScrollView buildTimerSetScreen() {
     TimerProvider timerProvider =
-        Provider.of<TimerProvider>(context, listen: true);
+    Provider.of<TimerProvider>(context, listen: true);
     Size size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
@@ -109,43 +110,43 @@ class _TimerScreenState extends State<TimerScreen> {
               children: [
                 Expanded(
                     child: numeric(
-                  current: hoursNumeric,
-                  onChanged: (value) {
-                    setState(() {
-                      hoursNumeric = value;
-                    });
-                    timerProvider.reset();
-                  },
-                )),
+                      current: hoursNumeric,
+                      onChanged: (value) {
+                        setState(() {
+                          hoursNumeric = value;
+                        });
+                        timerProvider.reset();
+                      },
+                    )),
                 Expanded(
                     child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: size.width / 80),
-                  child: numeric(
-                    current: minuteNumeric,
-                    onChanged: (value) {
-                      setState(() {
-                        minuteNumeric = value;
-                      });
-                      timerProvider.reset();
-                    },
-                  ),
-                )),
+                      padding: EdgeInsets.symmetric(horizontal: size.width / 80),
+                      child: numeric(
+                        current: minuteNumeric,
+                        onChanged: (value) {
+                          setState(() {
+                            minuteNumeric = value;
+                          });
+                          timerProvider.reset();
+                        },
+                      ),
+                    )),
                 Expanded(
                     child: numeric(
-                  current: secendNumeric,
-                  onChanged: (value) {
-                    setState(() {
-                      secendNumeric = value;
-                    });
-                    timerProvider.reset();
-                  },
-                )),
+                      current: secendNumeric,
+                      onChanged: (value) {
+                        setState(() {
+                          secendNumeric = value;
+                        });
+                        timerProvider.reset();
+                      },
+                    )),
               ],
             ),
           ),
           Padding(
             padding:
-                EdgeInsets.only(left: size.height / 25, top: size.height / 25),
+            EdgeInsets.only(left: size.height / 25, top: size.height / 25),
             child: SizedBox(
               width: size.width / 2,
               height: size.height / 5,
@@ -161,16 +162,15 @@ class _TimerScreenState extends State<TimerScreen> {
                 const Spacer(),
                 InkWell(
                     onTap: () {
-                      setState(() {
-
                         timerProvider.setHours(hoursNumeric);
                         timerProvider.setMinute(minuteNumeric);
                         timerProvider.setSecends(secendNumeric);
-                        timerProvider.startTime(resets: false);
+                       // timerProvider.startTime(resets: false);
                         timerProvider.setTimerScreenType(false);
+                        BackgroundService().initSercice(context);
+
                         timerProvider.reset();
                         //BackgroundService().initSercice(hoursNumeric,minuteNumeric,secendNumeric);
-                      });
                     },
                     child: LoginSigninButtonWidget(
                         color: primeryColor, txt: 'Go')),
@@ -185,7 +185,7 @@ class _TimerScreenState extends State<TimerScreen> {
 
   Widget buildButton() {
     TimerProvider timerProvider =
-        Provider.of<TimerProvider>(context, listen: true);
+    Provider.of<TimerProvider>(context, listen: true);
     bool type = timerProvider.timer == null ? false : timerProvider.timer!.isActive;
     Size size = MediaQuery.of(context).size;
     // final isComplated = duration.inSeconds == 0;
@@ -196,11 +196,11 @@ class _TimerScreenState extends State<TimerScreen> {
           padding: EdgeInsets.symmetric(horizontal: size.width / 25),
           child: InkWell(
             onTap: () {
-                if (type) {
-                  timerProvider.stop(resets: false);
-                } else {
-                  timerProvider.startTime(resets: false);
-                }
+              if (type) {
+                timerProvider.stop(resets: false);
+              } else {
+                timerProvider.startTime(resets: false);
+              }
             },
             child: SizedBox(
               width: size.width / 3,
@@ -246,7 +246,7 @@ class _TimerScreenState extends State<TimerScreen> {
             minValue: 0,
             maxValue: 59,
             selectedTextStyle:
-                TextStyle(color: Colors.white, fontSize: size.width / 20),
+            TextStyle(color: Colors.white, fontSize: size.width / 20),
             textStyle: const TextStyle(color: Colors.white70),
             onChanged: onChanged,
           ),

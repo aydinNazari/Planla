@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:planla/controls/providersClass/timer_provider.dart';
 import 'package:planla/models/today_model.dart';
 
 import '../../models/user.dart';
