@@ -29,7 +29,7 @@ class BackgroundService {
         iosConfiguration: IosConfiguration(
             onBackground: iosBackground, onForeground: iosBackground),
         androidConfiguration: AndroidConfiguration(
-            onStart: onStart(context),
+            onStart: onStart,
             autoStart: true,
             isForegroundMode: true,
             notificationChannelId: 'coding',
@@ -52,12 +52,12 @@ class BackgroundService {
 }
 
 @pragma('vm:enry-point')
-void onStart(ServiceInstance service,BuildContext context) {
+void onStart(ServiceInstance service/*,BuildContext context*/) {
   DartPluginRegistrant.ensureInitialized();
   print('pppppppppppppoooooooooooooooooooooooooooooooooooooooooooooooooooo');
-  TimerProvider? timerProvider;
+  /*TimerProvider? timerProvider;
   timerProvider=Provider.of<TimerProvider>(context);
-  timerProvider.startTime(resets: false);
+  timerProvider.startTime(resets: false);*/
 
   service.on('setAsForeground').listen((event) {
     print('Forgraunddddddddddddddddddddddddddddddddddddddd');
