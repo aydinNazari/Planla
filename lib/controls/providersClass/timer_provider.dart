@@ -16,11 +16,13 @@ class TimerProvider with ChangeNotifier {
   static Duration countdownDuration = const Duration();
   int _counter = 0;
 
+
   int get getHours => _hours;
 
   int get getMinute => _minute;
 
   int get getSecends => _secends;
+
   int get getCounter => _counter;
 
   String get getdenemeSecend => _denemeSecend;
@@ -94,7 +96,7 @@ class TimerProvider with ChangeNotifier {
         _denemeSecend='00';
         saniye=0;
       }*/
-      if(_counter<1){
+      if (_counter < 1) {
         setTimerReset('00');
       }
       notifyListeners();

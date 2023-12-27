@@ -178,6 +178,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                   ),*/
                       const LoginSigninButtonWidget(
                     color: Color(0xff171818),
+                    radiusControl: false,
                     txt: 'Log in',
                   ),
                 ),
@@ -422,6 +423,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                     },
                     child: const LoginSigninButtonWidget(
                       color: Color(0xff000000),
+                      radiusControl: false,
                       txt: 'Sign in',
                     ),
                   ),

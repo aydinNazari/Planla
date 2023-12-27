@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class LoginSigninButtonWidget extends StatelessWidget {
   final Color color;
   final String txt;
+  final bool radiusControl;
 
   const LoginSigninButtonWidget({
     super.key,
     required this.color,
     required this.txt,
+    required this.radiusControl,
   });
 
   @override
@@ -17,6 +19,11 @@ class LoginSigninButtonWidget extends StatelessWidget {
       width: size.width / 1.1,
       height: size.height / 13,
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(
+            radiusControl ? size.width / 25 : 0,
+          ),
+        ),
         color: color,
       ),
       child: Center(

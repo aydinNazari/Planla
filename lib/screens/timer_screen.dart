@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:planla/controls/providersClass/timer_provider.dart';
 import 'package:planla/utiles/colors.dart';
+import 'package:planla/utiles/constr.dart';
 import 'package:planla/widgets/add_textfield_widget.dart';
 import 'package:planla/widgets/timer_widget.dart';
 import 'package:provider/provider.dart';
@@ -65,8 +67,30 @@ class _TimerScreenState extends State<TimerScreen> {
             ),
             SizedBox(
               height: size.height / 2,
-              child: const Center(
-                  child: Text('motivation cümleleri ve görselleri ')),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+              Padding(
+                padding: EdgeInsets.only(top: size.height / 50),
+                child: SizedBox(
+                  width: size.width,
+                  height: size.height / 2.8,
+                  child: Lottie.network(
+                    motivationLottieList[11],
+                  ),
+                ),
+              ),
+               Expanded(child: Padding(
+                 padding:  EdgeInsets.only(left: size.width/10,right: size.width/10),
+                 child: Text(motivationSentencesList[8],softWrap: true,textDirection: TextDirection.ltr,textAlign: TextAlign.center,style: TextStyle(
+                   fontSize: size.width/22,
+               wordSpacing: 0,
+                   fontWeight: FontWeight.w700,
+                   color: Colors.black,
+                 ),),
+               )),
+                ],
+              ),
             ),
             buildButton(),
           ],
@@ -176,6 +200,7 @@ class _TimerScreenState extends State<TimerScreen> {
                       //BackgroundService().initSercice(hoursNumeric,minuteNumeric,secendNumeric);
                     },
                     child: LoginSigninButtonWidget(
+                      radiusControl: true,
                         color: primeryColor, txt: 'Go')),
                 const Spacer()
               ],
@@ -209,6 +234,7 @@ class _TimerScreenState extends State<TimerScreen> {
             child: SizedBox(
               width: size.width / 3,
               child: LoginSigninButtonWidget(
+                radiusControl: true,
                 color:
                     timerProvider.getCounter != 0 ? Colors.black : Colors.grey,
                 txt: type ? 'Stop' : 'Resume',
@@ -229,6 +255,7 @@ class _TimerScreenState extends State<TimerScreen> {
             child: SizedBox(
               width: size.width / 3,
               child: const LoginSigninButtonWidget(
+                radiusControl: true,
                 color: Colors.black,
                 txt: 'Reset',
               ),

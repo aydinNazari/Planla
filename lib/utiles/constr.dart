@@ -38,6 +38,45 @@ final List<String> items = [
   'Sport',
   'other',
 ];
+
+List<String> motivationSentencesList = [
+  "Believe in yourself; you are capable of amazing things.",
+  "Your only limit is you. Break through it.",
+  "Every small step you take brings you closer to big achievements.",
+  "Challenges are opportunities in disguise. Embrace them!",
+  "Success is not final, failure is not fatal: It is the courage to continue that counts.",
+  "Dream big, work hard, stay focused.",
+  "The only way to do great work is to love what you do.",
+  "Don't watch the clock; do what it does. Keep going.",
+  "Your attitude determines your direction.",
+  "The harder you work for something, the greater you'll feel when you achieve it.",
+  "Success is not just about making money; it's about making a difference.",
+  "You are never too old to set another goal or to dream a new dream.",
+  "Obstacles are the cost of greatness.",
+  "Don't be afraid to give up the good to go for the great.",
+  "Every morning brings new potential, but only if you make the most of it.",
+  "Your time is limited, don't waste it living someone else's life.",
+  "The only way to predict the future is to create it.",
+  "Your energy introduces you before you even speak.",
+  "Don't stop until you're proud.",
+  "Be the change you wish to see in the world."
+];
+List<String> motivationLottieList = [
+  'https://lottie.host/659b65a9-d50c-4a25-bbca-1dd14a8f0e60/uUWtrC4btf.json',
+  'https://lottie.host/fef09369-1da0-4ccc-adc2-f13765c14f10/rTtMACeSU4.json',
+  'https://lottie.host/a9e26b04-490c-406e-b86c-f67cba079316/w06joMa1us.json',
+  'https://lottie.host/dbcb68e5-8933-458a-bf5a-1a7d6a3e95f0/GkzLdZODKh.json',
+  'https://lottie.host/dc6293f1-b81a-411b-be0d-e21aea6d123c/dCUg2RsDp3.json',
+  'https://lottie.host/bcf23d1b-f8a1-4a36-9f20-ad0ae797c192/abKBRRDsAF.json',
+  'https://lottie.host/8ba0c1c4-be52-4520-907d-ad191820a723/BqIN1FnVUW.json',
+  'https://lottie.host/5d61ae1e-8698-4fae-8e06-473a0451d130/ut3CkCCVEs.json',
+  'https://lottie.host/91f29db3-777e-46b7-b435-e3812fa6796d/g5lilnuJjt.json',
+  'https://lottie.host/e1441770-88f7-4a5a-97fd-0101904e2a21/kAk56s2QnJ.json',
+  'https://lottie.host/50d8c47a-d68f-4179-97da-2608d6114550/ZWGGLyJNVB.json',
+  'https://lottie.host/33b0de7a-55f3-4d37-80e0-674c2e53bda6/QGy6sekHDW.json'
+];
+
+
 //firebase instances
 FirebaseAuth auth = FirebaseAuth.instance;
 FirebaseFirestore firestore = FirebaseFirestore.instance;
