@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/controls/providersClass/timer_provider.dart';
 import 'package:planla/utiles/colors.dart';
 import 'package:planla/utiles/constr.dart';
@@ -25,7 +26,9 @@ class _TimerScreenState extends State<TimerScreen> {
 
   @override
   void initState() {
-    Provider.of<TimerProvider>(context, listen: false).reset();
+    TimerProvider timerProvider= Provider.of<TimerProvider>(context, listen: false);
+    timerProvider.reset();
+
     super.initState();
   }
 
@@ -70,25 +73,33 @@ class _TimerScreenState extends State<TimerScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-              Padding(
-                padding: EdgeInsets.only(top: size.height / 50),
-                child: SizedBox(
-                  width: size.width,
-                  height: size.height / 2.8,
-                  child: Lottie.network(
-                    motivationLottieList[11],
+                  Padding(
+                    padding: EdgeInsets.only(top: size.height / 50),
+                    child: SizedBox(
+                      width: size.width,
+                      height: size.height / 3.2,
+                      child: Lottie.network(
+                        timerProvider.getMotivationLttieUrl,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-               Expanded(child: Padding(
-                 padding:  EdgeInsets.only(left: size.width/10,right: size.width/10),
-                 child: Text(motivationSentencesList[8],softWrap: true,textDirection: TextDirection.ltr,textAlign: TextAlign.center,style: TextStyle(
-                   fontSize: size.width/22,
-               wordSpacing: 0,
-                   fontWeight: FontWeight.w700,
-                   color: Colors.black,
-                 ),),
-               )),
+                  Expanded(
+                      child: Padding(
+                    padding: EdgeInsets.only(
+                        left: size.width / 10, right: size.width / 10,top: size.height/80),
+                    child: Text(
+                      timerProvider.getMotivationSentences,
+                      softWrap: true,
+                      textDirection: TextDirection.ltr,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: size.width / 22,
+                        wordSpacing: 0,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
+                      ),
+                    ),
+                  )),
                 ],
               ),
             ),
@@ -200,8 +211,7 @@ class _TimerScreenState extends State<TimerScreen> {
                       //BackgroundService().initSercice(hoursNumeric,minuteNumeric,secendNumeric);
                     },
                     child: LoginSigninButtonWidget(
-                      radiusControl: true,
-                        color: primeryColor, txt: 'Go')),
+                        radiusControl: true, color: primeryColor, txt: 'Go')),
                 const Spacer()
               ],
             ),

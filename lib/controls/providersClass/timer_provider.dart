@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:planla/utiles/constr.dart';
 
 class TimerProvider with ChangeNotifier {
   Timer? timer;
@@ -9,13 +11,15 @@ class TimerProvider with ChangeNotifier {
   int _minute = 0;
   int _secends = 0;
   bool _timerScreenType = true;
+  int tempCounter=0;
 
   String _denemeSecend = '';
   String _denemeMinute = '';
   String _denemeHours = '';
   static Duration countdownDuration = const Duration();
   int _counter = 0;
-
+  String _motivationLottieUrl='';
+  String _motivationSentences='';
 
   int get getHours => _hours;
 
@@ -34,6 +38,9 @@ class TimerProvider with ChangeNotifier {
   Duration get getDuration => duration;
 
   bool get timerScreenType => _timerScreenType;
+
+  String get getMotivationLttieUrl=> _motivationLottieUrl;
+  String get getMotivationSentences=> _motivationSentences;
 
   String twoDigits(int n) => n.toString().padLeft(2, '0');
 
@@ -67,6 +74,14 @@ class TimerProvider with ChangeNotifier {
     timer = Timer.periodic(const Duration(seconds: 1), (_) {
       addTime();
       _counter--;
+      tempCounter++;
+      if(tempCounter==60){
+        tempCounter=0;
+        int temp=setRandomNumber(motivationLottieList.length);
+        setMotivationLottieUrl(motivationLottieList[temp]);
+        temp=setRandomNumber(motivationSentencesList.length);
+        setMotivitionSentences(motivationSentencesList[temp]);
+      }
       // secend2
       //int temp = 0;
       /* temp = counter ~/ 60; //minute
@@ -98,6 +113,7 @@ class TimerProvider with ChangeNotifier {
       }*/
       if (_counter < 1) {
         setTimerReset('00');
+        setTimerScreenType(true);
       }
       notifyListeners();
     });
@@ -148,5 +164,17 @@ class TimerProvider with ChangeNotifier {
     _counter = 0;
     //  secend2=0;
     notifyListeners();
+  }
+  setMotivationLottieUrl(String value){
+    _motivationLottieUrl=value;
+    notifyListeners();
+  }
+  setMotivitionSentences(String value){
+    _motivationSentences=value;
+    notifyListeners();
+  }
+  int setRandomNumber(int value){
+    var random = Random();
+    return random.nextInt(value);
   }
 }

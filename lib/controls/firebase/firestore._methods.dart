@@ -6,6 +6,7 @@ import 'package:planla/utiles/constr.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../providersClass/provider_user.dart';
+import '../providersClass/timer_provider.dart';
 
 class FirestoreMethods {
   Future<void> textSave(BuildContext context, TodayModel todayModel) async {
@@ -103,6 +104,14 @@ class FirestoreMethods {
         providerUser.setTodayList(todayList);
         providerUser.setDoneList(tempList);
         providerUser.setControlFirestore(false);
+      if(context.mounted){
+        TimerProvider timerProvider =
+        Provider.of<TimerProvider>(context, listen: false);
+        timerProvider.setMotivitionSentences(motivationSentencesList[
+        timerProvider.setRandomNumber(motivationSentencesList.length)]);
+        timerProvider.setMotivationLottieUrl(motivationLottieList[
+        timerProvider.setRandomNumber(motivationLottieList.length)]);
+      }
       } on FirebaseException catch (e) {
         if (context.mounted) {
           showSnackBar(context, e.toString(), Colors.red);

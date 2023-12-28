@@ -4,6 +4,7 @@ import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/utiles/constr.dart';
 import 'package:provider/provider.dart';
 
+import '../controls/providersClass/timer_provider.dart';
 import '../utiles/colors.dart';
 import '../widgets/profile_img_widget.dart';
 
