@@ -109,27 +109,31 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                 ),*/
                 ,
                 Padding(
-                  padding: EdgeInsets.only(
-                    top: size.height / 45,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: size.width/25,
                   ),
-                  child: TextInputField(
-                    hintColor: Colors.black,
-                    hintText: 'Enter your email address please...',
-                    iconWidget: Padding(
-                      padding: EdgeInsets.only(right: size.width / 25),
-                      child: const Icon(Icons.mail),
+                  child: SizedBox(
+                    width: size.width / 1.1,
+                    height: size.height / 10,
+                    child: TextInputField(
+                      hintColor: Colors.black,
+                      hintText: 'Enter your email address please...',
+                      iconWidget: Padding(
+                        padding: EdgeInsets.only(right: size.width / 25),
+                        child: const Icon(Icons.mail),
+                      ),
+                      labelTextWidget: const Text('E-Mail'),
+                      obscrueText: false,
+                      onchange: (String s) {
+                        _email = s;
+                      },
                     ),
-                    labelTextWidget: const Text('E-Mail'),
-                    obscrueText: false,
-                    onchange: (String s) {
-                      _email = s;
-                    },
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(
-                    top: size.height / 25,
-                    bottom: size.height / 25,
+                  padding: EdgeInsets.symmetric(
+                    vertical: size.height / 25,
+                    horizontal: size.width/25,
                   ),
                   child: TextInputField(
                     hintColor: Colors.black,
@@ -176,11 +180,15 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                       ),
                     ),
                   ),*/
-                      const LoginSigninButtonWidget(
+                      SizedBox(
+                        width: size.width / 1.1,
+                        height: size.height / 13,
+                        child: const LoginSigninButtonWidget(
                     color: Color(0xff171818),
                     radiusControl: false,
                     txt: 'Log in',
                   ),
+                      ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: size.height / 50),
@@ -345,36 +353,44 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                     padding: EdgeInsets.only(
                       top: size.height / 50,
                     ),
-                    child: TextInputField(
-                      hintColor: Colors.black,
-                      hintText: 'Enter your name please...',
-                      iconWidget: Padding(
-                        padding: EdgeInsets.only(right: size.width / 25),
-                        child: const Icon(Icons.person),
+                    child: SizedBox(
+                      width: size.width / 1.1,
+                      height: size.height / 10,
+                      child: TextInputField(
+                        hintColor: Colors.black,
+                        hintText: 'Enter your name please...',
+                        iconWidget: Padding(
+                          padding: EdgeInsets.only(right: size.width / 25),
+                          child: const Icon(Icons.person),
+                        ),
+                        labelTextWidget: const Text('Name'),
+                        obscrueText: false,
+                        onchange: (String s) {
+                          _name = s;
+                        },
                       ),
-                      labelTextWidget: const Text('Name'),
-                      obscrueText: false,
-                      onchange: (String s) {
-                        _name = s;
-                      },
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(
                       top: size.height / 50,
                     ),
-                    child: TextInputField(
-                      hintColor: Colors.black,
-                      hintText: 'Enter your email address please...',
-                      iconWidget: Padding(
-                        padding: EdgeInsets.only(right: size.width / 25),
-                        child: const Icon(Icons.mail),
+                    child: SizedBox(
+                      width: size.width / 1.1,
+                      height: size.height / 10,
+                      child: TextInputField(
+                        hintColor: Colors.black,
+                        hintText: 'Enter your email address please...',
+                        iconWidget: Padding(
+                          padding: EdgeInsets.only(right: size.width / 25),
+                          child: const Icon(Icons.mail),
+                        ),
+                        labelTextWidget: const Text('E-Mail'),
+                        obscrueText: false,
+                        onchange: (String s) {
+                          _email = s;
+                        },
                       ),
-                      labelTextWidget: const Text('E-Mail'),
-                      obscrueText: false,
-                      onchange: (String s) {
-                        _email = s;
-                      },
                     ),
                   ),
                   Padding(
@@ -382,20 +398,24 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                       top: size.height / 50,
                       bottom: size.height / 80,
                     ),
-                    child: TextInputField(
-                      hintColor: Colors.black,
-                      hintText: 'Enter your password please...',
-                      iconWidget: Padding(
-                        padding: EdgeInsets.only(
-                          right: size.width / 25,
+                    child: SizedBox(
+                      width: size.width / 1.1,
+                      height: size.height / 10,
+                      child: TextInputField(
+                        hintColor: Colors.black,
+                        hintText: 'Enter your password please...',
+                        iconWidget: Padding(
+                          padding: EdgeInsets.only(
+                            right: size.width / 25,
+                          ),
+                          child: const Icon(Icons.lock),
                         ),
-                        child: const Icon(Icons.lock),
+                        labelTextWidget: const Text('Password'),
+                        obscrueText: true,
+                        onchange: (String s) {
+                          _pass = s;
+                        },
                       ),
-                      labelTextWidget: const Text('Password'),
-                      obscrueText: true,
-                      onchange: (String s) {
-                        _pass = s;
-                      },
                     ),
                   ),
                   InkWell(
@@ -421,10 +441,14 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                         });
                       }
                     },
-                    child: const LoginSigninButtonWidget(
-                      color: Color(0xff000000),
-                      radiusControl: false,
-                      txt: 'Sign in',
+                    child: SizedBox(
+                      width: size.width / 1.1,
+                      height: size.height / 13,
+                      child: const LoginSigninButtonWidget(
+                        color: Color(0xff000000),
+                        radiusControl: false,
+                        txt: 'Sign in',
+                      ),
                     ),
                   ),
                   Padding(

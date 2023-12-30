@@ -191,6 +191,8 @@ Future<void> logOutFunc(BuildContext context, Size size, bool exitType,ProviderU
         providerUser.setTodayList([]);
         providerUser.setTankList([]);
         providerUser.setIdList([]);
+        providerUser.setEventsListString([]);
+        providerUser.setEventsListMap([]);
         Navigator.of(context).pop();
         Navigator.push(
           context,
@@ -199,10 +201,6 @@ Future<void> logOutFunc(BuildContext context, Size size, bool exitType,ProviderU
             child: const LoginSignInScreen(),
           ),
         );
-        print(providerUser.getTankList.length);
-        print(providerUser.getDoneList.length);
-        print(providerUser.getTodayList.length);
-        print(providerUser.getIdList.length);
       }
     }, () {
       Navigator.of(context).pop();

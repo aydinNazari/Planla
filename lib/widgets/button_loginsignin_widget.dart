@@ -16,8 +16,6 @@ class LoginSigninButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Container(
-      width: size.width / 1.1,
-      height: size.height / 13,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(

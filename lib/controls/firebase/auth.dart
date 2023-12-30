@@ -21,9 +21,10 @@ class Auth {
     DocumentSnapshot cred = await firestore.collection('users').doc(uid).get();
     model.User user = model.User(
         uid: uid!,
-        email: (cred.data()! as dynamic)['email'],
-        name: (cred.data()! as dynamic)['name'],
-        imageurl: (cred.data()! as dynamic)['imageurl'],
+        email: (cred.data() as dynamic)['email'],
+        name: (cred.data() as dynamic)['name'],
+        imageurl: (cred.data() as dynamic)['imageurl'],
+      score: (cred.data() as dynamic)['score'],
     );
     providerUser.setUser(user);
     return user;
@@ -45,6 +46,7 @@ class Auth {
             email: email.trim(),
             name: username.trim(),
             imageurl: image,
+          score: 0
         );
         await firestore
             .collection('users')
@@ -75,8 +77,8 @@ class Auth {
       );
       UserCredential userCredential =
           await auth.signInWithCredential(credential);
-      User? user = userCredential.user;
-      model.User _user = await getCurrentUser(user!.uid);
+      User user = userCredential.user!;
+      model.User _user = await getCurrentUser(user.uid);
       if(context.mounted){
         Provider.of<ProviderUser>(context, listen: false).setUser(_user);
       }
@@ -85,11 +87,10 @@ class Auth {
           await firestore.collection('users').doc(user.uid).set(
             {
               'email': user.email,
-              'profilePhoto': user.photoURL,
+              'imageurl': user.photoURL,
+              'name': user.displayName,
               'uid': user.uid,
-              'username': user.displayName,
-              'doneCount': user.displayName,
-              'taskCount': user.displayName,
+              'score' :0,
             },
           );
         }

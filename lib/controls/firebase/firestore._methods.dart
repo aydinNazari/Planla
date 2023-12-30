@@ -5,12 +5,12 @@ import 'package:planla/models/today_model.dart';
 import 'package:planla/utiles/constr.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import '../../models/events_model.dart';
 import '../providersClass/provider_user.dart';
 import '../providersClass/timer_provider.dart';
 
 class FirestoreMethods {
   Future<void> textSave(BuildContext context, TodayModel todayModel) async {
-
     List<TodayModel> todayList = [];
     List<TodayModel> tankList = [];
     List<String> idlist = [];
@@ -48,10 +48,9 @@ class FirestoreMethods {
   }
 
   Future<void> getFirestoreData(BuildContext context) async {
-
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: false);
-    if(providerUser.getControlFirestore){
+    if (providerUser.getControlFirestore) {
       List<String> textIdsList = [];
       try {
         //get textIds list
@@ -88,7 +87,6 @@ class FirestoreMethods {
             }
           }
         }
-
         List<TodayModel> todayList = [];
         List<TodayModel> tempList = [];
         for (int i = 0; i < tankList.length; i++) {
@@ -104,21 +102,40 @@ class FirestoreMethods {
         providerUser.setTodayList(todayList);
         providerUser.setDoneList(tempList);
         providerUser.setControlFirestore(false);
-      if(context.mounted){
-        TimerProvider timerProvider =
-        Provider.of<TimerProvider>(context, listen: false);
-        timerProvider.setMotivitionSentences(motivationSentencesList[
-        timerProvider.setRandomNumber(motivationSentencesList.length)]);
-        timerProvider.setMotivationLottieUrl(motivationLottieList[
-        timerProvider.setRandomNumber(motivationLottieList.length)]);
-      }
+        if (context.mounted) {
+          TimerProvider timerProvider =
+              Provider.of<TimerProvider>(context, listen: false);
+          timerProvider.setMotivitionSentences(motivationSentencesList[
+              timerProvider.setRandomNumber(motivationSentencesList.length)]);
+          timerProvider.setMotivationLottieUrl(motivationLottieList[
+              timerProvider.setRandomNumber(motivationLottieList.length)]);
+        }
+        // events get
+        var eventSnap = await firestore
+            .collection('events')
+            .doc(providerUser.user.uid)
+            .get();
+        if (eventSnap.exists) {
+          Map<String, dynamic> eventData =
+              eventSnap.data() as Map<String, dynamic>;
+          List<Map<String, dynamic>> eventTempList = [{}];
+          eventTempList.add(eventData);
+          providerUser.setEventsListMap(eventTempList);
+          List<String> keyList = eventTempList
+              .map((map) => map.keys.first) // Her bir Map'in ilk anahtarını al
+              .toList();
+          providerUser.setEventsListString(keyList);
+          print('8888888888888888888888888888888888888888888');
+          print(providerUser.getEventsString.length);
+        } else {
+          print('event Belgesi bulunamadı.');
+        }
       } on FirebaseException catch (e) {
         if (context.mounted) {
           showSnackBar(context, e.toString(), Colors.red);
         }
       }
     }
-
   }
 
   Future<void> deleteCard(BuildContext context, String deleteId) async {
@@ -158,7 +175,7 @@ class FirestoreMethods {
       }
       providerUser.setTankList(tempList);
 
-      List<TodayModel> listt=[];
+      List<TodayModel> listt = [];
       for (int i = 0; i < todayList.length; i++) {
         if (todayList[i].textUid != deleteId) {
           listt.add(todayList[i]);
@@ -235,6 +252,29 @@ class FirestoreMethods {
     }
   }
 
+  Future<void> saveEvent(
+      BuildContext context, Map<String, dynamic> event) async {
+    ProviderUser providerUser =
+        Provider.of<ProviderUser>(context, listen: false);
+    List<Map<String, dynamic>> tempMapList = [];
+    try {
+      tempMapList = providerUser.getEventsListMap;
+      tempMapList.add(event);
+      EventModel eventModel = EventModel(eventsMap: tempMapList);
+        var snap =
+          await firestore.collection('events').doc(providerUser.user.uid).get();
+      int alldoc = snap.data()!.length;
+      await firestore
+          .collection('events')
+          .doc(providerUser.user.uid)
+          .update(tempMapList.toMap());
+      providerUser.setEventsListMap(tempMapList);
+    } on FirebaseException catch (e) {
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
+    }
+  }
 
   String _twoDigits(Timestamp timestamp) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(

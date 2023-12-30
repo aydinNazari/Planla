@@ -1,16 +1,17 @@
 import 'package:flutter/foundation.dart';
-import 'package:planla/controls/providersClass/timer_provider.dart';
 import 'package:planla/models/today_model.dart';
 
 import '../../models/user.dart';
 
 class ProviderUser with ChangeNotifier {
-  User _user = User(uid: '', email: '', name: '', imageurl: '');
+  User _user = User(uid: '', email: '', name: '', imageurl: '',score: 0);
   List<TodayModel> _todayList=[];
   List<TodayModel> _tankList=[];
   List<String> _idList=[];
   bool _controlGetFirestore=true;
   List<TodayModel> _doneList=[];
+  List<Map<String, dynamic>> _eventsListMap=[];
+  List<String> _eventsListString=[];
 
 
   User get user => _user;
@@ -19,6 +20,8 @@ class ProviderUser with ChangeNotifier {
   List<String> get getIdList=>_idList;
   bool get getControlFirestore=>_controlGetFirestore;
   List<TodayModel> get getDoneList=> _doneList;
+  List<Map<String, dynamic>> get getEventsListMap=> _eventsListMap;
+  List<String> get getEventsString=> _eventsListString;
 
 
   setControlFirestore(bool control){
@@ -43,6 +46,14 @@ class ProviderUser with ChangeNotifier {
   }
   setDoneList(List<TodayModel> doneList){
     _doneList=doneList;
+    notifyListeners();
+  }
+  setEventsListMap(List<Map<String,dynamic>> list){
+    _eventsListMap=list;
+    notifyListeners();
+  }
+  setEventsListString(List<String> list){
+    _eventsListString=list;
     notifyListeners();
   }
 

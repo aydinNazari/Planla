@@ -19,10 +19,7 @@ class TextInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return SizedBox(
-      width: size.width / 1.1,
-      height: size.height / 10,
       child: TextField(
         textCapitalization: TextCapitalization.words,
         onChanged: onchange,

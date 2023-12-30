@@ -5,10 +5,10 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/controls/providersClass/timer_provider.dart';
 import 'package:planla/utiles/colors.dart';
-import 'package:planla/utiles/constr.dart';
-import 'package:planla/widgets/add_textfield_widget.dart';
+import 'package:planla/widgets/textinputfield_widget.dart';
 import 'package:planla/widgets/timer_widget.dart';
 import 'package:provider/provider.dart';
+import '../controls/firebase/firestore._methods.dart';
 import '../widgets/button_loginsignin_widget.dart';
 
 class TimerScreen extends StatefulWidget {
@@ -23,10 +23,12 @@ class _TimerScreenState extends State<TimerScreen> {
   int hoursNumeric = 0;
   int minuteNumeric = 0;
   int secendNumeric = 0;
+  String _event = '';
 
   @override
   void initState() {
-    TimerProvider timerProvider= Provider.of<TimerProvider>(context, listen: false);
+    TimerProvider timerProvider =
+        Provider.of<TimerProvider>(context, listen: false);
     timerProvider.reset();
 
     super.initState();
@@ -36,7 +38,105 @@ class _TimerScreenState extends State<TimerScreen> {
   Widget build(BuildContext context) {
     TimerProvider providerTimer =
         Provider.of<TimerProvider>(context, listen: false);
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(
+          bottom: size.height / 80,
+        ),
+        child: GestureDetector(
+          onTap: () {
+            showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                content: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Spacer(),
+                          Text(
+                            'Add',
+                            style: TextStyle(
+                                color: primeryColor,
+                                fontSize: size.width / 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const Spacer(),
+                        ],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: size.height / 45, bottom: size.height / 80),
+                        child: Text(
+                          'Add your new event',
+                          style: TextStyle(
+                              color: const Color(0xff26303b),
+                              fontWeight: FontWeight.w400,
+                              fontSize: size.width / 20),
+                        ),
+                      ),
+                      SizedBox(
+                        width: size.width / 2,
+                        height: size.height / 12,
+                        child: TextInputField(
+                            hintText: 'Add new activity',
+                            labelTextWidget: const Text('Add'),
+                            iconWidget: const SizedBox(),
+                            obscrueText: false,
+                            onchange: (v) {
+                              _event = v;
+                            },
+                            hintColor: Colors.grey),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: size.height / 25),
+                        child: Row(
+                          children: [
+                            const Spacer(),
+                            TextButton(
+                              onPressed: () {
+                                Map<String, dynamic> event = {_event: 0};
+                                FirestoreMethods().saveEvent(context, event);
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Yes'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('No'),
+                            ),
+                            const Spacer()
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+          child: Container(
+            width: size.width / 8,
+            height: size.height / 15,
+            decoration:
+                BoxDecoration(color: primeryColor, shape: BoxShape.circle),
+            child: Center(
+              child: Text(
+                '+',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: size.width / 15,
+                    fontWeight: FontWeight.w400),
+              ),
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       body: providerTimer.timerScreenType
           ? buildTimerSetScreen()
           : buildTimerCountScreen(),
@@ -86,7 +186,9 @@ class _TimerScreenState extends State<TimerScreen> {
                   Expanded(
                       child: Padding(
                     padding: EdgeInsets.only(
-                        left: size.width / 10, right: size.width / 10,top: size.height/80),
+                        left: size.width / 10,
+                        right: size.width / 10,
+                        top: size.height / 80),
                     child: Text(
                       timerProvider.getMotivationSentences,
                       softWrap: true,
@@ -113,6 +215,9 @@ class _TimerScreenState extends State<TimerScreen> {
   SingleChildScrollView buildTimerSetScreen() {
     TimerProvider timerProvider =
         Provider.of<TimerProvider>(context, listen: true);
+    ProviderUser providerUser=Provider.of<ProviderUser>(context, listen: true);
+    print('sssssssssssssssssssssssssssss');
+    print(providerUser.getEventsString.length);
     Size size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
@@ -121,8 +226,9 @@ class _TimerScreenState extends State<TimerScreen> {
           SizedBox(
             height: size.height / 20,
           ),
-          SizedBox(
+          /*   SizedBox(
               width: size.width,
+              height:100,
               child: Row(
                 children: [
                   const Spacer(),
@@ -139,51 +245,63 @@ class _TimerScreenState extends State<TimerScreen> {
                   ),
                   const Spacer(),
                 ],
-              )),
+              )),*/
           Padding(
             padding: EdgeInsets.only(
-                top: size.height / 25,
+                //        top: size.height / 25,
                 left: size.width / 25,
                 right: size.width / 25),
             child: Row(
               children: [
                 Expanded(
-                    child: numeric(
-                  current: hoursNumeric,
-                  onChanged: (value) {
-                    setState(() {
-                      hoursNumeric = value;
-                    });
-                    timerProvider.reset();
-                  },
+                    child: Column(
+                  children: [
+                    buildNumericText(size, 'Hours'),
+                    numeric(
+                      current: hoursNumeric,
+                      onChanged: (value) {
+                        setState(() {
+                          hoursNumeric = value;
+                        });
+                        timerProvider.reset();
+                      },
+                    ),
+                  ],
                 )),
                 Expanded(
-                    child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: size.width / 80),
-                  child: numeric(
-                    current: minuteNumeric,
-                    onChanged: (value) {
-                      setState(() {
-                        minuteNumeric = value;
-                      });
-                      timerProvider.reset();
-                    },
-                  ),
+                    child: Column(
+                  children: [
+                    numeric(
+                      current: minuteNumeric,
+                      onChanged: (value) {
+                        setState(() {
+                          minuteNumeric = value;
+                        });
+                        timerProvider.reset();
+                      },
+                    ),
+                    buildNumericText(size, 'Minute'),
+                  ],
                 )),
                 Expanded(
-                    child: numeric(
-                  current: secendNumeric,
-                  onChanged: (value) {
-                    setState(() {
-                      secendNumeric = value;
-                    });
-                    timerProvider.reset();
-                  },
+                    child: Column(
+                  children: [
+                    buildNumericText(size, 'Secend'),
+                    numeric(
+                      current: secendNumeric,
+                      onChanged: (value) {
+                        setState(() {
+                          secendNumeric = value;
+                        });
+                        timerProvider.reset();
+                      },
+                    ),
+                  ],
                 )),
               ],
             ),
           ),
-          Padding(
+          /* Padding(
             padding:
                 EdgeInsets.only(left: size.height / 25, top: size.height / 25),
             child: SizedBox(
@@ -191,32 +309,99 @@ class _TimerScreenState extends State<TimerScreen> {
               height: size.height / 5,
               child: AddTextfieldWidget(onSubmit: (v) {}),
             ),
+          ),*/
+          SizedBox(
+            height: size.height / 3,
+            width: size.width,
+            child: ListView.builder(
+              itemCount: providerUser.getEventsString.length,
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemBuilder: (context, index) {
+                print('sss ${providerUser.getEventsString[index]}' );
+                return SizedBox(
+                  width: size.width / 10,
+                  height: size.height / 50,
+                  child: Row(
+                    children: [
+                      Checkbox(value: false, onChanged: (v) {}),
+                      Padding(
+                        padding:  EdgeInsets.only(right: size.width/25),
+                        child: Text(
+                          providerUser.getEventsString[index],
+                          style: TextStyle(
+                              color: Colors.black38,
+                              fontSize: size.width / 20,
+                              fontWeight: FontWeight.w700),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
-          Padding(
-            padding: EdgeInsets.only(
-              top: size.height / 25,
-            ),
-            child: Row(
-              children: [
-                const Spacer(),
-                InkWell(
-                    onTap: () {
-                      timerProvider.setHours(hoursNumeric);
-                      timerProvider.setMinute(minuteNumeric);
-                      timerProvider.setSecends(secendNumeric);
-                      timerProvider.startTime(resets: false);
-                      timerProvider.setTimerScreenType(false);
-                      // BackgroundService().initSercice(context);
-                      timerProvider.reset();
-                      //BackgroundService().initSercice(hoursNumeric,minuteNumeric,secendNumeric);
-                    },
-                    child: LoginSigninButtonWidget(
-                        radiusControl: true, color: primeryColor, txt: 'Go')),
-                const Spacer()
-              ],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Spacer(),
+              SizedBox(
+                width: size.width / 3,
+                height: size.height / 12,
+                child: InkWell(
+                  onTap: () {
+                    timerProvider.setHours(hoursNumeric);
+                    timerProvider.setMinute(minuteNumeric);
+                    timerProvider.setSecends(secendNumeric);
+                    timerProvider.startTime(resets: false);
+                    timerProvider.setTimerScreenType(false);
+                    // BackgroundService().initSercice(context);
+                    timerProvider.reset();
+                    //BackgroundService().initSercice(hoursNumeric,minuteNumeric,secendNumeric);
+                  },
+                  child: LoginSigninButtonWidget(
+                    radiusControl: true,
+                    color: primeryColor,
+                    txt: 'Go',
+                  ),
+                ),
+              ),
+              /*  Padding(
+                padding: EdgeInsets.only(right: size.width / 40),
+                child: Container(
+                  //margin: EdgeInsets.only(bottom: size.height/12),
+                  width: size.width / 8,
+                  height: size.height / 12,
+                  decoration: BoxDecoration(
+                      color: primeryColor, shape: BoxShape.circle),
+                  child: Center(
+                    child: Text(
+                      '+',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: size.width / 15,
+                          fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                ),
+              ),*/
+              const Spacer(),
+            ],
           )
         ],
+      ),
+    );
+  }
+
+  Widget buildNumericText(Size size, String txt) {
+    return Padding(
+      padding: EdgeInsets.only(top: size.height / 80, bottom: size.height / 80),
+      child: Text(
+        txt,
+        style: TextStyle(
+            color: Colors.grey,
+            fontSize: size.width / 20,
+            fontWeight: FontWeight.w400),
       ),
     );
   }
@@ -243,6 +428,7 @@ class _TimerScreenState extends State<TimerScreen> {
             },
             child: SizedBox(
               width: size.width / 3,
+              height: size.height / 13,
               child: LoginSigninButtonWidget(
                 radiusControl: true,
                 color:
@@ -264,6 +450,7 @@ class _TimerScreenState extends State<TimerScreen> {
             },
             child: SizedBox(
               width: size.width / 3,
+              height: size.height / 13,
               child: const LoginSigninButtonWidget(
                 radiusControl: true,
                 color: Colors.black,
