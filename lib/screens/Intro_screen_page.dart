@@ -32,6 +32,7 @@ class _IntroScreenState extends State<IntroScreen> {
       child: Scaffold(
         backgroundColor: const Color(0xffffffff),
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           elevation: 0,
           backgroundColor: Colors.white,
           actions: [

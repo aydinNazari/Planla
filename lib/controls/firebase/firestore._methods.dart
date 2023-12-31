@@ -118,15 +118,13 @@ class FirestoreMethods {
         if (eventSnap.exists) {
           Map<String, dynamic> eventData =
               eventSnap.data() as Map<String, dynamic>;
+
           List<Map<String, dynamic>> eventTempList = [{}];
           eventTempList.add(eventData);
           providerUser.setEventsListMap(eventTempList);
-          List<String> keyList = eventTempList
-              .map((map) => map.keys.first) // Her bir Map'in ilk anahtarını al
-              .toList();
+
+          List<String> keyList = getKeys(eventTempList);
           providerUser.setEventsListString(keyList);
-          print('8888888888888888888888888888888888888888888');
-          print(providerUser.getEventsString.length);
         } else {
           print('event Belgesi bulunamadı.');
         }
@@ -137,7 +135,36 @@ class FirestoreMethods {
       }
     }
   }
+  List<String> getKeys(List<Map<String, dynamic>> dataList) {
+    List<String> keys = [];
 
+    for (var data in dataList) {
+      keys.addAll(_getKeys(data));
+    }
+
+    return keys;
+  }
+
+
+  List<String> _getKeys(Map<String, dynamic> data) {
+    List<String> keys = [];
+
+    data.forEach((key, value) {
+      if (value is Map<String, dynamic>) {
+        keys.addAll(_getKeys(value));
+      } else if (value is List) {
+        for (var item in value) {
+          if (item is Map<String, dynamic>) {
+            keys.addAll(_getKeys(item));
+          }
+        }
+      } else {
+        keys.add(key);
+      }
+    });
+
+    return keys;
+  }
   Future<void> deleteCard(BuildContext context, String deleteId) async {
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: false);
@@ -260,15 +287,20 @@ class FirestoreMethods {
     try {
       tempMapList = providerUser.getEventsListMap;
       tempMapList.add(event);
-      EventModel eventModel = EventModel(eventsMap: tempMapList);
-        var snap =
+      //EventModel eventModel = EventModel(eventsMap: tempMapList);
+      /*var snap =
           await firestore.collection('events').doc(providerUser.user.uid).get();
-      int alldoc = snap.data()!.length;
+      int alldoc = snap.data()!.length;*/
       await firestore
           .collection('events')
           .doc(providerUser.user.uid)
-          .update(tempMapList.toMap());
+          .set({
+        'eventsMap' : tempMapList
+      });
       providerUser.setEventsListMap(tempMapList);
+
+      List<String> keyList = getKeys(tempMapList);
+      providerUser.setEventsListString(keyList);
     } on FirebaseException catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);

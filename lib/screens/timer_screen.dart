@@ -24,6 +24,7 @@ class _TimerScreenState extends State<TimerScreen> {
   int minuteNumeric = 0;
   int secendNumeric = 0;
   String _event = '';
+  bool checkBoxControl = false;
 
   @override
   void initState() {
@@ -215,9 +216,8 @@ class _TimerScreenState extends State<TimerScreen> {
   SingleChildScrollView buildTimerSetScreen() {
     TimerProvider timerProvider =
         Provider.of<TimerProvider>(context, listen: true);
-    ProviderUser providerUser=Provider.of<ProviderUser>(context, listen: true);
-    print('sssssssssssssssssssssssssssss');
-    print(providerUser.getEventsString.length);
+    ProviderUser providerUser =
+        Provider.of<ProviderUser>(context, listen: true);
     Size size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
@@ -313,33 +313,47 @@ class _TimerScreenState extends State<TimerScreen> {
           SizedBox(
             height: size.height / 3,
             width: size.width,
-            child: ListView.builder(
-              itemCount: providerUser.getEventsString.length,
+            child: GridView.count(
+              crossAxisCount: 2,
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
-              itemBuilder: (context, index) {
-                print('sss ${providerUser.getEventsString[index]}' );
-                return SizedBox(
-                  width: size.width / 10,
-                  height: size.height / 50,
-                  child: Row(
-                    children: [
-                      Checkbox(value: false, onChanged: (v) {}),
-                      Padding(
-                        padding:  EdgeInsets.only(right: size.width/25),
-                        child: Text(
-                          providerUser.getEventsString[index],
-                          style: TextStyle(
-                              color: Colors.black38,
-                              fontSize: size.width / 20,
-                              fontWeight: FontWeight.w700),
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              },
-            ),
+              children: List.generate(
+                providerUser.getEventsString.length,
+                    (index) {
+                  return InkWell(
+                    onTap: () {},
+                    child: SizedBox(
+                      width: size.width / 10,
+                      height: 10,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: checkBoxControl,
+                            onChanged: (v) {
+                              setState(() {
+                                checkBoxControl = v!;
+                              });
+                            },
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: size.width / 25),
+                            child: Text(
+                              providerUser.getEventsString[index],
+                              style: TextStyle(
+                                color: Colors.black38,
+                                fontSize: size.width / 20,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+            ,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

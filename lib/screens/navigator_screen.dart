@@ -16,7 +16,7 @@ class NavigatorScreen extends StatefulWidget {
 }
 
 class _NavigatorScreenState extends State<NavigatorScreen> {
-  int currentIndex = 0;
+  int currentIndex = 2;
 
   void navigatorIndex(int value) {
     if (Provider.of<ProviderUser>(context, listen: false).getControlFirestore) {

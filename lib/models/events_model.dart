@@ -1,5 +1,5 @@
 class EventModel {
-  List<Map<String, dynamic>> eventsMap;
+  List<Map> eventsMap;
 
   EventModel({
     required this.eventsMap,
@@ -10,10 +10,9 @@ class EventModel {
       'eventsMap': eventsMap,
     };
   }
-
   factory EventModel.fromMap(Map<String, dynamic> map) {
     return EventModel(
-      eventsMap: List<Map<String, dynamic>>.from(map['eventsMap'] ?? []),
+      eventsMap: List<Map>.from(map['eventsMap'] ?? []),
     );
   }
 }
