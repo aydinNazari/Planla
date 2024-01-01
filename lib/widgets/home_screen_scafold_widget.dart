@@ -95,7 +95,6 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                                 EdgeInsets.only(right: size.width / 50),
                                 child: const TypeContainerWidget(
                                     typeWidget: 1,
-                                    txt: '5h',
                                     imgUrl: 'assets/images/work.png'),
                               ),
                             ),
@@ -105,7 +104,6 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                                 EdgeInsets.only(right: size.width / 50),
                                 child: const TypeContainerWidget(
                                     typeWidget: 2,
-                                    txt: '2h',
                                     imgUrl: 'assets/images/study.png'),
                               ),
                             ),
@@ -122,7 +120,6 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                                 EdgeInsets.only(right: size.width / 50),
                                 child: const TypeContainerWidget(
                                     typeWidget: 3,
-                                    txt: '5h',
                                     imgUrl: 'assets/images/sport.png'),
                               ),
                             ),
@@ -132,7 +129,6 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                                 EdgeInsets.only(right: size.width / 50),
                                 child: const TypeContainerWidget(
                                     typeWidget: 4,
-                                    txt: '2h',
                                     imgUrl: 'assets/images/other.png'),
                               ),
                             ),

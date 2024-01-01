@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
 class TypeContainerWidget extends StatelessWidget {
-  final String txt;
   final String imgUrl;
   final int typeWidget;
 
   const TypeContainerWidget(
       {Key? key,
-      required this.txt,
+
       required this.imgUrl,
       required this.typeWidget})
       : super(key: key);
@@ -35,31 +34,11 @@ class TypeContainerWidget extends StatelessWidget {
             Radius.circular(size.width / 20),
           )),
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: SizedBox(
-                child: Image.asset(imgUrl),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: size.height / 80),
-              child: Text(
-                txt,
-                style: TextStyle(
-                    shadows: const <Shadow>[
-                      Shadow(
-                          color: Colors.black,
-                          blurRadius: 4,
-                          offset: Offset(0, 0))
-                    ],
-                    color: Colors.black,
-                    fontSize: size.width / 15,
-                    fontWeight: FontWeight.w600),
-              ),
-            )
-          ],
+        child: Padding(
+          padding:  EdgeInsets.all(size.width/18),
+          child: SizedBox(
+            child: Image.asset(imgUrl),
+          ),
         ),
       ),
     );

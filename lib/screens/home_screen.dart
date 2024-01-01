@@ -34,7 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
         if (snapshot.connectionState == ConnectionState.done) {
           return
               const HomeScreenScafoldWidget();
-
         } else {
           // Veriler çekilirken bir loading gösterin
           return Center(

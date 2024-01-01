@@ -116,6 +116,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                     width: size.width / 1.1,
                     height: size.height / 10,
                     child: TextInputField(
+                      inputLenghtControl: false,
                       hintColor: Colors.black,
                       hintText: 'Enter your email address please...',
                       iconWidget: Padding(
@@ -136,6 +137,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                     horizontal: size.width/25,
                   ),
                   child: TextInputField(
+inputLenghtControl: false,
                     hintColor: Colors.black,
                     hintText: 'Enter your password please...',
                     iconWidget: Padding(
@@ -357,6 +359,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                       width: size.width / 1.1,
                       height: size.height / 10,
                       child: TextInputField(
+                        inputLenghtControl: false,
                         hintColor: Colors.black,
                         hintText: 'Enter your name please...',
                         iconWidget: Padding(
@@ -379,6 +382,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                       width: size.width / 1.1,
                       height: size.height / 10,
                       child: TextInputField(
+                        inputLenghtControl: false,
                         hintColor: Colors.black,
                         hintText: 'Enter your email address please...',
                         iconWidget: Padding(
@@ -402,6 +406,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                       width: size.width / 1.1,
                       height: size.height / 10,
                       child: TextInputField(
+                        inputLenghtControl: false,
                         hintColor: Colors.black,
                         hintText: 'Enter your password please...',
                         iconWidget: Padding(

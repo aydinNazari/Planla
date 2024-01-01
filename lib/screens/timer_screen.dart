@@ -24,15 +24,40 @@ class _TimerScreenState extends State<TimerScreen> {
   int minuteNumeric = 0;
   int secendNumeric = 0;
   String _event = '';
-  bool checkBoxControl = false;
+  List<bool> checkboxList = [];
 
   @override
   void initState() {
     TimerProvider timerProvider =
         Provider.of<TimerProvider>(context, listen: false);
-    timerProvider.reset();
 
+    timerProvider.reset();
+    checkboxListUpdate(false);
     super.initState();
+  }
+
+  void checkboxListUpdate(bool control){
+    ProviderUser providerUser =
+    Provider.of<ProviderUser>(context, listen: false);
+    checkboxList.clear();
+    for (int i = 0; i < providerUser.getEventsString.length; i++) {
+      checkboxList.add(false);
+    }
+    providerUser.setCheckBoxList(checkboxList,control);
+  }
+
+  void checkBoxSetValue(int index,BuildContext context) {
+    ProviderUser providerUser =
+        Provider.of<ProviderUser>(context, listen: false);
+    checkboxList = providerUser.getCheckBoxList;
+    for (int i = 0; i < providerUser.getEventsString.length; i++) {
+      if (i == index) {
+        checkboxList[i] = true;
+      } else {
+        checkboxList[i] = false;
+      }
+    }
+    providerUser.setCheckBoxList(checkboxList,true);
   }
 
   @override
@@ -40,6 +65,7 @@ class _TimerScreenState extends State<TimerScreen> {
     TimerProvider providerTimer =
         Provider.of<TimerProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       floatingActionButton: Padding(
         padding: EdgeInsets.only(
@@ -82,8 +108,9 @@ class _TimerScreenState extends State<TimerScreen> {
                         width: size.width / 2,
                         height: size.height / 12,
                         child: TextInputField(
+                            inputLenghtControl: true,
                             hintText: 'Add new activity',
-                            labelTextWidget: const Text('Add'),
+                            labelTextWidget: const Text('up to 10 characters'),
                             iconWidget: const SizedBox(),
                             obscrueText: false,
                             onchange: (v) {
@@ -97,10 +124,13 @@ class _TimerScreenState extends State<TimerScreen> {
                           children: [
                             const Spacer(),
                             TextButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 Map<String, dynamic> event = {_event: 0};
-                                FirestoreMethods().saveEvent(context, event);
-                                Navigator.of(context).pop();
+                               await FirestoreMethods().saveEvent(context, event);
+                                checkboxListUpdate(true);
+                                if(context.mounted){
+                                  Navigator.of(context).pop();
+                                }
                               },
                               child: const Text('Yes'),
                             ),
@@ -147,6 +177,7 @@ class _TimerScreenState extends State<TimerScreen> {
   Widget buildTimerCountScreen() {
     TimerProvider timerProvider =
         Provider.of<TimerProvider>(context, listen: true);
+
     Size size = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.only(top: size.height / 25),
@@ -218,6 +249,7 @@ class _TimerScreenState extends State<TimerScreen> {
         Provider.of<TimerProvider>(context, listen: true);
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: true);
+    checkboxList = providerUser.getCheckBoxList;
     Size size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
@@ -310,50 +342,83 @@ class _TimerScreenState extends State<TimerScreen> {
               child: AddTextfieldWidget(onSubmit: (v) {}),
             ),
           ),*/
-          SizedBox(
-            height: size.height / 3,
-            width: size.width,
-            child: GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              children: List.generate(
-                providerUser.getEventsString.length,
-                    (index) {
-                  return InkWell(
-                    onTap: () {},
-                    child: SizedBox(
-                      width: size.width / 10,
-                      height: 10,
-                      child: Row(
-                        children: [
-                          Checkbox(
-                            value: checkBoxControl,
-                            onChanged: (v) {
-                              setState(() {
-                                checkBoxControl = v!;
-                              });
-                            },
+          Padding(
+            padding: EdgeInsets.only(top: size.height / 25),
+            child: SizedBox(
+              height: size.height / 2.6,
+              width: size.width,
+              child: providerUser.getEventsString.isEmpty
+                  ? Column(
+                      children: [
+                        SizedBox(
+                          width: size.width,
+                          height: size.height / 3.5,
+                          child: Lottie.network(
+                              'https://lottie.host/62c43383-e871-430e-8e0b-6dde45b772fa/Xdx9EidvGt.json'),
+                        ),
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: size.width / 6),
+                          child: Text(
+                            'You don\'t have any events, you must add at least one event first ',
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                            style: TextStyle(
+                                color: Colors.grey, fontSize: size.width / 25),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(right: size.width / 25),
-                            child: Text(
-                              providerUser.getEventsString[index],
-                              style: TextStyle(
-                                color: Colors.black38,
-                                fontSize: size.width / 20,
-                                fontWeight: FontWeight.w700,
-                              ),
+                        )
+                      ],
+                    )
+                  : Padding(
+                    padding: EdgeInsets.only(left: size.width/15),
+                    child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: size.width / 2,
+                          childAspectRatio: size.height / 200,
+                          crossAxisSpacing: size.height / 20,
+                          mainAxisSpacing: size.width / 25,
+                        ),
+                        itemCount: providerUser.getEventsString.length,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (_, index) {
+                          return SizedBox(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Checkbox(
+                                    value: providerUser.getCheckBoxList[index],
+                                    onChanged: (value) {
+                                      checkBoxSetValue(index,context);
+                                    },
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 5,
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      checkBoxSetValue(index,context);
+                                    },
+                                    child: Text(
+                                      providerUser.getEventsString[index],
+                                      softWrap: true,
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                        color: const Color(0xff193242),
+                                        fontSize: size.width / 30,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    ),
-                  );
-                },
-              ),
-            )
-            ,
+                  ),
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -364,18 +429,20 @@ class _TimerScreenState extends State<TimerScreen> {
                 height: size.height / 12,
                 child: InkWell(
                   onTap: () {
-                    timerProvider.setHours(hoursNumeric);
-                    timerProvider.setMinute(minuteNumeric);
-                    timerProvider.setSecends(secendNumeric);
-                    timerProvider.startTime(resets: false);
-                    timerProvider.setTimerScreenType(false);
-                    // BackgroundService().initSercice(context);
-                    timerProvider.reset();
-                    //BackgroundService().initSercice(hoursNumeric,minuteNumeric,secendNumeric);
+                    if(providerUser.getEventsString.isNotEmpty){
+                      timerProvider.setHours(hoursNumeric);
+                      timerProvider.setMinute(minuteNumeric);
+                      timerProvider.setSecends(secendNumeric);
+                      timerProvider.startTime(resets: false);
+                      timerProvider.setTimerScreenType(false);
+                      // BackgroundService().initSercice(context);
+                      timerProvider.reset();
+                      //BackgroundService().initSercice(hoursNumeric,minuteNumeric,secendNumeric);
+                    }
                   },
                   child: LoginSigninButtonWidget(
                     radiusControl: true,
-                    color: primeryColor,
+                    color: providerUser.getEventsString.isNotEmpty ? primeryColor : Colors.grey,
                     txt: 'Go',
                   ),
                 ),

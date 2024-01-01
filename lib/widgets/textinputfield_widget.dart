@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TextInputField extends StatelessWidget {
   const TextInputField(
@@ -8,12 +9,13 @@ class TextInputField extends StatelessWidget {
         required this.iconWidget,
         required this.obscrueText,
         required this.onchange,
-        required this.hintColor})
+        required this.hintColor, required this.inputLenghtControl})
       : super(key: key);
   final String hintText;
   final Widget labelTextWidget;
   final Widget iconWidget;
   final bool obscrueText;
+  final bool inputLenghtControl;
   final Color hintColor;
   final void Function(String) onchange;
 
@@ -21,6 +23,7 @@ class TextInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       child: TextField(
+        inputFormatters: [LengthLimitingTextInputFormatter(inputLenghtControl ? 10 : 60)],
         textCapitalization: TextCapitalization.words,
         onChanged: onchange,
         obscureText: obscrueText,

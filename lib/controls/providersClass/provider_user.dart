@@ -12,6 +12,7 @@ class ProviderUser with ChangeNotifier {
   List<TodayModel> _doneList=[];
   List<Map<String, dynamic>> _eventsListMap=[];
   List<String> _eventsListString=[];
+  List<bool> _checkBoxList=[];
 
 
   User get user => _user;
@@ -22,6 +23,7 @@ class ProviderUser with ChangeNotifier {
   List<TodayModel> get getDoneList=> _doneList;
   List<Map<String, dynamic>> get getEventsListMap=> _eventsListMap;
   List<String> get getEventsString=> _eventsListString;
+  List<bool> get getCheckBoxList=> _checkBoxList;
 
 
   setControlFirestore(bool control){
@@ -55,6 +57,12 @@ class ProviderUser with ChangeNotifier {
   setEventsListString(List<String> list){
     _eventsListString=list;
     notifyListeners();
+  }
+  setCheckBoxList(List<bool> list,bool control){
+    _checkBoxList=list;
+    if(control){
+      notifyListeners();
+    }
   }
 
 }
