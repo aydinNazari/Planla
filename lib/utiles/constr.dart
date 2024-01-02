@@ -193,6 +193,8 @@ Future<void> logOutFunc(BuildContext context, Size size, bool exitType,ProviderU
         providerUser.setIdList([]);
         providerUser.setEventsListString([]);
         providerUser.setEventsListMap([]);
+        providerUser.setEventsListMap([]);
+        providerUser.setEventsListString([]);
         Navigator.of(context).pop();
         Navigator.push(
           context,
