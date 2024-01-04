@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:numberpicker/numberpicker.dart';
@@ -30,23 +31,26 @@ class _TimerScreenState extends State<TimerScreen> {
   void initState() {
     TimerProvider timerProvider =
         Provider.of<TimerProvider>(context, listen: false);
+    ProviderUser providerUser=Provider.of<ProviderUser>(context,listen: false);
+    providerUser.setEvent('',false);
 
     timerProvider.reset();
     checkboxListUpdate(false);
     super.initState();
+
   }
 
-  void checkboxListUpdate(bool control){
+  void checkboxListUpdate(bool control) {
     ProviderUser providerUser =
-    Provider.of<ProviderUser>(context, listen: false);
+        Provider.of<ProviderUser>(context, listen: false);
     checkboxList.clear();
     for (int i = 0; i < providerUser.getEventsString.length; i++) {
       checkboxList.add(false);
     }
-    providerUser.setCheckBoxList(checkboxList,control);
+    providerUser.setCheckBoxList(checkboxList, control);
   }
 
-  void checkBoxSetValue(int index,BuildContext context) {
+  void checkBoxSetValue(int index, BuildContext context) {
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: false);
     checkboxList = providerUser.getCheckBoxList;
@@ -57,7 +61,7 @@ class _TimerScreenState extends State<TimerScreen> {
         checkboxList[i] = false;
       }
     }
-    providerUser.setCheckBoxList(checkboxList,true);
+    providerUser.setCheckBoxList(checkboxList, true);
   }
 
   @override
@@ -126,9 +130,10 @@ class _TimerScreenState extends State<TimerScreen> {
                             TextButton(
                               onPressed: () async {
                                 Map<String, dynamic> event = {_event: 0};
-                               await FirestoreMethods().saveEvent(context, event);
+                                await FirestoreMethods()
+                                    .saveEvent(context, event);
                                 checkboxListUpdate(true);
-                                if(context.mounted){
+                                if (context.mounted) {
                                   Navigator.of(context).pop();
                                 }
                               },
@@ -370,8 +375,8 @@ class _TimerScreenState extends State<TimerScreen> {
                       ],
                     )
                   : Padding(
-                    padding: EdgeInsets.only(left: size.width/15),
-                    child: GridView.builder(
+                      padding: EdgeInsets.only(left: size.width / 15),
+                      child: GridView.builder(
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: size.width / 2,
                           childAspectRatio: size.height / 200,
@@ -390,15 +395,15 @@ class _TimerScreenState extends State<TimerScreen> {
                                   child: Checkbox(
                                     value: providerUser.getCheckBoxList[index],
                                     onChanged: (value) {
-                                      checkBoxSetValue(index,context);
+                                      buildCheckBoxxOnTapFunction(index, providerUser);
                                     },
                                   ),
                                 ),
                                 Expanded(
                                   flex: 5,
                                   child: GestureDetector(
-                                    onTap: (){
-                                      checkBoxSetValue(index,context);
+                                    onTap: () {
+                                      buildCheckBoxxOnTapFunction(index, providerUser);
                                     },
                                     child: Text(
                                       providerUser.getEventsString[index],
@@ -417,7 +422,7 @@ class _TimerScreenState extends State<TimerScreen> {
                           );
                         },
                       ),
-                  ),
+                    ),
             ),
           ),
           Row(
@@ -429,7 +434,8 @@ class _TimerScreenState extends State<TimerScreen> {
                 height: size.height / 12,
                 child: InkWell(
                   onTap: () {
-                    if(providerUser.getEventsString.isNotEmpty){
+                    if (providerUser.getEventsString.isNotEmpty &&
+                        providerUser.getEvent.isNotEmpty) {
                       timerProvider.setHours(hoursNumeric);
                       timerProvider.setMinute(minuteNumeric);
                       timerProvider.setSecends(secendNumeric);
@@ -442,7 +448,10 @@ class _TimerScreenState extends State<TimerScreen> {
                   },
                   child: LoginSigninButtonWidget(
                     radiusControl: true,
-                    color: providerUser.getEventsString.isNotEmpty ? primeryColor : Colors.grey,
+                    color: providerUser.getEventsString.isNotEmpty &&
+                            providerUser.getEvent.isNotEmpty
+                        ? primeryColor
+                        : Colors.grey,
                     txt: 'Go',
                   ),
                 ),
@@ -472,6 +481,12 @@ class _TimerScreenState extends State<TimerScreen> {
         ],
       ),
     );
+  }
+
+  void buildCheckBoxxOnTapFunction(int index, ProviderUser providerUser) {
+    checkBoxSetValue(index, context);
+    providerUser.setEvent(
+        providerUser.getEventsString[index],true);
   }
 
   Widget buildNumericText(Size size, String txt) {

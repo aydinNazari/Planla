@@ -21,13 +21,22 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
   String _email = '';
   String _pass = '';
   String _name = '';
-  bool viewControl = true;
+  int viewControl = 0;
   Uint8List? image;
+
+  //viewControl=> log in
+  //viewControl=> sign in
+  //viewControl=> forgot passs
+
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return viewControl ? loginScreen(size) : signInScreen(size);
+    Size size = MediaQuery
+        .of(context)
+        .size;
+    return viewControl == 0 ? loginScreen(size) : viewControl == 1
+        ? signInScreen(size)
+        : fogetPassScreen(size);
   }
 
 //Login widget
@@ -51,8 +60,8 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                         height: size.height / 3,
                         decoration: const BoxDecoration(
                             image: DecorationImage(
-                          image: AssetImage('assets/images/goal.png'),
-                        )),
+                              image: AssetImage('assets/images/goal.png'),
+                            )),
                       ),
                     ),
                     Positioned(
@@ -110,7 +119,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                 ,
                 Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: size.width/25,
+                    horizontal: size.width / 25,
                   ),
                   child: SizedBox(
                     width: size.width / 1.1,
@@ -134,10 +143,10 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: size.height / 25,
-                    horizontal: size.width/25,
+                    horizontal: size.width / 25,
                   ),
                   child: TextInputField(
-inputLenghtControl: false,
+                    inputLenghtControl: false,
                     hintColor: Colors.black,
                     hintText: 'Enter your password please...',
                     iconWidget: Padding(
@@ -182,15 +191,15 @@ inputLenghtControl: false,
                       ),
                     ),
                   ),*/
-                      SizedBox(
-                        width: size.width / 1.1,
-                        height: size.height / 13,
-                        child: const LoginSigninButtonWidget(
-                    color: Color(0xff171818),
-                    radiusControl: false,
-                    txt: 'Log in',
+                  SizedBox(
+                    width: size.width / 1.1,
+                    height: size.height / 13,
+                    child: const LoginSigninButtonWidget(
+                      color: Color(0xff171818),
+                      radiusControl: false,
+                      txt: 'Log in',
+                    ),
                   ),
-                      ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: size.height / 50),
@@ -221,7 +230,7 @@ inputLenghtControl: false,
                   child: InkWell(
                     onTap: () {
                       setState(() {
-                        viewControl = false;
+                        viewControl = 1;
                       });
                     },
                     child: RichText(
@@ -246,6 +255,23 @@ inputLenghtControl: false,
                         ],
                       ),
                     ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      viewControl=2;
+                    });
+                  },
+                  child: Text(
+                    'Forgot password?',
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: size.width / 27,
+                        fontWeight: FontWeight.w600,
+                        decoration: TextDecoration.underline,
+                        decorationStyle
+                            : TextDecorationStyle.solid),
                   ),
                 )
               ],
@@ -308,48 +334,48 @@ inputLenghtControl: false,
                     },
                     child: image == null
                         ? Stack(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: size.height / 50),
-                                child: Container(
-                                  width: size.width / 3,
-                                  height: size.width / 3,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.black,
-                                  ),
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.person,
-                                      size: size.width / 4,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                right: size.width / 20,
-                                bottom: size.height / 40,
-                                child: Icon(
-                                  Icons.add_a_photo,
-                                  color: Colors.white,
-                                  size: size.width / 14,
-                                ),
-                              )
-                            ],
-                          )
-                        : SizedBox(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: size.height / 50),
+                          child: Container(
                             width: size.width / 3,
                             height: size.width / 3,
-                            child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.circular(size.width / 2),
-                              child: Image.memory(
-                                fit: BoxFit.cover,
-                                image!,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.black,
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.person,
+                                size: size.width / 4,
+                                color: Colors.grey,
                               ),
                             ),
                           ),
+                        ),
+                        Positioned(
+                          right: size.width / 20,
+                          bottom: size.height / 40,
+                          child: Icon(
+                            Icons.add_a_photo,
+                            color: Colors.white,
+                            size: size.width / 14,
+                          ),
+                        )
+                      ],
+                    )
+                        : SizedBox(
+                      width: size.width / 3,
+                      height: size.width / 3,
+                      child: ClipRRect(
+                        borderRadius:
+                        BorderRadius.circular(size.width / 2),
+                        child: Image.memory(
+                          fit: BoxFit.cover,
+                          image!,
+                        ),
+                      ),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(
@@ -429,13 +455,13 @@ inputLenghtControl: false,
                           _pass.isNotEmpty &&
                           _name.isNotEmpty) {
                         if (image == null) {
-                          showMyDialog(context,size,
+                          showMyDialog(context, size,
                               'Are you sure to proceed without uploading the profile picture?',
-                              () async {
-                            await signupProsess();
-                          }, () {
-                            Navigator.of(context).pop();
-                          });
+                                  () async {
+                                await signupProsess();
+                              }, () {
+                                Navigator.of(context).pop();
+                              });
                         } else {
                           await signupProsess();
                         }
@@ -471,7 +497,7 @@ inputLenghtControl: false,
                     child: InkWell(
                       onTap: () {
                         setState(() {
-                          viewControl = true;
+                          viewControl = 0;
                         });
                       },
                       child: RichText(
@@ -507,11 +533,31 @@ inputLenghtControl: false,
     );
   }
 
+  SafeArea fogetPassScreen(Size size) {
+    return SafeArea(child: Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        actions: [
+          Text('Forgot Password', style: TextStyle(fontWeight: FontWeight.w400,
+              color: Colors.grey,
+              fontSize: size.width / 25),)
+        ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+
+
+        ],
+      ),
+    ));
+  }
+
   //functions
   Future<void> loginFunction() async {
-    lottieProgressDialog(context,'assets/json/progress.json');
+    lottieProgressDialog(context, 'assets/json/progress.json');
     bool res = await Auth().loginUser(_email, _pass, context);
-    if(context.mounted){
+    if (context.mounted) {
       Navigator.of(context).pop();
     }
     if (res) {
@@ -528,10 +574,9 @@ inputLenghtControl: false,
   }
 
   Future<void> signupProsess() async {
-    lottieProgressDialog(context,'assets/json/progress.json');
-    bool res =
-        await Auth().signupUser(_email, _name, _pass, context, image);
-    if(context.mounted){
+    lottieProgressDialog(context, 'assets/json/progress.json');
+    bool res = await Auth().signupUser(_email, _name, _pass, context, image);
+    if (context.mounted) {
       Navigator.of(context).pop();
     }
     if (res) {
