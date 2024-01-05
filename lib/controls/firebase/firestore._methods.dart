@@ -285,7 +285,7 @@ class FirestoreMethods {
         Provider.of<ProviderUser>(context, listen: false);
     List<Map<String, dynamic>> tempMapList = [];
     try {
-      tempMapList = providerUser.getEventsListMap;
+    //  tempMapList = providerUser.getEventsListMap;
       tempMapList.add(event);
       //EventModel eventModel = EventModel(eventsMap: tempMapList);
       /*var snap =

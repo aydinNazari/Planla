@@ -6,6 +6,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/controls/providersClass/timer_provider.dart';
 import 'package:planla/utiles/colors.dart';
+import 'package:planla/utiles/constr.dart';
 import 'package:planla/widgets/textField/textinputfield_widget.dart';
 import 'package:planla/widgets/timer_widget.dart';
 import 'package:provider/provider.dart';
@@ -31,13 +32,13 @@ class _TimerScreenState extends State<TimerScreen> {
   void initState() {
     TimerProvider timerProvider =
         Provider.of<TimerProvider>(context, listen: false);
-    ProviderUser providerUser=Provider.of<ProviderUser>(context,listen: false);
-    providerUser.setEvent('',false);
+    ProviderUser providerUser =
+        Provider.of<ProviderUser>(context, listen: false);
+    providerUser.setEvent('', false);
 
     timerProvider.reset();
     checkboxListUpdate(false);
     super.initState();
-
   }
 
   void checkboxListUpdate(bool control) {
@@ -387,37 +388,64 @@ class _TimerScreenState extends State<TimerScreen> {
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
                         itemBuilder: (_, index) {
-                          return SizedBox(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Checkbox(
-                                    value: providerUser.getCheckBoxList[index],
-                                    onChanged: (value) {
-                                      buildCheckBoxxOnTapFunction(index, providerUser);
-                                    },
+                          return Dismissible(
+                            key: ValueKey<String>(
+                                providerUser.getEventsString[index]),
+                            onDismissed: (DismissDirection direction) async {
+                              /* print('befor');
+                                print(providerUser.getEventsListMap.length);
+                                print(providerUser.getEventsString.length);*/
+
+                              // Listeden elemanı çıkarmak için
+
+                              /*providerUser.setEventsListString(temp);
+                                providerUser.setEventsListMap(mapListTemp);*/
+
+                             var tempMap=removeEventFromList(providerUser.getEventsListMap,
+                                  providerUser.getEventsString[index]);
+
+                              await FirestoreMethods()
+                                  .saveEvent(context,tempMap);
+                              setState(() {});
+                              print('after');
+                              print(providerUser.getEventsListMap.length);
+                              print(providerUser.getEventsString.length);
+                            },
+                            child: SizedBox(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Checkbox(
+                                      value:
+                                          providerUser.getCheckBoxList[index],
+                                      onChanged: (value) {
+                                        buildCheckBoxxOnTapFunction(
+                                            index, providerUser);
+                                      },
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  flex: 5,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      buildCheckBoxxOnTapFunction(index, providerUser);
-                                    },
-                                    child: Text(
-                                      providerUser.getEventsString[index],
-                                      softWrap: true,
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                        color: const Color(0xff193242),
-                                        fontSize: size.width / 30,
-                                        fontWeight: FontWeight.w700,
+                                  Expanded(
+                                    flex: 5,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        buildCheckBoxxOnTapFunction(
+                                            index, providerUser);
+                                      },
+                                      child: Text(
+                                        providerUser.getEventsString[index],
+                                        softWrap: true,
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                          color: const Color(0xff193242),
+                                          fontSize: size.width / 30,
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           );
                         },
@@ -446,14 +474,16 @@ class _TimerScreenState extends State<TimerScreen> {
                       //BackgroundService().initSercice(hoursNumeric,minuteNumeric,secendNumeric);
                     }
                   },
-                  child: TimerButtonWidget(
-                    radiusControl: true,
-                    color: providerUser.getEventsString.isNotEmpty &&
-                            providerUser.getEvent.isNotEmpty
-                        ? primeryColor
-                        : Colors.grey,
-                    txt: 'Go',
-                  ),
+                  child: providerUser.getEventsString.isNotEmpty
+                      ? TimerButtonWidget(
+                          radiusControl: true,
+                          color: providerUser.getEventsString.isNotEmpty &&
+                                  providerUser.getEvent.isNotEmpty
+                              ? primeryColor
+                              : Colors.grey,
+                          txt: 'Go',
+                        )
+                      : const SizedBox(),
                 ),
               ),
               /*  Padding(
@@ -485,8 +515,7 @@ class _TimerScreenState extends State<TimerScreen> {
 
   void buildCheckBoxxOnTapFunction(int index, ProviderUser providerUser) {
     checkBoxSetValue(index, context);
-    providerUser.setEvent(
-        providerUser.getEventsString[index],true);
+    providerUser.setEvent(providerUser.getEventsString[index], true);
   }
 
   Widget buildNumericText(Size size, String txt) {
@@ -582,4 +611,58 @@ class _TimerScreenState extends State<TimerScreen> {
       ),
     );
   }
+
+/*  Map<String, dynamic> convertList(List<Map<String, dynamic>> originalList) {
+    Map<String, dynamic> resultMap = {};
+
+    // "eventsMap" altındaki anahtarları kullanarak Map oluştur
+    var eventsMapList = originalList[1]["eventsMap"];
+    for (var map in eventsMapList) {
+      if (map is Map) {
+        map.forEach((key, value) {
+          resultMap[key] = value;
+        });
+      }
+    }
+
+    return resultMap;
+  }
+
+  List<dynamic> removeElementByKey(List<dynamic> dataList, String keyToRemove) {
+    for (var element in dataList) {
+      if (element is Map) {
+        // Eğer Map'in anahtarları arasında keyToRemove varsa, bu Map'i listeden çıkar
+        if (element.containsKey(keyToRemove)) {
+          dataList.remove(element);
+          break; // Eğer sadece bir eşleşme istiyorsanız bu break kullanılabilir
+        } else {
+          // Eğer bir eşleşme bulunamazsa, alt elemanlara bakmak için fonksiyonu tekrar çağır
+          removeElementByKey(element.values.toList(), keyToRemove);
+        }
+      } else if (element is List) {
+        // Eğer eleman bir liste ise, alt elemanlara bakmak için fonksiyonu tekrar çağır
+        removeElementByKey(element, keyToRemove);
+      }
+    }
+    return dataList;
+  }*/
+bu fonksiyonda eventları silerken hata alıyorum
+  Map<String, dynamic> removeEventFromList(List<Map<String, dynamic>> eventsList, String keyToRemove) {
+    eventsList.removeWhere((event) {
+      // Belirtilen key'e sahipse, bu elemanı listeden çıkar
+      if (event.containsKey('eventsMap')) {
+        event['eventsMap'].removeWhere((innerEvent) =>
+            innerEvent.containsKey(keyToRemove));
+
+        // Eğer iç içe olan alt liste (eventsMap) boşsa, ana listeden de çıkar
+        return event['eventsMap'].isEmpty;
+      }
+      return false;
+    });
+
+    // convertedMap'i buraya taşıdık, bu şekilde fonksiyonun sonunda döndürebiliriz
+    Map<String, dynamic> convertedMap = {'eventsList': eventsList};
+    return convertedMap;
+  }
+
 }
