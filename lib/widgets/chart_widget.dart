@@ -5,6 +5,8 @@ import 'package:lottie/lottie.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:provider/provider.dart';
 
+import '../utiles/colors.dart';
+
 class ChartWidget extends StatelessWidget {
   const ChartWidget({
     super.key,
@@ -14,19 +16,6 @@ class ChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     ProviderUser providerUser=Provider.of<ProviderUser>(context,listen: false );
     var size = MediaQuery.of(context).size;
-    List<Map<String, dynamic>> chartData = [
-      {'title': 'Sport', 'value': 80, 'color': const Color(0xff424874)},
-      {'title': 'Study', 'value': 80, 'color': const Color(0xffdcd6f7)},
-      {'title': 'Work', 'value': 30, 'color': const Color(0xffa6b1e1)},
-      {'title': 'Other', 'value': 30, 'color': const Color(0xff8591c5)},
-    ];
-
-/*    if (kDebugMode) {
-      print('map ${providerUser.getEventsListMap.length}');
-    }
-    if (kDebugMode) {
-      print('string ${providerUser.getEventsString.length}');
-    }*/
     return SizedBox(
       width: size.width ,
       height: size.height / 2.5,
@@ -52,10 +41,11 @@ class ChartWidget extends StatelessWidget {
             sections: List.generate(
               providerUser.getEventsString.length,
                   (index) => PieChartSectionData(
+                    showTitle: true,
                 title: providerUser.getEventsString[index],
                 value: /*providerUser.getEventsListMap[1][providerUser.getEventsString] ??*/ 55,
-                color: /*chartData[index]['color']*/ Colors.grey,
-                titleStyle:  TextStyle(color: Colors.white,fontSize: size.width/40),
+                color: /*chartData[index]['color']*/ colorList[index],
+                titleStyle: TextStyle(color: Colors.white,fontSize: size.width/40),
                 radius: size.width / 4,
               ),
             ),

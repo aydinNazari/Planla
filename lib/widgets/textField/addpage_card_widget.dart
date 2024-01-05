@@ -4,7 +4,7 @@ import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/models/today_model.dart';
 import 'package:provider/provider.dart';
 
-import '../utiles/colors.dart';
+import '../../utiles/colors.dart';
 
 class AddPageCardWidget extends StatelessWidget {
   final void Function() tikOntap;

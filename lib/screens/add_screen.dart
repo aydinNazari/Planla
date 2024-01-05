@@ -4,9 +4,9 @@ import 'package:planla/controls/firebase/firestore._methods.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/models/today_model.dart';
 import 'package:planla/utiles/constr.dart';
-import 'package:planla/widgets/addpage_card_widget.dart';
+import 'package:planla/widgets/textField/addpage_card_widget.dart';
 import 'package:provider/provider.dart';
-import '../widgets/add_textfield_widget.dart';
+import '../widgets/textField/add_textfield_widget.dart';
 
 class AddScreen extends StatefulWidget {
   const AddScreen({Key? key}) : super(key: key);

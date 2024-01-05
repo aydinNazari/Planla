@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class LoginSigninButtonWidget extends StatelessWidget {
+class TimerButtonWidget extends StatelessWidget {
   final Color color;
   final String txt;
   final bool radiusControl;
 
-  const LoginSigninButtonWidget({
+  const TimerButtonWidget({
     super.key,
     required this.color,
     required this.txt,

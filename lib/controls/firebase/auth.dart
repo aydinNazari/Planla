@@ -70,39 +70,32 @@ class Auth {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+      await googleUser?.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
       UserCredential userCredential =
-          await auth.signInWithCredential(credential);
-      User user = userCredential.user!;
-      model.User _user = await getCurrentUser(user.uid);
-      if(context.mounted){
-        Provider.of<ProviderUser>(context, listen: false).setUser(_user);
-      }
+      await auth.signInWithCredential(credential);
+      User? user = userCredential.user;
+
       if (user != null) {
         if (userCredential.additionalUserInfo!.isNewUser) {
-          await firestore.collection('users').doc(user.uid).set(
-            {
-              'email': user.email,
-              'imageurl': user.photoURL,
-              'name': user.displayName,
-              'uid': user.uid,
-              'score' :0,
-            },
-          );
+          await firestore.collection('users').doc(user.uid).set({
+            'email': user.email,
+            'uid': user.uid,
+            'imageurl': user.photoURL,
+            'name':user.displayName
+          });
         }
-        res = true;
+        res=true;
       }
       return res;
     } on FirebaseAuthException catch (e) {
       res = false;
-      if(context.mounted){
-        showSnackBar(context, e.message!, Colors.red);
-      }
-      print(e.toString());
+     if(context.mounted){
+       showSnackBar(context, e.toString(), Colors.red);
+     }
     }
     return res;
   }

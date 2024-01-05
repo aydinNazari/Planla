@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import '../controls/firebase/firestore._methods.dart';
 import '../models/today_model.dart';
 import '../utiles/constr.dart';
-import '../widgets/addpage_card_widget.dart';
+import '../widgets/textField/addpage_card_widget.dart';
 import '../widgets/profile_img_widget.dart';
 import '../widgets/task_done_widget.dart';
 

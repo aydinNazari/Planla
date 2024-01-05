@@ -6,11 +6,11 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/controls/providersClass/timer_provider.dart';
 import 'package:planla/utiles/colors.dart';
-import 'package:planla/widgets/textinputfield_widget.dart';
+import 'package:planla/widgets/textField/textinputfield_widget.dart';
 import 'package:planla/widgets/timer_widget.dart';
 import 'package:provider/provider.dart';
 import '../controls/firebase/firestore._methods.dart';
-import '../widgets/button_loginsignin_widget.dart';
+import '../widgets/buttons/timer_button_widget.dart';
 
 class TimerScreen extends StatefulWidget {
   const TimerScreen({Key? key}) : super(key: key);
@@ -446,7 +446,7 @@ class _TimerScreenState extends State<TimerScreen> {
                       //BackgroundService().initSercice(hoursNumeric,minuteNumeric,secendNumeric);
                     }
                   },
-                  child: LoginSigninButtonWidget(
+                  child: TimerButtonWidget(
                     radiusControl: true,
                     color: providerUser.getEventsString.isNotEmpty &&
                             providerUser.getEvent.isNotEmpty
@@ -525,7 +525,7 @@ class _TimerScreenState extends State<TimerScreen> {
             child: SizedBox(
               width: size.width / 3,
               height: size.height / 13,
-              child: LoginSigninButtonWidget(
+              child: TimerButtonWidget(
                 radiusControl: true,
                 color:
                     timerProvider.getCounter != 0 ? Colors.black : Colors.grey,
@@ -547,7 +547,7 @@ class _TimerScreenState extends State<TimerScreen> {
             child: SizedBox(
               width: size.width / 3,
               height: size.height / 13,
-              child: const LoginSigninButtonWidget(
+              child: const TimerButtonWidget(
                 radiusControl: true,
                 color: Colors.black,
                 txt: 'Reset',

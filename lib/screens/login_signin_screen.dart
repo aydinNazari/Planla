@@ -1,14 +1,13 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:planla/controls/firebase/auth.dart';
 import 'package:planla/screens/Intro_screen_page.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:planla/screens/navigator_screen.dart';
-import 'package:planla/widgets/account_button.widget.dart';
+import 'package:planla/widgets/buttons/login_signin_button_widget.dart';
+import '../utiles/colors.dart';
 import '../utiles/constr.dart';
-import '../widgets/button_loginsignin_widget.dart';
-import '../widgets/textinputfield_widget.dart';
+import '../widgets/textField/login_signin_textfield_widget.dart';
 
 class LoginSignInScreen extends StatefulWidget {
   const LoginSignInScreen({Key? key}) : super(key: key);
@@ -28,250 +27,154 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
   //viewControl=> sign in
   //viewControl=> forgot passs
 
-
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery
-        .of(context)
-        .size;
-    return viewControl == 0 ? loginScreen(size) : viewControl == 1
-        ? signInScreen(size)
-        : fogetPassScreen(size);
+    Size size = MediaQuery.of(context).size;
+    return viewControl == 0
+        ? loginScreen(size)
+        : viewControl == 1
+            ? signInScreen(size)
+            : fogetPassScreen(size);
   }
 
 //Login widget
   SafeArea loginScreen(Size size) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: loginScreenBackground,
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: size.width / 25),
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    viewControl = 1;
+                  });
+                },
+                child: Text(
+                  'Sign up',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w400,
+                    fontSize: size.width / 22,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+        backgroundColor: loginScreenBackground,
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.only(top: size.height / 30),
+            padding: EdgeInsets.only(
+                left: size.width / 25,
+                top: size.height / 8,
+                right: size.width / 25),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Stack(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: size.width / 4),
-                      child: Container(
-                        width: size.width,
-                        height: size.height / 3,
-                        decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage('assets/images/goal.png'),
-                            )),
-                      ),
-                    ),
-                    Positioned(
-                        bottom: size.height / 19,
-                        right: size.width / 7,
-                        child: RichText(
-                          text: TextSpan(children: [
-                            TextSpan(
-                              text: 'Target',
-                              style: TextStyle(
-                                fontSize: size.width / 14,
-                                color: Colors.black45,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'T',
-                              style: TextStyle(
-                                fontSize: size.width / 9,
-                                color: Colors.black38,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'rack',
-                              style: TextStyle(
-                                fontSize: size.width / 14,
-                                color: Colors.black45,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )
-                          ]),
-                        ))
-                  ],
-                )
-                /*    Center(
-                  child: Text(
-                    'Planla',
-                    style: TextStyle(
-                        fontSize: size.width / 9,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.black),
-                  ),
-                ),*/
-                /*  Center(
-                  child: Text(
-                    'Login',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: size.width / 18,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),*/
-                ,
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: size.width / 25,
-                  ),
-                  child: SizedBox(
-                    width: size.width / 1.1,
-                    height: size.height / 10,
-                    child: TextInputField(
-                      inputLenghtControl: false,
-                      hintColor: Colors.black,
-                      hintText: 'Enter your email address please...',
-                      iconWidget: Padding(
-                        padding: EdgeInsets.only(right: size.width / 25),
-                        child: const Icon(Icons.mail),
-                      ),
-                      labelTextWidget: const Text('E-Mail'),
-                      obscrueText: false,
-                      onchange: (String s) {
-                        _email = s;
-                      },
-                    ),
+                Text(
+                  'Log in',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w800,
+                    fontSize: size.width / 18,
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: size.height / 25,
-                    horizontal: size.width / 25,
-                  ),
-                  child: TextInputField(
-                    inputLenghtControl: false,
-                    hintColor: Colors.black,
-                    hintText: 'Enter your password please...',
-                    iconWidget: Padding(
-                      padding: EdgeInsets.only(right: size.width / 25),
-                      child: const Icon(Icons.lock),
-                    ),
-                    labelTextWidget: const Text('Password'),
-                    obscrueText: true,
-                    onchange: (String s) {
-                      _pass = s;
+                  padding: EdgeInsets.only(top: size.height / 20),
+                  child: LoginSignInTextFieldWidget(
+                    onchange: (v) {
+                      _email = v;
                     },
-                  ),
-                ),
-                InkWell(
-                  onTap: () async {
-                    if (_email.isNotEmpty && _pass.isNotEmpty) {
-                      await loginFunction();
-                    } else {
-                      setState(() {
-                        showSnackBar(
-                          context,
-                          'Please fill in all fields',
-                          Colors.red,
-                        );
-                      });
-                    }
-                  },
-                  child: /*Container(
-                    width: size.width / 1.1,
-                    height: size.height / 13,
-                    decoration: const BoxDecoration(
-                      color: Color(0xff803c48),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Login',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: size.width / 18,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                  ),*/
-                  SizedBox(
-                    width: size.width / 1.1,
-                    height: size.height / 13,
-                    child: const LoginSigninButtonWidget(
-                      color: Color(0xff171818),
-                      radiusControl: false,
-                      txt: 'Log in',
-                    ),
+                    txt: 'Your Email',
+                    controlObsecure: false,
+                    hintText: 'Email',
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: size.height / 50),
-                  child: InkWell(
-                    onTap: () async {
-                      bool res = await Auth().signInWithGoogle(context);
-                      if (res) {
-                        setState(() {
-                          Navigator.push(
-                              context,
-                              PageTransition(
-                                  type: PageTransitionType.bottomToTop,
-                                  child: const NavigatorScreen()));
-                        });
-                      }
+                  padding: EdgeInsets.only(top: size.height / 25),
+                  child: LoginSignInTextFieldWidget(
+                    onchange: (v) {
+                      _pass = v;
                     },
-                    child: const AccountButtonWidget(
-                      buttonColor: Colors.blue,
-                      txt: 'Login with Google',
-                      textColor: Colors.white,
-                    ),
+                    txt: 'Password',
+                    controlObsecure: true,
+                    hintText: 'Password',
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(
-                    top: size.width / 25,
+                    top: size.height / 20,
                   ),
                   child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        viewControl = 1;
-                      });
-                    },
-                    child: RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'Dont\'t have an account?',
-                            style: TextStyle(
-                              fontSize: size.width / 25,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black45,
-                            ),
-                          ),
-                          TextSpan(
-                            text: '  Register',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: size.width / 25,
-                              color: Colors.black,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
+                      onTap: () async {
+                        if (_email.isNotEmpty && _pass.isNotEmpty) {
+                          await loginFunction(_email, _pass);
+                        } else {
+                          setState(() {
+                            showSnackBar(
+                              context,
+                              'Please fill in all fields',
+                              Colors.red,
+                            );
+                          });
+                        }
+                      },
+                      child: SizedBox(
+                          width: size.width,
+                          height: size.height / 13,
+                          child: const LoginSigninButtonWidget(
+                            iconControl: false,
+                            iconUrl: '',
+                            txt: 'Log in',
+                          ))),
                 ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      viewControl=2;
-                    });
-                  },
-                  child: Text(
-                    'Forgot password?',
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: size.width / 27,
-                        fontWeight: FontWeight.w600,
-                        decoration: TextDecoration.underline,
-                        decorationStyle
-                            : TextDecorationStyle.solid),
+                Padding(
+                  padding: EdgeInsets.only(top: size.height / 45),
+                  child: buildAccountButton(size),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: size.height / 40,
+                  ),
+                  child: Row(
+                    children: [
+                      const Spacer(),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            viewControl = 1;
+                          });
+                        },
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Dont\'t have an account?',
+                                style: TextStyle(
+                                  fontSize: size.width / 25,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '  Register',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: size.width / 25,
+                                  color: Colors.black,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                    ],
                   ),
                 )
               ],
@@ -286,170 +189,137 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
   SafeArea signInScreen(Size size) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: signinScreenBackground,
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: size.width / 25),
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    viewControl = 0;
+                  });
+                },
+                child: Text(
+                  'Log in',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w400,
+                    fontSize: size.width / 22,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+        backgroundColor: signinScreenBackground,
         body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: size.height / 20),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  /* Center(
-                    child: Text(
-                      'Planla',
-                      style: TextStyle(
-                        fontSize: size.width / 9,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.black,
-                      ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                /*Center(
+                  child: Text(
+                    'TargetToTarget',
+                    style: TextStyle(
+                      fontSize: size.width / 15,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.black,
                     ),
                   ),
-                  Center(
-                    child: Text(
-                      'Register',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: size.width / 18,
-                          fontWeight: FontWeight.w800),
-                    ),
-                  ),*/
-                  Center(
-                    child: Text(
-                      'TargetToTarget',
-                      style: TextStyle(
-                        fontSize: size.width / 9,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () async {
-                      Uint8List? pickerImage = await pickImager();
-                      if (pickerImage != null) {
-                        setState(() {
-                          image = pickerImage;
-                        });
-                      }
-                    },
-                    child: image == null
-                        ? Stack(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: size.height / 50),
-                          child: Container(
-                            width: size.width / 3,
-                            height: size.width / 3,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.black,
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.person,
-                                size: size.width / 4,
-                                color: Colors.grey,
+                ),*/
+                InkWell(
+                  onTap: () async {
+                    Uint8List? pickerImage = await pickImager();
+                    if (pickerImage != null) {
+                      setState(() {
+                        image = pickerImage;
+                      });
+                    }
+                  },
+                  child: image == null
+                      ? Stack(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: size.height / 50),
+                              child: Container(
+                                width: size.width / 4,
+                                height: size.width / 4,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.black,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.person,
+                                    size: size.width / 6,
+                                    color: Colors.grey,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        Positioned(
-                          right: size.width / 20,
-                          bottom: size.height / 40,
-                          child: Icon(
-                            Icons.add_a_photo,
-                            color: Colors.white,
-                            size: size.width / 14,
-                          ),
+                            Positioned(
+                              right: size.width / 30,
+                              bottom: size.height / 40,
+                              child: Icon(
+                                Icons.add_a_photo,
+                                color: Colors.white,
+                                size: size.width / 35,
+                              ),
+                            )
+                          ],
                         )
-                      ],
-                    )
-                        : SizedBox(
-                      width: size.width / 3,
-                      height: size.width / 3,
-                      child: ClipRRect(
-                        borderRadius:
-                        BorderRadius.circular(size.width / 2),
-                        child: Image.memory(
-                          fit: BoxFit.cover,
-                          image!,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: size.height / 50,
-                    ),
-                    child: SizedBox(
-                      width: size.width / 1.1,
-                      height: size.height / 10,
-                      child: TextInputField(
-                        inputLenghtControl: false,
-                        hintColor: Colors.black,
-                        hintText: 'Enter your name please...',
-                        iconWidget: Padding(
-                          padding: EdgeInsets.only(right: size.width / 25),
-                          child: const Icon(Icons.person),
-                        ),
-                        labelTextWidget: const Text('Name'),
-                        obscrueText: false,
-                        onchange: (String s) {
-                          _name = s;
-                        },
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: size.height / 50,
-                    ),
-                    child: SizedBox(
-                      width: size.width / 1.1,
-                      height: size.height / 10,
-                      child: TextInputField(
-                        inputLenghtControl: false,
-                        hintColor: Colors.black,
-                        hintText: 'Enter your email address please...',
-                        iconWidget: Padding(
-                          padding: EdgeInsets.only(right: size.width / 25),
-                          child: const Icon(Icons.mail),
-                        ),
-                        labelTextWidget: const Text('E-Mail'),
-                        obscrueText: false,
-                        onchange: (String s) {
-                          _email = s;
-                        },
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: size.height / 50,
-                      bottom: size.height / 80,
-                    ),
-                    child: SizedBox(
-                      width: size.width / 1.1,
-                      height: size.height / 10,
-                      child: TextInputField(
-                        inputLenghtControl: false,
-                        hintColor: Colors.black,
-                        hintText: 'Enter your password please...',
-                        iconWidget: Padding(
-                          padding: EdgeInsets.only(
-                            right: size.width / 25,
+                      : SizedBox(
+                          width: size.width / 4,
+                          height: size.width / 4,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(size.width / 2),
+                            child: Image.memory(
+                              fit: BoxFit.cover,
+                              image!,
+                            ),
                           ),
-                          child: const Icon(Icons.lock),
                         ),
-                        labelTextWidget: const Text('Password'),
-                        obscrueText: true,
-                        onchange: (String s) {
-                          _pass = s;
-                        },
-                      ),
-                    ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: size.width / 25, vertical: size.height / 30),
+                  child: LoginSignInTextFieldWidget(
+                    controlObsecure: false,
+                    hintText: 'Name',
+                    txt: 'Your Name',
+                    onchange: (v) {
+                      _name = v;
+                    },
                   ),
-                  InkWell(
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: size.width / 25,
+                  ),
+                  child: LoginSignInTextFieldWidget(
+                    controlObsecure: false,
+                    hintText: 'Email',
+                    txt: 'Your email',
+                    onchange: (v) {
+                      _email = v;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: size.width / 25, vertical: size.height / 25),
+                  child: LoginSignInTextFieldWidget(
+                    controlObsecure: true,
+                    hintText: 'Password',
+                    txt: 'Password',
+                    onchange: (v) {
+                      _pass = v;
+                    },
+                  ),
+                ),
+                InkWell(
                     onTap: () async {
                       if (_email.isNotEmpty &&
                           _pass.isNotEmpty &&
@@ -457,11 +327,11 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                         if (image == null) {
                           showMyDialog(context, size,
                               'Are you sure to proceed without uploading the profile picture?',
-                                  () async {
-                                await signupProsess();
-                              }, () {
-                                Navigator.of(context).pop();
-                              });
+                              () async {
+                            await signupProsess();
+                          }, () {
+                            Navigator.of(context).pop();
+                          });
                         } else {
                           await signupProsess();
                         }
@@ -472,60 +342,59 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                         });
                       }
                     },
-                    child: SizedBox(
-                      width: size.width / 1.1,
-                      height: size.height / 13,
-                      child: const LoginSigninButtonWidget(
-                        color: Color(0xff000000),
-                        radiusControl: false,
-                        txt: 'Sign in',
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: size.width / 25,
+                        right: size.width / 25,
                       ),
-                    ),
+                      child: SizedBox(
+                          width: size.width,
+                          height: size.height / 13,
+                          child: const LoginSigninButtonWidget(
+                            iconControl: false,
+                            iconUrl: '',
+                            txt: 'Sign in',
+                          )),
+                    )),
+                Padding(
+                  padding: EdgeInsets.only(top: size.height / 45),
+                  child: buildAccountButton(size),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: size.width / 50,
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: size.height / 80),
-                    child: const AccountButtonWidget(
-                      buttonColor: Color(0xff3b91ea),
-                      txt: 'Sign with Google',
-                      textColor: Colors.white,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: size.width / 50,
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          viewControl = 0;
-                        });
-                      },
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'Already have an account?',
-                              style: TextStyle(
-                                fontSize: size.width / 25,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        viewControl = 0;
+                      });
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Already have an account?',
+                            style: TextStyle(
+                              fontSize: size.width / 25,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
                             ),
-                            TextSpan(
-                              text: '  Login',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: size.width / 22,
-                                color: const Color(0xff673031),
-                              ),
-                            )
-                          ],
-                        ),
+                          ),
+                          TextSpan(
+                            text: '  Login',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: size.width / 22,
+                              color: const Color(0xff673031),
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                  )
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -533,30 +402,77 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
     );
   }
 
+  Row buildAccountButton(Size size) {
+    return Row(
+      children: [
+        const Spacer(),
+        Padding(
+          padding: EdgeInsets.only(right: size.width / 40),
+          child: InkWell(
+            onTap: () async {
+              bool res = await Auth().signInWithGoogle(context);
+              if (res) {
+                setState(() {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.bottomToTop,
+                          child: const NavigatorScreen()));
+                });
+              }
+            },
+            child: SizedBox(
+                width: size.width / 2.5,
+                height: size.height / 13,
+                child: const LoginSigninButtonWidget(
+                  iconControl: true,
+                  iconUrl: 'assets/icons/google.png',
+                  txt: '',
+                )),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: size.width / 40),
+          child: SizedBox(
+              width: size.width / 2.5,
+              height: size.height / 13,
+              child: const LoginSigninButtonWidget(
+                txt: '',
+                iconControl: true,
+                iconUrl: 'assets/icons/apple.png',
+              )),
+        ),
+        const Spacer(),
+      ],
+    );
+  }
+
   SafeArea fogetPassScreen(Size size) {
-    return SafeArea(child: Scaffold(
+    return SafeArea(
+        child: Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: [
-          Text('Forgot Password', style: TextStyle(fontWeight: FontWeight.w400,
-              color: Colors.grey,
-              fontSize: size.width / 25),)
+          Text(
+            'Forgot Password',
+            style: TextStyle(
+                fontWeight: FontWeight.w400,
+                color: Colors.grey,
+                fontSize: size.width / 25),
+          )
         ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-
-
-        ],
+        children: [],
       ),
     ));
   }
 
   //functions
-  Future<void> loginFunction() async {
+  Future<void> loginFunction(String email, String pass) async {
     lottieProgressDialog(context, 'assets/json/progress.json');
-    bool res = await Auth().loginUser(_email, _pass, context);
+    bool res = await Auth().loginUser(email, pass, context);
     if (context.mounted) {
       Navigator.of(context).pop();
     }
