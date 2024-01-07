@@ -388,28 +388,72 @@ class _TimerScreenState extends State<TimerScreen> {
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
                         itemBuilder: (_, index) {
-                          return Dismissible(
-                            key: ValueKey<String>(
-                                providerUser.getEventsString[index]),
+                          return Dismissible( silme işlemi doğru düzgün yapılmıyotr
+                            key: UniqueKey(),
                             onDismissed: (DismissDirection direction) async {
                               /* print('befor');
                                 print(providerUser.getEventsListMap.length);
                                 print(providerUser.getEventsString.length);*/
 
-                              // Listeden elemanı çıkarmak için
-
                               /*providerUser.setEventsListString(temp);
                                 providerUser.setEventsListMap(mapListTemp);*/
+                              /*var tempMap = removeEventFromList(
+                                  providerUser.getEventsListMap,
+                                  providerUser.getEventsString[index]);*/
+                              // Belirli anahtara sahip elemanları çıkarma
+                              // Belirli anahtara sahip elemanları çıkarma
+                              for (int i = 0;
+                                  i < providerUser.getEventsListMap.length;
+                                  i++) {
+                                if (providerUser.getEventsListMap[i]
+                                    .containsKey('eventsMap')) {
+                                  List<Map<String, dynamic>> eventsMap =
+                                      (providerUser.getEventsListMap[i]
+                                              ['eventsMap'] as List<dynamic>)
+                                          .map((e) => e as Map<String, dynamic>)
+                                          .toList();
 
-                             var tempMap=removeEventFromList(providerUser.getEventsListMap,
-                                  providerUser.getEventsString[index]);
+                                  for (int j = 0; j < eventsMap.length; j++) {
+                                    if (eventsMap[j].containsKey(
+                                        providerUser.getEventsString[index])) {
+                                      eventsMap.removeAt(j);
+                                      break; // İlk bulduğumuz anahtarı sildikten sonra döngüyü sonlandırabiliriz
+                                    }
+                                  }
+
+                                  providerUser.getEventsListMap[i]
+                                      ['eventsMap'] = eventsMap;
+                                }
+                              }
+
+                              // Listenin son elemanını key ve value olarak silme
+
+                                Map<String, dynamic> lastItem =
+                                    providerUser.getEventsListMap.removeLast();
+                                print("Silinen Son Eleman: $lastItem");
+
+                              // Güncellenmiş listeyi Map<String, dynamic> formatına çevirme
+                              Map<String, dynamic> resultMap = {
+                                'eventsMap': lastItem
+                              };
+                              List<Map<String, dynamic>> list = [];
+                              list.add(resultMap);
+                              print("Güncellenmiş Liste: $resultMap");
+                             /* List<String> temp = [];
+                              for (int i = 0; i < providerUser.getEventsString.length; i++) {
+                                if (providerUser.getEventsString[index] !=
+                                    providerUser.getEventsString[i]) {
+                                  temp.add(providerUser.getEventsString[i]);
+                                }
+                              }
+                              providerUser.setEventsListMap(list);
+                              providerUser.setEventsListString(temp);*/
 
                               await FirestoreMethods()
-                                  .saveEvent(context,tempMap);
+                                  .saveEvent(context, resultMap);
+                              print('string :${providerUser.getEventsString}');
+                              print('map :${providerUser.getEventsListMap}');
                               setState(() {});
-                              print('after');
-                              print(providerUser.getEventsListMap.length);
-                              print(providerUser.getEventsString.length);
                             },
                             child: SizedBox(
                               child: Row(
@@ -646,13 +690,14 @@ class _TimerScreenState extends State<TimerScreen> {
     }
     return dataList;
   }*/
-bu fonksiyonda eventları silerken hata alıyorum
-  Map<String, dynamic> removeEventFromList(List<Map<String, dynamic>> eventsList, String keyToRemove) {
+
+/*  Map<String, dynamic> removeEventFromList(
+      List<Map<String, dynamic>> eventsList, String keyToRemove) {
     eventsList.removeWhere((event) {
       // Belirtilen key'e sahipse, bu elemanı listeden çıkar
       if (event.containsKey('eventsMap')) {
-        event['eventsMap'].removeWhere((innerEvent) =>
-            innerEvent.containsKey(keyToRemove));
+        event['eventsMap']
+            .removeWhere((innerEvent) => innerEvent.containsKey(keyToRemove));
 
         // Eğer iç içe olan alt liste (eventsMap) boşsa, ana listeden de çıkar
         return event['eventsMap'].isEmpty;
@@ -663,6 +708,5 @@ bu fonksiyonda eventları silerken hata alıyorum
     // convertedMap'i buraya taşıdık, bu şekilde fonksiyonun sonunda döndürebiliriz
     Map<String, dynamic> convertedMap = {'eventsList': eventsList};
     return convertedMap;
-  }
-
+  }*/
 }
