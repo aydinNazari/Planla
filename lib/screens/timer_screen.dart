@@ -130,9 +130,9 @@ class _TimerScreenState extends State<TimerScreen> {
                             const Spacer(),
                             TextButton(
                               onPressed: () async {
-                                Map<String, dynamic> event = {_event: 0};
+
                                 await FirestoreMethods()
-                                    .saveEvent(context, event);
+                                    .saveEvent(context,_event);
                                 checkboxListUpdate(true);
                                 if (context.mounted) {
                                   Navigator.of(context).pop();
@@ -388,72 +388,10 @@ class _TimerScreenState extends State<TimerScreen> {
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
                         itemBuilder: (_, index) {
-                          return Dismissible( silme işlemi doğru düzgün yapılmıyotr
+                          return Dismissible(
                             key: UniqueKey(),
                             onDismissed: (DismissDirection direction) async {
-                              /* print('befor');
-                                print(providerUser.getEventsListMap.length);
-                                print(providerUser.getEventsString.length);*/
 
-                              /*providerUser.setEventsListString(temp);
-                                providerUser.setEventsListMap(mapListTemp);*/
-                              /*var tempMap = removeEventFromList(
-                                  providerUser.getEventsListMap,
-                                  providerUser.getEventsString[index]);*/
-                              // Belirli anahtara sahip elemanları çıkarma
-                              // Belirli anahtara sahip elemanları çıkarma
-                              for (int i = 0;
-                                  i < providerUser.getEventsListMap.length;
-                                  i++) {
-                                if (providerUser.getEventsListMap[i]
-                                    .containsKey('eventsMap')) {
-                                  List<Map<String, dynamic>> eventsMap =
-                                      (providerUser.getEventsListMap[i]
-                                              ['eventsMap'] as List<dynamic>)
-                                          .map((e) => e as Map<String, dynamic>)
-                                          .toList();
-
-                                  for (int j = 0; j < eventsMap.length; j++) {
-                                    if (eventsMap[j].containsKey(
-                                        providerUser.getEventsString[index])) {
-                                      eventsMap.removeAt(j);
-                                      break; // İlk bulduğumuz anahtarı sildikten sonra döngüyü sonlandırabiliriz
-                                    }
-                                  }
-
-                                  providerUser.getEventsListMap[i]
-                                      ['eventsMap'] = eventsMap;
-                                }
-                              }
-
-                              // Listenin son elemanını key ve value olarak silme
-
-                                Map<String, dynamic> lastItem =
-                                    providerUser.getEventsListMap.removeLast();
-                                print("Silinen Son Eleman: $lastItem");
-
-                              // Güncellenmiş listeyi Map<String, dynamic> formatına çevirme
-                              Map<String, dynamic> resultMap = {
-                                'eventsMap': lastItem
-                              };
-                              List<Map<String, dynamic>> list = [];
-                              list.add(resultMap);
-                              print("Güncellenmiş Liste: $resultMap");
-                             /* List<String> temp = [];
-                              for (int i = 0; i < providerUser.getEventsString.length; i++) {
-                                if (providerUser.getEventsString[index] !=
-                                    providerUser.getEventsString[i]) {
-                                  temp.add(providerUser.getEventsString[i]);
-                                }
-                              }
-                              providerUser.setEventsListMap(list);
-                              providerUser.setEventsListString(temp);*/
-
-                              await FirestoreMethods()
-                                  .saveEvent(context, resultMap);
-                              print('string :${providerUser.getEventsString}');
-                              print('map :${providerUser.getEventsListMap}');
-                              setState(() {});
                             },
                             child: SizedBox(
                               child: Row(

@@ -9,7 +9,7 @@ class ProviderUser with ChangeNotifier {
   List<String> _idList = [];
   bool _controlGetFirestore = true;
   List<TodayModel> _doneList = [];
-  List<Map<String, dynamic>> _eventsListMap = [];
+  List<int> _eventsvalueList = [];
   List<String> _eventsListString = [];
   List<bool> _checkBoxList = [];
   String _event = '';
@@ -26,7 +26,7 @@ class ProviderUser with ChangeNotifier {
 
   List<TodayModel> get getDoneList => _doneList;
 
-  List<Map<String, dynamic>> get getEventsListMap => _eventsListMap;
+  List<int> get getEventsValueList => _eventsvalueList;
 
   List<String> get getEventsString => _eventsListString;
 
@@ -64,8 +64,8 @@ class ProviderUser with ChangeNotifier {
     notifyListeners();
   }
 
-  setEventsListMap(List<Map<String, dynamic>> list) {
-    _eventsListMap = list;
+  setEventsListMap(List<int> list) {
+    _eventsvalueList = list;
     notifyListeners();
   }
 

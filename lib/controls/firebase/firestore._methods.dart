@@ -116,15 +116,10 @@ class FirestoreMethods {
             .doc(providerUser.user.uid)
             .get();
         if (eventSnap.exists) {
-          Map<String, dynamic> eventData =
-              eventSnap.data() as Map<String, dynamic>;
 
-          List<Map<String, dynamic>> eventTempList = [{}];
-          eventTempList.add(eventData);
-          providerUser.setEventsListMap(eventTempList);
+         //buraya get işlemi yapılması gerekiyor
 
-          List<String> keyList = getKeys(eventTempList);
-          providerUser.setEventsListString(keyList);
+
         } else {
           print('event Belgesi bulunamadı.');
         }
@@ -279,18 +274,18 @@ class FirestoreMethods {
     }
   }
 
-  Future<void> saveEvent(
+  /*Future<void> saveEvent(
       BuildContext context, Map<String, dynamic> event) async {
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: false);
     List<Map<String, dynamic>> tempMapList = [];
     try {
-     //tempMapList = providerUser.getEventsListMap;
+     tempMapList = providerUser.getEventsListMap;
       tempMapList.add(event);
       //EventModel eventModel = EventModel(eventsMap: tempMapList);
-      /*var snap =
+      *//*var snap =
           await firestore.collection('events').doc(providerUser.user.uid).get();
-      int alldoc = snap.data()!.length;*/
+      int alldoc = snap.data()!.length;*//*
       await firestore
           .collection('events')
           .doc(providerUser.user.uid)
@@ -301,6 +296,29 @@ class FirestoreMethods {
 
       List<String> keyList = getKeys(tempMapList);
       providerUser.setEventsListString(keyList);
+    } on FirebaseException catch (e) {
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
+    }
+  }*/
+
+  Future<void> saveEvent(
+      BuildContext context,String event) async {
+    ProviderUser providerUser =
+    Provider.of<ProviderUser>(context, listen: false);
+  List<String> tempString=[];
+  List<int> eventValue=[];
+    try {
+      tempString = providerUser.getEventsString;
+      eventValue=providerUser.getEventsValueList;
+      tempString.add(event);
+      EventModel eventModel=EventModel(eventsKey: tempString, eventValue:eventValue);
+      await firestore
+          .collection('events')
+          .doc(providerUser.user.uid)
+          .set(eventModel.toMap());
+
     } on FirebaseException catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);

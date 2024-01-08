@@ -1,18 +1,20 @@
 class EventModel {
-  List<Map> eventsMap;
+ List<String> eventsKey;
+ List<int> eventValue;
+ EventModel({
+   required this.eventsKey,required this.eventValue
+});
+ Map<String, dynamic> toMap() {
+   return {
+     'eventsKey' : eventsKey,
+     'eventValue' : eventValue,
+   };
+ }
 
-  EventModel({
-    required this.eventsMap,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'eventsMap': eventsMap,
-    };
-  }
-  factory EventModel.fromMap(Map<String, dynamic> map) {
-    return EventModel(
-      eventsMap: List<Map>.from(map['eventsMap'] ?? []),
-    );
-  }
+ factory EventModel.fromMap(Map<String, dynamic> map) {
+   return EventModel(
+     eventValue: map['eventValue'] ?? '',
+     eventsKey: map['eventsKey'] ?? '',
+   );
+ }
 }
