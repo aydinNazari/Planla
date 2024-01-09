@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/controls/providersClass/timer_provider.dart';
 import 'package:planla/utiles/colors.dart';
-import 'package:planla/utiles/constr.dart';
 import 'package:planla/widgets/textField/textinputfield_widget.dart';
 import 'package:planla/widgets/timer_widget.dart';
 import 'package:provider/provider.dart';
@@ -130,9 +128,8 @@ class _TimerScreenState extends State<TimerScreen> {
                             const Spacer(),
                             TextButton(
                               onPressed: () async {
-
                                 await FirestoreMethods()
-                                    .saveEvent(context,_event);
+                                    .saveEvent(context, _event);
                                 checkboxListUpdate(true);
                                 if (context.mounted) {
                                   Navigator.of(context).pop();
@@ -196,9 +193,6 @@ class _TimerScreenState extends State<TimerScreen> {
                 children: [
                   const Spacer(),
                   TimerWidget(
-                      /*hours: timerProvider.getRemainingHours(),
-                    minutes: timerProvider.getRemainingMinutes(),
-                    //secends: timerProvider.getRemainingSeconds(),*/
                       hours: timerProvider.getdenemeHours,
                       minutes: timerProvider.getdenemeMinute,
                       secends: timerProvider.getdenemeSecend),
@@ -257,6 +251,10 @@ class _TimerScreenState extends State<TimerScreen> {
         Provider.of<ProviderUser>(context, listen: true);
     checkboxList = providerUser.getCheckBoxList;
     Size size = MediaQuery.of(context).size;
+    if(timerProvider.getTimerFinishControl){
+      timerProvider.setTimerFinishControl(false);
+      FirestoreMethods().updateScore(context);
+    }
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -391,7 +389,7 @@ class _TimerScreenState extends State<TimerScreen> {
                           return Dismissible(
                             key: UniqueKey(),
                             onDismissed: (DismissDirection direction) async {
-
+                              await FirestoreMethods().deleteEvent(context, index);
                             },
                             child: SizedBox(
                               child: Row(
@@ -449,6 +447,8 @@ class _TimerScreenState extends State<TimerScreen> {
                       timerProvider.setHours(hoursNumeric);
                       timerProvider.setMinute(minuteNumeric);
                       timerProvider.setSecends(secendNumeric);
+                      int temp=hoursNumeric+minuteNumeric+secendNumeric;
+                      timerProvider.setTempScore(temp.toDouble());
                       timerProvider.startTime(resets: false);
                       timerProvider.setTimerScreenType(false);
                       // BackgroundService().initSercice(context);

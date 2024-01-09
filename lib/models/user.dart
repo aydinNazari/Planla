@@ -3,7 +3,7 @@ class User {
   final String name;
   final String email;
   final String imageurl;
-  final int score;
+  final double score;
 
 
   User({

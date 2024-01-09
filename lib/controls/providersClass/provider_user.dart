@@ -13,6 +13,7 @@ class ProviderUser with ChangeNotifier {
   List<String> _eventsListString = [];
   List<bool> _checkBoxList = [];
   String _event = '';
+  double _score = 0.0;
 
   User get user => _user;
 
@@ -33,6 +34,8 @@ class ProviderUser with ChangeNotifier {
   List<bool> get getCheckBoxList => _checkBoxList;
 
   String get getEvent => _event;
+
+  double get getScore=>_score;
 
   setControlFirestore(bool control) {
     _controlGetFirestore = control;
@@ -64,7 +67,7 @@ class ProviderUser with ChangeNotifier {
     notifyListeners();
   }
 
-  setEventsListMap(List<int> list) {
+  setEventsValueList(List<int> list) {
     _eventsvalueList = list;
     notifyListeners();
   }
@@ -86,5 +89,9 @@ class ProviderUser with ChangeNotifier {
     if (control) {
       notifyListeners();
     }
+  }
+  setScore(double s){
+    _score=s;
+    notifyListeners();
   }
 }

@@ -115,13 +115,15 @@ class FirestoreMethods {
             .collection('events')
             .doc(providerUser.user.uid)
             .get();
+
         if (eventSnap.exists) {
-
-         //buraya get işlemi yapılması gerekiyor
-
-
-        } else {
-          print('event Belgesi bulunamadı.');
+          Map<String, dynamic>? eventData = eventSnap.data();
+          if (eventData != null) {
+            List<String> stringList = List<String>.from(eventData['eventsKey']);
+            List<int> intList = List<int>.from(eventData['eventValue']);
+            providerUser.setEventsListString(stringList);
+            providerUser.setEventsValueList(intList);
+          }
         }
       } on FirebaseException catch (e) {
         if (context.mounted) {
@@ -130,16 +132,15 @@ class FirestoreMethods {
       }
     }
   }
+
   List<String> getKeys(List<Map<String, dynamic>> dataList) {
     List<String> keys = [];
-
     for (var data in dataList) {
       keys.addAll(_getKeys(data));
     }
 
     return keys;
   }
-
 
   List<String> _getKeys(Map<String, dynamic> data) {
     List<String> keys = [];
@@ -160,6 +161,7 @@ class FirestoreMethods {
 
     return keys;
   }
+
   Future<void> deleteCard(BuildContext context, String deleteId) async {
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: false);
@@ -283,9 +285,9 @@ class FirestoreMethods {
      tempMapList = providerUser.getEventsListMap;
       tempMapList.add(event);
       //EventModel eventModel = EventModel(eventsMap: tempMapList);
-      *//*var snap =
+      */ /*var snap =
           await firestore.collection('events').doc(providerUser.user.uid).get();
-      int alldoc = snap.data()!.length;*//*
+      int alldoc = snap.data()!.length;*/ /*
       await firestore
           .collection('events')
           .doc(providerUser.user.uid)
@@ -303,24 +305,67 @@ class FirestoreMethods {
     }
   }*/
 
-  Future<void> saveEvent(
-      BuildContext context,String event) async {
+  Future<void> saveEvent(BuildContext context, String event) async {
     ProviderUser providerUser =
-    Provider.of<ProviderUser>(context, listen: false);
-  List<String> tempString=[];
-  List<int> eventValue=[];
+        Provider.of<ProviderUser>(context, listen: false);
+    List<String> tempString = [];
+    List<int> eventValue = [];
     try {
       tempString = providerUser.getEventsString;
-      eventValue=providerUser.getEventsValueList;
+      eventValue = providerUser.getEventsValueList;
       tempString.add(event);
-      EventModel eventModel=EventModel(eventsKey: tempString, eventValue:eventValue);
+      eventValue.add(0);
+      EventModel eventModel =
+          EventModel(eventsKey: tempString, eventValue: eventValue);
       await firestore
           .collection('events')
           .doc(providerUser.user.uid)
           .set(eventModel.toMap());
-
     } on FirebaseException catch (e) {
       if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
+    }
+  }
+
+  Future<void> deleteEvent(BuildContext context, int index) async {
+    ProviderUser providerUser =
+        Provider.of<ProviderUser>(context, listen: false);
+    List<String> tempString = [];
+    List<int> tempInt = [];
+    try {
+      tempString = providerUser.getEventsString;
+      tempInt = providerUser.getEventsValueList;
+      tempString = List.from(tempString)..removeAt(index);
+      tempInt = List.from(tempInt)..removeAt(index);
+      EventModel eventModel =
+          EventModel(eventsKey: tempString, eventValue: tempInt);
+      await firestore
+          .collection('events')
+          .doc(providerUser.user.uid)
+          .update(eventModel.toMap());
+      providerUser.setEventsListString(tempString);
+      providerUser.setEventsValueList(tempInt);
+    } on FirebaseException catch (e) {
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
+    }
+  }
+
+  Future<void> updateScore(BuildContext context)async{
+    ProviderUser providerUser =
+    Provider.of<ProviderUser>(context, listen: false);
+    TimerProvider timerProvider =
+    Provider.of<TimerProvider>(context, listen: false);
+    try{
+      double tempHours=timerProvider.getTempScore;
+      await firestore.collection('users').doc(providerUser.user.uid).update({
+        'score' :tempHours
+      });
+      providerUser.setScore(tempHours);
+    }on FirebaseException catch(e){
+      if(context.mounted){
         showSnackBar(context, e.toString(), Colors.red);
       }
     }

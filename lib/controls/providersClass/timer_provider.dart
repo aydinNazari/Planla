@@ -11,15 +11,17 @@ class TimerProvider with ChangeNotifier {
   int _minute = 0;
   int _secends = 0;
   bool _timerScreenType = true;
-  int tempCounter=0;
+  int tempCounter = 0;
 
   String _denemeSecend = '';
   String _denemeMinute = '';
   String _denemeHours = '';
   static Duration countdownDuration = const Duration();
   int _counter = 0;
-  String _motivationLottieUrl='';
-  String _motivationSentences='';
+  double _tempScore = 0;
+  String _motivationLottieUrl = '';
+  String _motivationSentences = '';
+  bool _timerFinishControl = false;
 
   int get getHours => _hours;
 
@@ -28,6 +30,8 @@ class TimerProvider with ChangeNotifier {
   int get getSecends => _secends;
 
   int get getCounter => _counter;
+
+  double get getTempScore => _tempScore;
 
   String get getdenemeSecend => _denemeSecend;
 
@@ -39,8 +43,11 @@ class TimerProvider with ChangeNotifier {
 
   bool get timerScreenType => _timerScreenType;
 
-  String get getMotivationLttieUrl=> _motivationLottieUrl;
-  String get getMotivationSentences=> _motivationSentences;
+  String get getMotivationLttieUrl => _motivationLottieUrl;
+
+  String get getMotivationSentences => _motivationSentences;
+
+  bool get getTimerFinishControl => _timerFinishControl;
 
   String twoDigits(int n) => n.toString().padLeft(2, '0');
 
@@ -71,25 +78,17 @@ class TimerProvider with ChangeNotifier {
     if (resets) {
       reset();
     }
-    timer = Timer.periodic(const Duration(seconds: 1), (_) {
+    timer = Timer.periodic(const Duration(seconds: 1), (_) async {
       addTime();
       _counter--;
       tempCounter++;
-      if(tempCounter==60){
-        tempCounter=0;
-        int temp=setRandomNumber(motivationLottieList.length);
+      if (tempCounter == 60) {
+        tempCounter = 0;
+        int temp = setRandomNumber(motivationLottieList.length);
         setMotivationLottieUrl(motivationLottieList[temp]);
-        temp=setRandomNumber(motivationSentencesList.length);
+        temp = setRandomNumber(motivationSentencesList.length);
         setMotivitionSentences(motivationSentencesList[temp]);
       }
-      // secend2
-      //int temp = 0;
-      /* temp = counter ~/ 60; //minute
-      _denemeMinute = temp.toString();
-      int intTemp=int.parse(_denemeMinute);
-      temp=intTemp~/60;
-      _denemeHours = temp.toString();
-      _denemeSecend=secend2.toString();*/
       int saat = _counter ~/ 3600;
       int dakika = (_counter % 3600) ~/ 60;
       int saniye = _counter % 60;
@@ -112,6 +111,7 @@ class TimerProvider with ChangeNotifier {
         saniye=0;
       }*/
       if (_counter < 1) {
+        setTimerFinishControl(true);
         setTimerReset('00');
         setTimerScreenType(true);
       }
@@ -152,6 +152,11 @@ class TimerProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  setTempScore(double temp) {
+    _tempScore = temp / 3600;
+    notifyListeners();
+  }
+
   setTimerScreenType(bool type) {
     _timerScreenType = type;
     notifyListeners();
@@ -165,16 +170,25 @@ class TimerProvider with ChangeNotifier {
     //  secend2=0;
     notifyListeners();
   }
-  setMotivationLottieUrl(String value){
-    _motivationLottieUrl=value;
+
+  setMotivationLottieUrl(String value) {
+    _motivationLottieUrl = value;
     notifyListeners();
   }
-  setMotivitionSentences(String value){
-    _motivationSentences=value;
+
+  setMotivitionSentences(String value) {
+    _motivationSentences = value;
     notifyListeners();
   }
-  int setRandomNumber(int value){
+
+  int setRandomNumber(int value) {
     var random = Random();
     return random.nextInt(value);
   }
+
+  void setTimerFinishControl(bool v) {
+    _timerFinishControl = v;
+    notifyListeners();
+  }
+
 }
