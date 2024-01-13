@@ -9,11 +9,13 @@ class ProviderUser with ChangeNotifier {
   List<String> _idList = [];
   bool _controlGetFirestore = true;
   List<TodayModel> _doneList = [];
-  List<int> _eventsvalueList = [];
+  List<double> _eventsvalueList = [];
   List<String> _eventsListString = [];
   List<bool> _checkBoxList = [];
   String _event = '';
-  double _score = 0.0;
+  double _score = 0;
+  double _valueEvent=0;
+  int _index=0;
 
   User get user => _user;
 
@@ -27,7 +29,7 @@ class ProviderUser with ChangeNotifier {
 
   List<TodayModel> get getDoneList => _doneList;
 
-  List<int> get getEventsValueList => _eventsvalueList;
+  List<double> get getEventsValueList => _eventsvalueList;
 
   List<String> get getEventsString => _eventsListString;
 
@@ -35,7 +37,13 @@ class ProviderUser with ChangeNotifier {
 
   String get getEvent => _event;
 
-  double get getScore=>_score;
+  double get getValueEvent=>_valueEvent;
+  int get getIndex=>_index;
+
+  double get getScore{
+    print('/*/**/*//*/*/*/*/');
+    return _score;
+  }
 
   setControlFirestore(bool control) {
     _controlGetFirestore = control;
@@ -67,7 +75,7 @@ class ProviderUser with ChangeNotifier {
     notifyListeners();
   }
 
-  setEventsValueList(List<int> list) {
+  setEventsValueList(List<double> list) {
     _eventsvalueList = list;
     notifyListeners();
   }
@@ -92,6 +100,14 @@ class ProviderUser with ChangeNotifier {
   }
   setScore(double s){
     _score=s;
+  /*  print('rrrrrrrrrrrrrrrrrrrrrrrrr');
+    print(_score);*/
     notifyListeners();
+  }
+  setValueEvent(double v){
+    _valueEvent=v;
+  }
+  setIndex(int v){
+    _index=v;
   }
 }

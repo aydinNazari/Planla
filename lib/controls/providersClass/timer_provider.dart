@@ -152,8 +152,12 @@ class TimerProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  setTempScore(double temp) {
-    _tempScore = temp / 3600;
+  setTempScore() {
+    _tempScore += _minute / 60;
+    _tempScore += _secends / 3600;
+    _tempScore += _hours;
+    String stringTemp = _tempScore.toStringAsFixed(2);
+    _tempScore = double.parse(stringTemp);
     notifyListeners();
   }
 
@@ -190,5 +194,4 @@ class TimerProvider with ChangeNotifier {
     _timerFinishControl = v;
     notifyListeners();
   }
-
 }

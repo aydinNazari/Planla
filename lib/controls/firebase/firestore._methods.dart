@@ -53,6 +53,14 @@ class FirestoreMethods {
     if (providerUser.getControlFirestore) {
       List<String> textIdsList = [];
       try {
+        //get score
+        DocumentSnapshot cred = await firestore
+            .collection('users')
+            .doc(providerUser.user.uid)
+            .get();
+        double tempScore=(cred.data() as dynamic)['score'];
+        providerUser.setScore(tempScore);
+
         //get textIds list
         var snapshot1 = await firestore
             .collection('textIds')
@@ -62,7 +70,7 @@ class FirestoreMethods {
           textIdsList = List<String>.from(snapshot1.data()?['idlist'] ?? []);
           providerUser.setIdList(textIdsList);
         } else {
-          print('Belge bulunamadı');
+          print('empty do list!');
         }
         List<TodayModel> tankList = [];
         for (int i = 0; i < textIdsList.length; i++) {
@@ -120,7 +128,7 @@ class FirestoreMethods {
           Map<String, dynamic>? eventData = eventSnap.data();
           if (eventData != null) {
             List<String> stringList = List<String>.from(eventData['eventsKey']);
-            List<int> intList = List<int>.from(eventData['eventValue']);
+            List<double> intList = List<double>.from(eventData['eventValue']);
             providerUser.setEventsListString(stringList);
             providerUser.setEventsValueList(intList);
           }
@@ -309,7 +317,7 @@ class FirestoreMethods {
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: false);
     List<String> tempString = [];
-    List<int> eventValue = [];
+    List<double> eventValue = [];
     try {
       tempString = providerUser.getEventsString;
       eventValue = providerUser.getEventsValueList;
@@ -332,7 +340,7 @@ class FirestoreMethods {
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: false);
     List<String> tempString = [];
-    List<int> tempInt = [];
+    List<double> tempInt = [];
     try {
       tempString = providerUser.getEventsString;
       tempInt = providerUser.getEventsValueList;
@@ -353,19 +361,29 @@ class FirestoreMethods {
     }
   }
 
-  Future<void> updateScore(BuildContext context)async{
+  Future<void> updateScore(BuildContext context) async {
     ProviderUser providerUser =
-    Provider.of<ProviderUser>(context, listen: false);
+        Provider.of<ProviderUser>(context, listen: false);
     TimerProvider timerProvider =
-    Provider.of<TimerProvider>(context, listen: false);
-    try{
-      double tempHours=timerProvider.getTempScore;
-      await firestore.collection('users').doc(providerUser.user.uid).update({
-        'score' :tempHours
-      });
+        Provider.of<TimerProvider>(context, listen: false);
+    try {
+      double tempHours = timerProvider.getTempScore;
+      await firestore
+          .collection('users')
+          .doc(providerUser.user.uid)
+          .update({'score': tempHours});
       providerUser.setScore(tempHours);
-    }on FirebaseException catch(e){
-      if(context.mounted){
+      List<double> eventsValue=providerUser.getEventsValueList;
+      eventsValue[index]=providerUser.get;
+
+
+
+      EventModel eventModel=EventModel(eventsKey: eventsKey, eventValue: eventValue);
+      
+      await firestore.collection('events').doc(providerUser.user.uid).update(eventModel.toMap());
+      
+    } on FirebaseException catch (e) {
+      if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);
       }
     }

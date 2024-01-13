@@ -447,12 +447,13 @@ class _TimerScreenState extends State<TimerScreen> {
                       timerProvider.setHours(hoursNumeric);
                       timerProvider.setMinute(minuteNumeric);
                       timerProvider.setSecends(secendNumeric);
-                      int temp=hoursNumeric+minuteNumeric+secendNumeric;
-                      timerProvider.setTempScore(temp.toDouble());
+                      //int temp=hoursNumeric+minuteNumeric+secendNumeric;
+                      timerProvider.setTempScore();
                       timerProvider.startTime(resets: false);
                       timerProvider.setTimerScreenType(false);
                       // BackgroundService().initSercice(context);
                       timerProvider.reset();
+
                       //BackgroundService().initSercice(hoursNumeric,minuteNumeric,secendNumeric);
                     }
                   },
@@ -498,6 +499,7 @@ class _TimerScreenState extends State<TimerScreen> {
   void buildCheckBoxxOnTapFunction(int index, ProviderUser providerUser) {
     checkBoxSetValue(index, context);
     providerUser.setEvent(providerUser.getEventsString[index], true);
+    providerUser.setValueEvent(providerUser.getEventsValueList[index]);
   }
 
   Widget buildNumericText(Size size, String txt) {

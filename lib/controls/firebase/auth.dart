@@ -26,6 +26,7 @@ class Auth {
         imageurl: (cred.data() as dynamic)['imageurl'],
       score: (cred.data() as dynamic)['score'],
     );
+   // providerUser.setScore(user.score);
     providerUser.setUser(user);
     return user;
   }

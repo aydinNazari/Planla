@@ -1,6 +1,6 @@
 class EventModel {
  List<String> eventsKey;
- List<int> eventValue;
+ List<double> eventValue;
  EventModel({
    required this.eventsKey,required this.eventValue
 });
