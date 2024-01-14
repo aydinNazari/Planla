@@ -5,7 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:provider/provider.dart';
 
-import '../utiles/colors.dart';
+import '../../utiles/colors.dart';
 
 class ChartWidget extends StatelessWidget {
   const ChartWidget({

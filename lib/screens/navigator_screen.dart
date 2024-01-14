@@ -29,6 +29,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ProviderUser providerUser=Provider.of<ProviderUser>(context,listen: false);
     Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -110,12 +111,12 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                   ),
                   label: '',
                 ),*/
-                const BottomNavigationBarItem(
+                 BottomNavigationBarItem(
                   icon: /*Icon(
                     Icons.person_outline,
                     size: size.width / 17,
                   )*/
-                      ProgileImgWidget(type: 0),
+                      ProgileImgWidget(type: 0,url: providerUser.user.imageurl ),
                   activeIcon: /*Icon(
                     Icons.person,
                     size: size.width / 14,
@@ -133,7 +134,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                       ),
                     ),
                   ),*/
-                      ProgileImgWidget(type: 0),
+                      ProgileImgWidget(type: 0,url: providerUser.user.imageurl),
                   /*CachedNetworkImage(
          imageUrl: "http://via.placeholder.com/350x150",
          progressIndicatorBuilder: (context, url, downloadProgress) =>

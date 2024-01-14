@@ -118,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(right: size.width / 10),
-                  child: const ProgileImgWidget(type: 2),
+                  child:  ProgileImgWidget(type: 2,url: user.user.imageurl),
                 ),
               ],
             ),

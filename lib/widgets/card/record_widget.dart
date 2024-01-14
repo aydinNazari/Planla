@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../controls/providersClass/provider_user.dart';
+import '../../controls/providersClass/provider_user.dart';
 
 class RecordWidget extends StatelessWidget {
   const RecordWidget({

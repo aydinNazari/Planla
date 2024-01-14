@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:planla/widgets/profile_img_widget.dart';
-import 'package:planla/widgets/record_widget.dart';
+import 'package:planla/widgets/card/record_widget.dart';
 import 'package:provider/provider.dart';
 import '../controls/providersClass/provider_user.dart';
 import '../screens/profile_screen.dart';
 import '../utiles/colors.dart';
-import 'chart_widget.dart';
+import 'card/arrangment_card.dart';
+import 'card/chart_widget.dart';
 import 'homepage_type_container_widget.dart';
 
 class HomeScreenScafoldWidget extends StatefulWidget {
@@ -66,7 +67,8 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                               child: const ProfileScreen(control: true),
                               isIos: true));
                     },
-                    child: const ProgileImgWidget(
+                    child:  ProgileImgWidget(
+                      url: providerUser.user.imageurl,
                       type: 1,
                     ),
                   ),
@@ -150,12 +152,23 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                 padding: EdgeInsets.only(top: size.height / 50),
                 child: const ChartWidget()),
             Padding(
-              padding: EdgeInsets.only(top: size.height / 30,right: size.width/50),
+              padding: EdgeInsets.only(
+                  top: size.height / 30, right: size.width / 50),
               child: SizedBox(
                 width: size.width,
                 height: size.height / 5,
                 child: RecordWidget(size: size, providerUser: providerUser),
               ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                right: size.width / 45,
+                top: size.height / 25,
+              ),
+              child: SizedBox(
+                  width: size.width,
+                  height: size.height / 3,
+                  child: const ArrangementCard()),
             ),
             const SizedBox(
               height: 100,

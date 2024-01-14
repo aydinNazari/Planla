@@ -374,13 +374,11 @@ class FirestoreMethods {
           .update({'score': tempHours});
       providerUser.setScore(tempHours);
       List<double> eventsValue=providerUser.getEventsValueList;
-      eventsValue[index]=providerUser.get;
-
+     /* eventsValue[index]=providerUser.get;
 
 
       EventModel eventModel=EventModel(eventsKey: eventsKey, eventValue: eventValue);
-      
-      await firestore.collection('events').doc(providerUser.user.uid).update(eventModel.toMap());
+      await firestore.collection('events').doc(providerUser.user.uid).update(eventModel.toMap());*/
       
     } on FirebaseException catch (e) {
       if (context.mounted) {
