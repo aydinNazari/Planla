@@ -253,7 +253,8 @@ class _TimerScreenState extends State<TimerScreen> {
     Size size = MediaQuery.of(context).size;
     if(timerProvider.getTimerFinishControl){
       timerProvider.setTimerFinishControl(false);
-      FirestoreMethods().updateScore(context);
+      print('777777777777');
+      FirestoreMethods().updateScoreAndEventsValue(context);
     }
     return SingleChildScrollView(
       child: Column(
@@ -449,6 +450,7 @@ class _TimerScreenState extends State<TimerScreen> {
                       timerProvider.setSecends(secendNumeric);
                       //int temp=hoursNumeric+minuteNumeric+secendNumeric;
                       timerProvider.setTempScore();
+                      timerProvider.setEventTime();
                       timerProvider.startTime(resets: false);
                       timerProvider.setTimerScreenType(false);
                       // BackgroundService().initSercice(context);

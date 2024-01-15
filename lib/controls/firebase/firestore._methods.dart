@@ -15,7 +15,7 @@ class FirestoreMethods {
     List<TodayModel> tankList = [];
     List<String> idlist = [];
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     var uuid = const Uuid();
     var id = uuid.v4();
     try {
@@ -49,7 +49,7 @@ class FirestoreMethods {
 
   Future<void> getFirestoreData(BuildContext context) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     if (providerUser.getControlFirestore) {
       List<String> textIdsList = [];
       try {
@@ -58,7 +58,7 @@ class FirestoreMethods {
             .collection('users')
             .doc(providerUser.user.uid)
             .get();
-        double tempScore=(cred.data() as dynamic)['score'];
+        double tempScore = (cred.data() as dynamic)['score'];
         providerUser.setScore(tempScore);
 
         //get textIds list
@@ -112,11 +112,11 @@ class FirestoreMethods {
         providerUser.setControlFirestore(false);
         if (context.mounted) {
           TimerProvider timerProvider =
-              Provider.of<TimerProvider>(context, listen: false);
+          Provider.of<TimerProvider>(context, listen: false);
           timerProvider.setMotivitionSentences(motivationSentencesList[
-              timerProvider.setRandomNumber(motivationSentencesList.length)]);
+          timerProvider.setRandomNumber(motivationSentencesList.length)]);
           timerProvider.setMotivationLottieUrl(motivationLottieList[
-              timerProvider.setRandomNumber(motivationLottieList.length)]);
+          timerProvider.setRandomNumber(motivationLottieList.length)]);
         }
         // events get
         var eventSnap = await firestore
@@ -131,6 +131,11 @@ class FirestoreMethods {
             List<double> intList = List<double>.from(eventData['eventValue']);
             providerUser.setEventsListString(stringList);
             providerUser.setEventsValueList(intList);
+            Map<String, double> tempMap = {};
+            for (int i = 0; i < stringList.length; i++) {
+              tempMap[stringList[i]] = intList[i];
+            }
+            providerUser.setMapEvent(tempMap);
           }
         }
       } on FirebaseException catch (e) {
@@ -172,7 +177,7 @@ class FirestoreMethods {
 
   Future<void> deleteCard(BuildContext context, String deleteId) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     try {
       await firestore
           .collection('text')
@@ -182,7 +187,7 @@ class FirestoreMethods {
           .delete();
 
       DocumentReference docRef =
-          firestore.collection('textIds').doc(providerUser.user.uid);
+      firestore.collection('textIds').doc(providerUser.user.uid);
       DocumentSnapshot docSnapshot = await docRef.get();
       Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
 
@@ -224,7 +229,7 @@ class FirestoreMethods {
   Future<void> doneImportantUpdate(BuildContext context, bool typeProcess,
       bool value, String processID) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     List<TodayModel> tankList = [];
     List<TodayModel> todayList = [];
     List<TodayModel> doneList = [];
@@ -315,20 +320,37 @@ class FirestoreMethods {
 
   Future<void> saveEvent(BuildContext context, String event) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     List<String> tempString = [];
     List<double> eventValue = [];
+    bool control=true;
     try {
       tempString = providerUser.getEventsString;
-      eventValue = providerUser.getEventsValueList;
-      tempString.add(event);
-      eventValue.add(0);
-      EventModel eventModel =
-          EventModel(eventsKey: tempString, eventValue: eventValue);
-      await firestore
-          .collection('events')
-          .doc(providerUser.user.uid)
-          .set(eventModel.toMap());
+      for(String v in tempString){
+        if(v.toLowerCase()==event.toLowerCase()){
+          control=false;
+        }
+      }
+      if(control){
+        eventValue = providerUser.getEventsValueList;
+        tempString.add(event);
+        eventValue.add(0);
+        EventModel eventModel =
+        EventModel(eventsKey: tempString, eventValue: eventValue);
+        await firestore
+            .collection('events')
+            .doc(providerUser.user.uid)
+            .set(eventModel.toMap());
+        providerUser.setEventsValueList(eventValue);
+        providerUser.setEventsListString(tempString);
+        Map<String,double> mapEvent=providerUser.getMapEvent;
+        for(int i =0 ; i<tempString.length;i++){
+          mapEvent[tempString[i]]=eventValue[i];
+        }
+        providerUser.setMapEvent(mapEvent);
+      }else{
+        showSnackBar(context, 'The event you entered already exists!', Colors.red);
+      }
     } on FirebaseException catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);
@@ -338,16 +360,24 @@ class FirestoreMethods {
 
   Future<void> deleteEvent(BuildContext context, int index) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     List<String> tempString = [];
     List<double> tempInt = [];
     try {
       tempString = providerUser.getEventsString;
       tempInt = providerUser.getEventsValueList;
-      tempString = List.from(tempString)..removeAt(index);
-      tempInt = List.from(tempInt)..removeAt(index);
+      tempString = List.from(tempString)
+        ..removeAt(index);
+      tempInt = List.from(tempInt)
+        ..removeAt(index);
+      Map<String,double> tempMap={};
+      for (int i = 0; i < tempString.length; i++) {
+        tempMap[tempString[i]] = tempInt[i];
+      }
+      providerUser.setMapEvent(tempMap);
+      print('ssssssssssssssss ${tempMap}');
       EventModel eventModel =
-          EventModel(eventsKey: tempString, eventValue: tempInt);
+      EventModel(eventsKey: tempString, eventValue: tempInt);
       await firestore
           .collection('events')
           .doc(providerUser.user.uid)
@@ -361,25 +391,55 @@ class FirestoreMethods {
     }
   }
 
-  Future<void> updateScore(BuildContext context) async {
+  Future<void> updateScoreAndEventsValue(BuildContext context) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     TimerProvider timerProvider =
-        Provider.of<TimerProvider>(context, listen: false);
+    Provider.of<TimerProvider>(context, listen: false);
     try {
+      //set score
       double tempHours = timerProvider.getTempScore;
       await firestore
           .collection('users')
           .doc(providerUser.user.uid)
           .update({'score': tempHours});
       providerUser.setScore(tempHours);
-      List<double> eventsValue=providerUser.getEventsValueList;
-     /* eventsValue[index]=providerUser.get;
+      print('8888888888888888888');
 
-
-      EventModel eventModel=EventModel(eventsKey: eventsKey, eventValue: eventValue);
+      //save event and its value
+      double tempTEventTime = timerProvider.getEventTime;
+     // print('getEventTime $tempTEventTime');
+      String eventTemp = providerUser.getEvent;
+      //print('eventTemp : $eventTemp');
+      Map<String, double> tempMapEvent = providerUser.getMapEvent;
+      for (var entry in tempMapEvent.entries) {
+        String key = entry.key;
+        double value = entry.value;
+        if (key == eventTemp) {
+         /* print('key : $key');
+          print('value $value');*/
+          tempTEventTime += value ;
+          String stringValue = tempTEventTime.toString();
+          stringValue = stringValue.substring(0, stringValue.indexOf('.') + 3);
+          tempTEventTime= double.parse(stringValue);
+        }
+      }
+     // print('tempTEventTime $tempTEventTime');
+      if (tempMapEvent.containsKey(eventTemp)) {
+          tempMapEvent[eventTemp] = tempTEventTime;
+        }
+      providerUser.setMapEvent(tempMapEvent);
+      List<double> tempValuList = [];
+      tempValuList.addAll(tempMapEvent.values);
+      providerUser.setEventsValueList(tempValuList);
+      EventModel eventModel = EventModel(
+          eventsKey: providerUser.getEventsString, eventValue: tempValuList);
+      await firestore
+          .collection('events')
+          .doc(providerUser.user.uid)
+          .update(eventModel.toMap());
+      /* EventModel eventModel=EventModel(eventsKey: eventsKey, eventValue: eventValue);
       await firestore.collection('events').doc(providerUser.user.uid).update(eventModel.toMap());*/
-      
     } on FirebaseException catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);
@@ -389,13 +449,14 @@ class FirestoreMethods {
 
   String _twoDigits(Timestamp timestamp) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
-            timestamp.seconds * 1000,
-            isUtc: true)
+        timestamp.seconds * 1000,
+        isUtc: true)
         .add(Duration(microseconds: timestamp.nanoseconds ~/ 1000));
 
     String formattedDate =
         "${dateTime.year}-${_ddd(dateTime.month)}-${_ddd(dateTime.day)} "
-        "${_ddd(dateTime.hour)}:${_ddd(dateTime.minute)}:${_ddd(dateTime.second)}";
+        "${_ddd(dateTime.hour)}:${_ddd(dateTime.minute)}:${_ddd(
+        dateTime.second)}";
     formattedDate = formattedDate.substring(0, 10);
     return formattedDate;
   }

@@ -22,6 +22,7 @@ class TimerProvider with ChangeNotifier {
   String _motivationLottieUrl = '';
   String _motivationSentences = '';
   bool _timerFinishControl = false;
+  double _eventTime=0.0;
 
   int get getHours => _hours;
 
@@ -48,6 +49,8 @@ class TimerProvider with ChangeNotifier {
   String get getMotivationSentences => _motivationSentences;
 
   bool get getTimerFinishControl => _timerFinishControl;
+
+  double get getEventTime =>_eventTime;
 
   String twoDigits(int n) => n.toString().padLeft(2, '0');
 
@@ -110,7 +113,8 @@ class TimerProvider with ChangeNotifier {
         _denemeSecend='00';
         saniye=0;
       }*/
-      if (_counter < 1) {
+      if (_counter <= -1) {
+        print('_counterrrrrrrrrrrrr');
         setTimerFinishControl(true);
         setTimerReset('00');
         setTimerScreenType(true);
@@ -160,6 +164,17 @@ class TimerProvider with ChangeNotifier {
     _tempScore = double.parse(stringTemp);
     notifyListeners();
   }
+  setEventTime() {
+    _eventTime=0;
+    _eventTime += _minute / 60;
+    _eventTime += _secends / 3600;
+    _eventTime += _hours;
+    String stringValue = _eventTime.toString();
+    String result = stringValue.substring(0, stringValue.indexOf('.') + 3);
+    _eventTime = double.parse(result);
+    //print('setEventTime $_eventTime');
+    notifyListeners();
+  }
 
   setTimerScreenType(bool type) {
     _timerScreenType = type;
@@ -192,6 +207,6 @@ class TimerProvider with ChangeNotifier {
 
   void setTimerFinishControl(bool v) {
     _timerFinishControl = v;
-    notifyListeners();
+   //notifyListeners();
   }
 }

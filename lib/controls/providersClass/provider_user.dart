@@ -3,6 +3,7 @@ import 'package:planla/models/today_model.dart';
 import '../../models/user.dart';
 
 class ProviderUser with ChangeNotifier {
+
   User _user = User(uid: '', email: '', name: '', imageurl: '', score: 0);
   List<TodayModel> _todayList = [];
   List<TodayModel> _tankList = [];
@@ -16,6 +17,7 @@ class ProviderUser with ChangeNotifier {
   double _score = 0;
   double _valueEvent=0;
   int _index=0;
+  Map<String, double> _mapEvent={};
 
   User get user => _user;
 
@@ -38,7 +40,10 @@ class ProviderUser with ChangeNotifier {
   String get getEvent => _event;
 
   double get getValueEvent=>_valueEvent;
+
   int get getIndex=>_index;
+
+  Map<String,double> get getMapEvent=>_mapEvent;
 
   double get getScore{
     print('/*/**/*//*/*/*/*/');
@@ -109,5 +114,8 @@ class ProviderUser with ChangeNotifier {
   }
   setIndex(int v){
     _index=v;
+  }
+  setMapEvent(Map<String,double> map){
+    _mapEvent=map;
   }
 }
