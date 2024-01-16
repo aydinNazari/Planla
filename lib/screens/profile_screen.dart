@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
+import 'package:planla/screens/navigator_screen.dart';
+import 'package:planla/screens/setting_screen.dart';
 import 'package:planla/utiles/colors.dart';
 import 'package:provider/provider.dart';
 
 import '../controls/firebase/firestore._methods.dart';
-import '../models/today_model.dart';
 import '../utiles/constr.dart';
 import '../widgets/textField/addpage_card_widget.dart';
 import '../widgets/profile_img_widget.dart';
@@ -37,19 +38,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final user = Provider.of<ProviderUser>(context, listen: false);
     Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        if(widget.control==false){
-          logOutFunc(context, size, false,user);
+        if (widget.control == false) {
+          logOutFunc(context, size, false, user);
           return false;
-        }else{
+        } else {
           Navigator.of(context).pop();
           return true;
         }
-
       },
       child: Scaffold(
         appBar: AppBar(
@@ -59,7 +58,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: EdgeInsets.only(left: size.width / 25),
                     child: InkWell(
                         onTap: () {
-                          Navigator.of(context).pop();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            PageTransition(
+                                type: PageTransitionType.rightToLeft,
+                                child: const NavigatorScreen()),
+                                (route) => route.isCurrent,
+                          );
                         },
                         child: Icon(
                           Icons.arrow_back,
@@ -71,16 +76,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const Spacer(),
             Padding(
               padding: EdgeInsets.only(
-                right: size.width / 25,
-              ),
+                  right: size.width / 25, top: size.height / 80),
               child: InkWell(
                 onTap: () {
-                  logOutFunc(context, size, true,user);
+
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.topToBottom,
+                          child: const SettingScreen()));
                 },
                 child: Icon(
-                  Icons.logout,
+                  Icons.settings,
                   size: size.width / 18,
-                  color: Colors.black,
+                  color: primeryColor,
                 ),
               ),
             ),
@@ -118,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(right: size.width / 10),
-                  child:  ProgileImgWidget(type: 2,url: user.user.imageurl),
+                  child: ProgileImgWidget(type: 2, url: user.user.imageurl),
                 ),
               ],
             ),

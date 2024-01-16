@@ -14,6 +14,7 @@ class ChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int t=-1;
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: false);
     var size = MediaQuery.of(context).size;
@@ -33,28 +34,29 @@ class ChartWidget extends StatelessWidget {
           borderRadius:
           BorderRadius.all(Radius.circular(size.width / 15))),*/
         child: Center(
-          child: providerUser.getEventsString.isNotEmpty
+          child: providerUser.getMapEvent.isNotEmpty
               ? PieChart(
-                  PieChartData(
-                    centerSpaceColor: Colors.black26,
-                    centerSpaceRadius: 5,
-                    borderData: FlBorderData(show: false),
-                    sectionsSpace: 2,
-                    sections: List.generate(
-                      providerUser.getEventsString.length,
-                      (index) => PieChartSectionData(
-                        showTitle: true,
-                        title: providerUser.getEventsString[index],
-                        value: /*providerUser.getEventsListMap[1][providerUser.getEventsString] ??*/
-                            55,
-                        color: /*chartData[index]['color']*/ colorList[index],
-                        titleStyle: TextStyle(
-                            color: Colors.white, fontSize: size.width / 40),
-                        radius: size.width / 4,
-                      ),
-                    ),
-                  ),
-                )
+            PieChartData(
+              centerSpaceColor: Colors.black26,
+              centerSpaceRadius: 5,
+              borderData: FlBorderData(show: false),
+              sectionsSpace: 2,
+              sections: providerUser.getMapEvent.entries.map((entry) {
+                String key = entry.key;
+                double value = entry.value;
+                t++;
+                return PieChartSectionData(
+                  showTitle: true,
+                  title: key,
+                  value: value,
+                  color: colorList[t],
+                  titleStyle: TextStyle(color: Colors.white, fontSize: size.width / 40),
+                  radius: size.width / 4,
+                );
+              }).toList(),
+            ),
+          )
+
               : Column(
                   children: [
                     SizedBox(

@@ -170,8 +170,13 @@ class TimerProvider with ChangeNotifier {
     _eventTime += _secends / 3600;
     _eventTime += _hours;
     String stringValue = _eventTime.toString();
-    String result = stringValue.substring(0, stringValue.indexOf('.') + 3);
+    RegExp regex = RegExp(r'^\d*\.\d{0,2}');
+    RegExpMatch? match = regex.firstMatch(stringValue);
+    String result = match?.group(0) ?? stringValue;
     _eventTime = double.parse(result);
+
+
+
     //print('setEventTime $_eventTime');
     notifyListeners();
   }

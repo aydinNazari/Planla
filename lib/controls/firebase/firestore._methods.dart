@@ -420,8 +420,10 @@ class FirestoreMethods {
           print('value $value');*/
           tempTEventTime += value ;
           String stringValue = tempTEventTime.toString();
-          stringValue = stringValue.substring(0, stringValue.indexOf('.') + 3);
-          tempTEventTime= double.parse(stringValue);
+          RegExp regex = RegExp(r'^\d*\.\d{0,2}');
+          RegExpMatch? match = regex.firstMatch(stringValue);
+          String result = match?.group(0) ?? stringValue;
+          tempTEventTime= double.parse(result);
         }
       }
      // print('tempTEventTime $tempTEventTime');

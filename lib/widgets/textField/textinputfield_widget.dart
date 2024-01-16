@@ -4,12 +4,13 @@ import 'package:flutter/services.dart';
 class TextInputField extends StatelessWidget {
   const TextInputField(
       {Key? key,
-        required this.hintText,
-        required this.labelTextWidget,
-        required this.iconWidget,
-        required this.obscrueText,
-        required this.onchange,
-        required this.hintColor, required this.inputLenghtControl})
+      required this.hintText,
+      required this.labelTextWidget,
+      required this.iconWidget,
+      required this.obscrueText,
+      required this.onchange,
+      required this.hintColor,
+      required this.inputLenghtControl})
       : super(key: key);
   final String hintText;
   final Widget labelTextWidget;
@@ -23,7 +24,9 @@ class TextInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       child: TextField(
-        inputFormatters: [LengthLimitingTextInputFormatter(inputLenghtControl ? 10 : 60)],
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(inputLenghtControl ? 10 : 60)
+        ],
         textCapitalization: TextCapitalization.words,
         onChanged: onchange,
         obscureText: obscrueText,

@@ -25,7 +25,7 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
     Size size = MediaQuery.of(context).size;
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: false);
-  /*  TimerProvider timerProvider =
+    /*  TimerProvider timerProvider =
         Provider.of<TimerProvider>(context, listen: false);
     print('ffffff');
     print(timerProvider.getTempScore);*/
@@ -65,14 +65,15 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                   child: InkWell(
                     autofocus: true,
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          PageTransition(
-                              type: PageTransitionType.rightToLeft,
-                              child: const ProfileScreen(control: true),
-                              isIos: true));
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: const ProfileScreen(control: true)),
+                        (route) => route.isCurrent,
+                      );
                     },
-                    child:  ProgileImgWidget(
+                    child: ProgileImgWidget(
                       url: providerUser.user.imageurl,
                       type: 1,
                     ),
