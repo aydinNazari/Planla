@@ -4,6 +4,7 @@ class User {
   final String email;
   final String imageurl;
   final double score;
+  final String bio;
 
 
   User({
@@ -11,7 +12,8 @@ class User {
     required this.email,
     required this.name,
     required this.imageurl,
-    required this.score
+    required this.score,
+    required this.bio
   });
 
 
@@ -22,6 +24,7 @@ class User {
       'email': email,
       'imageurl': imageurl,
       'score': score,
+      'bio': bio,
     };
   }
 
@@ -32,7 +35,7 @@ class User {
         name: map['name'] ?? '',
         imageurl: map['imageurl'] ?? '',
       score: map['score'] ?? '',
-
+      bio: map['bio'] ?? '',
     );
   }
 }

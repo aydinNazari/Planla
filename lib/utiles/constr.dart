@@ -124,7 +124,7 @@ Future<void> showMyDialog(
     barrierDismissible: profilePhoto ? true : false,
     builder: (BuildContext context) {
       ProviderUser providerUser =
-          Provider.of<ProviderUser>(context,listen: true);
+          Provider.of<ProviderUser>(context, listen: true);
       return AlertDialog(
         backgroundColor: Colors.white,
         content: SingleChildScrollView(
@@ -164,7 +164,7 @@ Future<void> showMyDialog(
                         InkWell(
                           onTap: () async {
                             var image = await pickImager();
-                            if(context.mounted){
+                            if (context.mounted) {
                               lottieProgressDialog(
                                   context, 'assets/json/loading.json');
                             }
@@ -175,7 +175,8 @@ Future<void> showMyDialog(
                                 email: providerUser.user.email,
                                 name: providerUser.user.name,
                                 imageurl: url,
-                                score: providerUser.user.score);
+                                score: providerUser.user.score,
+                                bio: providerUser.user.bio);
                             providerUser.setUser(user);
                             await firestore
                                 .collection('users')
@@ -203,9 +204,33 @@ Future<void> showMyDialog(
                         children: [
                           const Spacer(),
                           InkWell(
-                            onTap: () {
+                            onTap: () async {
                               if (providerUser.user.imageurl != '') {
-                              } else {}
+                                if (context.mounted) {
+                                  lottieProgressDialog(
+                                      context, 'assets/json/loading.json');
+                                }
+                                await Storage().deleteProfilePhoto(
+                                    context, providerUser.user.uid);
+                                model.User user = model.User(
+                                    uid: providerUser.user.uid,
+                                    email: providerUser.user.email,
+                                    name: providerUser.user.name,
+                                    imageurl: '',
+                                    score: providerUser.user.score,
+                                    bio: providerUser.user.bio);
+                                providerUser.setUser(user);
+                                if (context.mounted) {
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                }
+                              } else {
+                                Navigator.of(context).pop();
+                                showSnackBar(
+                                    context,
+                                    'You don\'t have a profile picture yet',
+                                    Colors.red);
+                              }
                             },
                             child: Text(
                               'Remove Photo',
@@ -282,13 +307,15 @@ Future<void> logOutFunc(BuildContext context, Size size, bool exitType,
         providerUser.setEventsListString([]);
         providerUser.setEventsValueList([]);
         providerUser.setEventsListString([]);
+        providerUser.setMapEvent({});
         Navigator.of(context).pop();
-        Navigator.push(
+        Navigator.pushAndRemoveUntil(
           context,
           PageTransition(
             type: PageTransitionType.topToBottom,
             child: const LoginSignInScreen(),
           ),
+          (route) => route.isCurrent,
         );
       }
     }, () {

@@ -10,6 +10,7 @@ class TextInputField extends StatelessWidget {
       required this.obscrueText,
       required this.onchange,
       required this.hintColor,
+      required this.onSubmited,
       required this.inputLenghtControl})
       : super(key: key);
   final String hintText;
@@ -18,6 +19,7 @@ class TextInputField extends StatelessWidget {
   final bool obscrueText;
   final bool inputLenghtControl;
   final Color hintColor;
+  final void Function(String) onSubmited;
   final void Function(String) onchange;
 
   @override
@@ -29,6 +31,7 @@ class TextInputField extends StatelessWidget {
         ],
         textCapitalization: TextCapitalization.words,
         onChanged: onchange,
+        onSubmitted: onSubmited,
         obscureText: obscrueText,
         decoration: InputDecoration(
           hintText: hintText,

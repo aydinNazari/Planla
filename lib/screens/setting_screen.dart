@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planla/controls/firebase/firestore._methods.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:provider/provider.dart';
 import '../utiles/constr.dart';
@@ -6,7 +7,10 @@ import '../widgets/profile_img_widget.dart';
 import '../widgets/textField/textinputfield_widget.dart';
 
 class SettingScreen extends StatelessWidget {
-  const SettingScreen({Key? key}) : super(key: key);
+  SettingScreen({Key? key}) : super(key: key);
+
+  late String name;
+  late String bio;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +20,7 @@ class SettingScreen extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Stack(
               children: [
@@ -32,8 +36,8 @@ class SettingScreen extends StatelessWidget {
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                       colors: [
-                        Color(0xff46829b),
                         Color(0xff544797),
+                        Color(0xff46829b),
                       ],
                     ),
                   ),
@@ -110,21 +114,74 @@ class SettingScreen extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.only(top: size.height / 25),
-              child:
-                  buildTextAndTextField(size, 'Bio', 'Enter your bio', 'Bio'),
+              child: buildTextAndTextField(
+                  size,
+                  'Bio',
+                  providerUser.user.bio != ''
+                      ? providerUser.user.bio
+                      : 'Enter your bio',
+                  'Bio', (v) {
+                bio = v;
+              }),
             ),
             Padding(
               padding: EdgeInsets.only(top: size.height / 25),
               child: buildTextAndTextField(
-                  size, 'Name', providerUser.user.name, 'Name'),
+                  size, 'Name', providerUser.user.name, 'Name', (v) {
+                name = v;
+              }),
             ),
+            Padding(
+              padding: EdgeInsets.only(top: size.height / 8),
+              child: Container(
+                width: size.width / 3,
+                height: size.height / 12,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Color(0xff46829b),
+                      Color(0xff544797),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(size.width / 25),
+                  ),
+                ),
+                child: Center(
+                    child: InkWell(
+                  onTap: () async {
+                    if (name.isNotEmpty || bio.isNotEmpty) {
+                      lottieProgressDialog(context, 'assets/json/loading.json');
+                      await FirestoreMethods()
+                          .updateUserElements(context, bio, name);
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    } else {
+                      showSnackBar(
+                          context, 'You did not enter anything ', Colors.red);
+                    }
+                  },
+                  child: Text(
+                    'Update',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: size.width / 20,
+                        fontWeight: FontWeight.w600),
+                  ),
+                )),
+              ),
+            )
           ],
         ),
       ),
     );
   }
 
-  Row buildTextAndTextField(Size size, String txt, String hint, String label) {
+  Row buildTextAndTextField(Size size, String txt, String hint, String label,
+      void Function(String) func) {
     return Row(
       children: [
         Expanded(
@@ -146,7 +203,10 @@ class SettingScreen extends StatelessWidget {
             padding:
                 EdgeInsets.only(left: size.width / 25, right: size.width / 25),
             child: TextInputField(
-              onchange: (v) {},
+              onSubmited: (v){
+
+              },
+              onchange: func,
               inputLenghtControl: false,
               hintText: hint,
               hintColor: Colors.grey,

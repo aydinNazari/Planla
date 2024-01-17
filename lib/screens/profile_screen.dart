@@ -88,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       context,
                       PageTransition(
                           type: PageTransitionType.topToBottom,
-                          child: const SettingScreen()));
+                          child: SettingScreen()));
                 },
                 child: Icon(
                   Icons.settings,
@@ -125,6 +125,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               fontSize: size.width / 23,
                               fontWeight: FontWeight.w600),
                         ),
+                        Text(
+                          user.user.bio,
+                          style: TextStyle(
+                              color: primeryColor,
+                              fontSize: size.width / 22,
+                              fontWeight: FontWeight.w700),
+                        )
                       ],
                     ),
                   ),

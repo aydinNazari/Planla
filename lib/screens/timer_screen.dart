@@ -111,6 +111,8 @@ class _TimerScreenState extends State<TimerScreen> {
                         width: size.width / 2,
                         height: size.height / 12,
                         child: TextInputField(
+                          onSubmited: (v){
+                          },
                             inputLenghtControl: true,
                             hintText: 'Add new activity',
                             labelTextWidget: const Text('up to 10 characters'),

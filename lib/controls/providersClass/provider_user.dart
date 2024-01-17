@@ -4,7 +4,7 @@ import '../../models/user.dart';
 
 class ProviderUser with ChangeNotifier {
 
-  User _user = User(uid: '', email: '', name: '', imageurl: '', score: 0);
+  User _user = User(uid: '', email: '', name: '', imageurl: '', score: 0,bio: '');
   List<TodayModel> _todayList = [];
   List<TodayModel> _tankList = [];
   List<String> _idList = [];

@@ -20,13 +20,14 @@ class Auth {
   Future<model.User> getCurrentUser(String? uid) async {
     DocumentSnapshot cred = await firestore.collection('users').doc(uid).get();
     model.User user = model.User(
-        uid: uid!,
-        email: (cred.data() as dynamic)['email'],
-        name: (cred.data() as dynamic)['name'],
-        imageurl: (cred.data() as dynamic)['imageurl'],
+      uid: uid!,
+      email: (cred.data() as dynamic)['email'],
+      name: (cred.data() as dynamic)['name'],
+      imageurl: (cred.data() as dynamic)['imageurl'],
       score: (cred.data() as dynamic)['score'],
+      bio: (cred.data() as dynamic)['bio']
     );
-   // providerUser.setScore(user.score);
+    // providerUser.setScore(user.score);
     providerUser.setUser(user);
     return user;
   }
@@ -43,23 +44,24 @@ class Auth {
         String image =
             await storage.uploadImageToStorage(profilePhoto, cred.user!.uid);
         model.User user = model.User(
-            uid: cred.user!.uid,
-            email: email.trim(),
-            name: username.trim(),
-            imageurl: image,
-          score: 0
+          uid: cred.user!.uid,
+          email: email.trim(),
+          name: username.trim(),
+          imageurl: image,
+          score: 0,
+          bio: '',
         );
         await firestore
             .collection('users')
             .doc(cred.user!.uid)
             .set(user.toMap());
-        if(context.mounted){
+        if (context.mounted) {
           Provider.of<ProviderUser>(context, listen: false).setUser(user);
         }
         res = true;
       }
     } on FirebaseAuthException catch (e) {
-      if(context.mounted){
+      if (context.mounted) {
         showSnackBar(context, e.message!, Colors.red);
       }
     }
@@ -71,13 +73,13 @@ class Auth {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication? googleAuth =
-      await googleUser?.authentication;
+          await googleUser?.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
       UserCredential userCredential =
-      await auth.signInWithCredential(credential);
+          await auth.signInWithCredential(credential);
       User? user = userCredential.user;
 
       if (user != null) {
@@ -86,17 +88,17 @@ class Auth {
             'email': user.email,
             'uid': user.uid,
             'imageurl': user.photoURL,
-            'name':user.displayName
+            'name': user.displayName
           });
         }
-        res=true;
+        res = true;
       }
       return res;
     } on FirebaseAuthException catch (e) {
       res = false;
-     if(context.mounted){
-       showSnackBar(context, e.toString(), Colors.red);
-     }
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
     }
     return res;
   }
@@ -110,15 +112,15 @@ class Auth {
       if (cred.user != null) {
         //model.User user=model.User(uid: uid, email: email, username: username);
         model.User user = await getCurrentUser(cred.user!.uid);
-        if(context.mounted){
+        if (context.mounted) {
           Provider.of<ProviderUser>(context, listen: false).setUser(user);
         }
         res = true;
       }
     } on FirebaseAuthException catch (e) {
-     if(context.mounted){
-       showSnackBar(context, e.toString(), Colors.red);
-     }
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
     }
     return res;
   }
