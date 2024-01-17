@@ -32,6 +32,7 @@ class TextInputField extends StatelessWidget {
         obscureText: obscrueText,
         decoration: InputDecoration(
           hintText: hintText,
+          hintStyle: const TextStyle(color: Colors.grey),
           prefix: iconWidget,
           labelStyle: TextStyle(
             color: hintColor,
@@ -41,7 +42,6 @@ class TextInputField extends StatelessWidget {
               color: Colors.black,
             ),
           ),
-          label: labelTextWidget,
           border: const OutlineInputBorder(
             borderSide: BorderSide(
               color: Colors.black,

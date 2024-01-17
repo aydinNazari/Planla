@@ -326,7 +326,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                           _name.isNotEmpty) {
                         if (image == null) {
                           showMyDialog(context, size,
-                              'Are you sure to proceed without uploading the profile picture?',
+                              'Are you sure to proceed without uploading the profile picture?',false,
                               () async {
                             await signupProsess();
                           }, () {

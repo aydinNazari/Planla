@@ -8,11 +8,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
+
 import 'package:planla/screens/add_screen.dart';
 import 'package:planla/screens/profile_screen.dart';
 import 'package:planla/screens/timer_screen.dart';
-
+import 'package:provider/provider.dart';
+import 'package:planla/models/user.dart' as model;
 import '../controls/firebase/auth.dart';
+import '../controls/firebase/storage.dart';
 import '../controls/providersClass/provider_user.dart';
 import '../screens/home_screen.dart';
 import '../screens/login_signin_screen.dart';
@@ -28,7 +31,6 @@ List<Widget> screenList = [
   const ProfileScreen(
     control: false,
   ),
-
 ];
 
 //dropdown items
@@ -76,7 +78,6 @@ List<String> motivationLottieList = [
   'https://lottie.host/33b0de7a-55f3-4d37-80e0-674c2e53bda6/QGy6sekHDW.json'
 ];
 
-
 //firebase instances
 FirebaseAuth auth = FirebaseAuth.instance;
 FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -110,52 +111,137 @@ Future<Uint8List?> pickImager() async {
 }
 
 //dialog
-Future<void> showMyDialog(BuildContext context, Size size, String txt,
-    void Function() yesFunction, void Function() noFunction) async {
+Future<void> showMyDialog(
+    BuildContext context,
+    Size size,
+    String txt,
+    bool profilePhoto,
+    void Function() yesFunction,
+    void Function() noFunction) async {
+  //profilePhoto ? dosen't photo : logout photo
   return showDialog<void>(
     context: context,
-    barrierDismissible: false, // user must tap button!
+    barrierDismissible: profilePhoto ? true : false,
     builder: (BuildContext context) {
+      ProviderUser providerUser =
+          Provider.of<ProviderUser>(context,listen: true);
       return AlertDialog(
         backgroundColor: Colors.white,
         content: SingleChildScrollView(
           child: ListBody(
+            mainAxis: Axis.vertical,
             children: <Widget>[
-              SizedBox(
-                width: size.width / 6,
-                height: size.width / 6,
-                child: Image.asset('assets/images/goals_dialog.png'),
-              ),
-              SizedBox(
-                height: size.height / 50,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: size.width / 25),
-                child: Text(txt),
-              ),
+              profilePhoto
+                  ? const SizedBox()
+                  : SizedBox(
+                      width: size.width / 6,
+                      height: size.width / 6,
+                      child: Image.asset('assets/images/goals_dialog.png'),
+                    ),
+              profilePhoto
+                  ? const SizedBox()
+                  : SizedBox(
+                      height: size.height / 50,
+                    ),
+              profilePhoto
+                  ? const SizedBox()
+                  : Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: size.width / 25),
+                      child: Text(txt),
+                    ),
             ],
           ),
         ),
         actions: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                  onPressed: yesFunction,
-                  child: Text(
-                    'Yes',
-                    style: TextStyle(
-                        color: Colors.black, fontSize: size.width / 25),
-                  )),
-              TextButton(
-                  onPressed: noFunction,
-                  child: Text(
-                    'No',
-                    style: TextStyle(
-                        color: Colors.black, fontSize: size.width / 25),
-                  )),
-            ],
-          )
+          profilePhoto
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        const Spacer(),
+                        InkWell(
+                          onTap: () async {
+                            var image = await pickImager();
+                            if(context.mounted){
+                              lottieProgressDialog(
+                                  context, 'assets/json/loading.json');
+                            }
+                            String url = await Storage().uploadImageToStorage(
+                                image, providerUser.user.uid);
+                            model.User user = model.User(
+                                uid: providerUser.user.uid,
+                                email: providerUser.user.email,
+                                name: providerUser.user.name,
+                                imageurl: url,
+                                score: providerUser.user.score);
+                            providerUser.setUser(user);
+                            await firestore
+                                .collection('users')
+                                .doc(providerUser.user.uid)
+                                .update(user.toMap());
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          child: Text(
+                            'Upload Photo',
+                            style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: size.width / 20,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: size.height / 25),
+                      child: Row(
+                        children: [
+                          const Spacer(),
+                          InkWell(
+                            onTap: () {
+                              if (providerUser.user.imageurl != '') {
+                              } else {}
+                            },
+                            child: Text(
+                              'Remove Photo',
+                              style: TextStyle(
+                                  color: providerUser.user.imageurl == ''
+                                      ? Colors.red.shade100
+                                      : Colors.red,
+                                  fontSize: size.width / 20,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          const Spacer(),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                        onPressed: yesFunction,
+                        child: Text(
+                          'Yes',
+                          style: TextStyle(
+                              color: Colors.black, fontSize: size.width / 25),
+                        )),
+                    TextButton(
+                        onPressed: noFunction,
+                        child: Text(
+                          'No',
+                          style: TextStyle(
+                              color: Colors.black, fontSize: size.width / 25),
+                        )),
+                  ],
+                )
         ],
       );
     },
@@ -179,11 +265,13 @@ void lottieProgressDialog(BuildContext context, String url) {
   );
 }
 
-Future<void> logOutFunc(BuildContext context, Size size, bool exitType,ProviderUser providerUser) async {
+Future<void> logOutFunc(BuildContext context, Size size, bool exitType,
+    ProviderUser providerUser) async {
   // exittype==true -> logOut
   // exittype==false -> exit from app
   if (exitType) {
-    showMyDialog(context, size, 'Are you sure you want to log out?', () async {
+    showMyDialog(context, size, 'Are you sure you want to log out?', false,
+        () async {
       await Auth().signOut();
       if (context.mounted) {
         providerUser.setControlFirestore(true);
@@ -208,7 +296,25 @@ Future<void> logOutFunc(BuildContext context, Size size, bool exitType,ProviderU
     });
   } else {
     showMyDialog(
-        context, size, 'Are you sure you want to exit the application??', () {
+        context, size, 'Are you sure you want to exit the application??', false,
+        () {
+      exit(0);
+    }, () {
+      Navigator.of(context).pop();
+    });
+  }
+}
+
+Future<void> uploadOrRemoveProfilePhoto(BuildContext context, Size size,
+    bool uploadOrRemove, ProviderUser providerUser) async {
+  // uploadOrRemove==true -> upload
+  // uploadOrRemove==false -> Remove
+  if (uploadOrRemove) {
+    showMyDialog(context, size, '', true, () async {}, () {});
+  } else {
+    showMyDialog(
+        context, size, 'Are you sure you want to exit the application??', false,
+        () {
       exit(0);
     }, () {
       Navigator.of(context).pop();

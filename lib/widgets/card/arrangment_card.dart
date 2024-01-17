@@ -33,11 +33,10 @@ class ArrangementCard extends StatelessWidget {
     return Row(
       children: [
         SizedBox(
-          width: size.width / 8,
-          height: size.height / 12,
+          width: size.width / 17,
+          height: size.width / 17,
           child: const ProgileImgWidget(
             url: '',
-            type: 0,
           ),
         ),
         Padding(

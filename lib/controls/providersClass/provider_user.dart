@@ -118,4 +118,5 @@ class ProviderUser with ChangeNotifier {
   setMapEvent(Map<String,double> map){
     _mapEvent=map;
   }
+
 }

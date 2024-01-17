@@ -38,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<ProviderUser>(context, listen: false);
+    final user = Provider.of<ProviderUser>(context, listen: true);
     Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
@@ -46,7 +46,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           logOutFunc(context, size, false, user);
           return false;
         } else {
-          Navigator.of(context).pop();
+          Navigator.push(
+              context,
+              PageTransition(
+                type: PageTransitionType.rightToLeft,
+                child: const NavigatorScreen(),
+              ));
           return true;
         }
       },
@@ -63,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             PageTransition(
                                 type: PageTransitionType.rightToLeft,
                                 child: const NavigatorScreen()),
-                                (route) => route.isCurrent,
+                            (route) => route.isCurrent,
                           );
                         },
                         child: Icon(
@@ -79,7 +84,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   right: size.width / 25, top: size.height / 80),
               child: InkWell(
                 onTap: () {
-
                   Navigator.push(
                       context,
                       PageTransition(
@@ -127,7 +131,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(right: size.width / 10),
-                  child: ProgileImgWidget(type: 2, url: user.user.imageurl),
+                  child: SizedBox(
+                      width: size.width / 3.5,
+                      height: size.width / 3.5,
+                      child: GestureDetector(
+                          onTap: () {
+                            uploadOrRemoveProfilePhoto(
+                                context, size, true, user);
+                          },
+                          child: ProgileImgWidget(url: user.user.imageurl))),
                 ),
               ],
             ),

@@ -73,9 +73,13 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                         (route) => route.isCurrent,
                       );
                     },
-                    child: ProgileImgWidget(
-                      url: providerUser.user.imageurl,
-                      type: 1,
+                    child: SizedBox(
+                      width: size.width/8,
+                      height: size.width/8,
+                      child: ProgileImgWidget(
+                        url: providerUser.user.imageurl,
+
+                      ),
                     ),
                   ),
                 )

@@ -116,7 +116,10 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                     Icons.person_outline,
                     size: size.width / 17,
                   )*/
-                      ProgileImgWidget(type: 0,url: providerUser.user.imageurl ),
+                      SizedBox(
+                          width: size.width/17,
+                          height: size.width/17,
+                          child: ProgileImgWidget(url: providerUser.user.imageurl )),
                   activeIcon: /*Icon(
                     Icons.person,
                     size: size.width / 14,
@@ -134,7 +137,10 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                       ),
                     ),
                   ),*/
-                      ProgileImgWidget(type: 0,url: providerUser.user.imageurl),
+                      SizedBox(
+                          width: size.width/17,
+                          height: size.width/17,
+                          child: ProgileImgWidget(url: providerUser.user.imageurl)),
                   /*CachedNetworkImage(
          imageUrl: "http://via.placeholder.com/350x150",
          progressIndicatorBuilder: (context, url, downloadProgress) =>
