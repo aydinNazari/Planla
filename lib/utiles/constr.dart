@@ -112,6 +112,7 @@ Future<Uint8List?> pickImager() async {
 
 //dialog
 Future<void> showMyDialog(
+    bool exitControl,
     BuildContext context,
     Size size,
     String txt,
@@ -131,25 +132,29 @@ Future<void> showMyDialog(
           child: ListBody(
             mainAxis: Axis.vertical,
             children: <Widget>[
-              profilePhoto
-                  ? const SizedBox()
-                  : SizedBox(
-                      width: size.width / 6,
-                      height: size.width / 6,
-                      child: Image.asset('assets/images/goals_dialog.png'),
-                    ),
-              profilePhoto
-                  ? const SizedBox()
-                  : SizedBox(
-                      height: size.height / 50,
-                    ),
-              profilePhoto
-                  ? const SizedBox()
-                  : Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: size.width / 25),
-                      child: Text(txt),
-                    ),
+
+              profilePhoto ==false ? Column(
+                children: [
+                  exitControl ?
+                  SizedBox(
+                    width: size.width / 6,
+                    height: size.width / 6,
+                    child: Lottie.network(
+                        'https://lottie.host/04e1b122-3b8f-4f93-b9cf-ee49f47be838/Ebix9jy6jB.json'),
+                  ):SizedBox(
+                    width: size.width / 6,
+                    height: size.width / 6,
+                    child: Image.asset('assets/images/goals_dialog.png'),
+                  ),
+                  SizedBox(
+                    height: size.height / 50,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: size.width / 25),
+                    child: Text(txt),
+                  ),
+                ],
+              ) : const SizedBox()
             ],
           ),
         ),
@@ -295,7 +300,7 @@ Future<void> logOutFunc(BuildContext context, Size size, bool exitType,
   // exittype==true -> logOut
   // exittype==false -> exit from app
   if (exitType) {
-    showMyDialog(context, size, 'Are you sure you want to log out?', false,
+    showMyDialog(true,context, size, 'Are you sure you want to log out?', false,
         () async {
       await Auth().signOut();
       if (context.mounted) {
@@ -323,7 +328,7 @@ Future<void> logOutFunc(BuildContext context, Size size, bool exitType,
     });
   } else {
     showMyDialog(
-        context, size, 'Are you sure you want to exit the application??', false,
+        false,context, size, 'Are you sure you want to exit the application??', false,
         () {
       exit(0);
     }, () {
@@ -337,10 +342,10 @@ Future<void> uploadOrRemoveProfilePhoto(BuildContext context, Size size,
   // uploadOrRemove==true -> upload
   // uploadOrRemove==false -> Remove
   if (uploadOrRemove) {
-    showMyDialog(context, size, '', true, () async {}, () {});
+    showMyDialog(false,context, size, '', true, () async {}, () {});
   } else {
     showMyDialog(
-        context, size, 'Are you sure you want to exit the application??', false,
+        false,context, size, 'Are you sure you want to exit the application??', false,
         () {
       exit(0);
     }, () {

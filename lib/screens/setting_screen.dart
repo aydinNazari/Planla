@@ -9,8 +9,8 @@ import '../widgets/textField/textinputfield_widget.dart';
 class SettingScreen extends StatelessWidget {
   SettingScreen({Key? key}) : super(key: key);
 
-  late String name;
-  late String bio;
+   String name='';
+   String bio='';
 
   @override
   Widget build(BuildContext context) {
@@ -157,6 +157,7 @@ class SettingScreen extends StatelessWidget {
                       await FirestoreMethods()
                           .updateUserElements(context, bio, name);
                       if (context.mounted) {
+                        Navigator.of(context).pop();
                         Navigator.of(context).pop();
                       }
                     } else {

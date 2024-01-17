@@ -1,13 +1,17 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:planla/controls/firebase/auth.dart';
+import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/screens/Intro_screen_page.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:planla/screens/navigator_screen.dart';
 import 'package:planla/widgets/buttons/login_signin_button_widget.dart';
+import 'package:provider/provider.dart';
 import '../utiles/colors.dart';
 import '../utiles/constr.dart';
 import '../widgets/textField/login_signin_textfield_widget.dart';
+import '../widgets/textField/textinputfield_widget.dart';
 
 class LoginSignInScreen extends StatefulWidget {
   const LoginSignInScreen({Key? key}) : super(key: key);
@@ -39,145 +43,171 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
 
 //Login widget
   SafeArea loginScreen(Size size) {
+    ProviderUser providerUser =
+    Provider.of<ProviderUser>(context, listen: false);
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
+      child: WillPopScope(
+        onWillPop: () async {
+          logOutFunc(context, size, false,providerUser);
+          return false;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: loginScreenBackground,
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: size.width / 25),
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      viewControl = 1;
+                    });
+                  },
+                  child: Text(
+                    'Sign up',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w400,
+                      fontSize: size.width / 22,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
           backgroundColor: loginScreenBackground,
-          actions: [
-            Padding(
-              padding: EdgeInsets.only(right: size.width / 25),
-              child: InkWell(
-                onTap: () {
-                  setState(() {
-                    viewControl = 1;
-                  });
-                },
-                child: Text(
-                  'Sign up',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w400,
-                    fontSize: size.width / 22,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                  left: size.width / 25,
+                  top: size.height / 8,
+                  right: size.width / 25),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Log in',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w800,
+                      fontSize: size.width / 18,
+                    ),
                   ),
-                ),
-              ),
-            )
-          ],
-        ),
-        backgroundColor: loginScreenBackground,
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.only(
-                left: size.width / 25,
-                top: size.height / 8,
-                right: size.width / 25),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Log in',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w800,
-                    fontSize: size.width / 18,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: size.height / 20),
-                  child: LoginSignInTextFieldWidget(
-                    onchange: (v) {
-                      _email = v;
-                    },
-                    txt: 'Your Email',
-                    controlObsecure: false,
-                    hintText: 'Email',
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: size.height / 25),
-                  child: LoginSignInTextFieldWidget(
-                    onchange: (v) {
-                      _pass = v;
-                    },
-                    txt: 'Password',
-                    controlObsecure: true,
-                    hintText: 'Password',
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: size.height / 20,
-                  ),
-                  child: InkWell(
-                      onTap: () async {
-                        if (_email.isNotEmpty && _pass.isNotEmpty) {
-                          await loginFunction(_email, _pass);
-                        } else {
-                          setState(() {
-                            showSnackBar(
-                              context,
-                              'Please fill in all fields',
-                              Colors.red,
-                            );
-                          });
-                        }
+                  Padding(
+                    padding: EdgeInsets.only(top: size.height / 20),
+                    child: LoginSignInTextFieldWidget(
+                      onchange: (v) {
+                        _email = v;
                       },
-                      child: SizedBox(
-                          width: size.width,
-                          height: size.height / 13,
-                          child: const LoginSigninButtonWidget(
-                            iconControl: false,
-                            iconUrl: '',
-                            txt: 'Log in',
-                          ))),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: size.height / 45),
-                  child: buildAccountButton(size),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: size.height / 40,
+                      txt: 'Your Email',
+                      controlObsecure: false,
+                      hintText: 'Email',
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      const Spacer(),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            viewControl = 1;
-                          });
+                  Padding(
+                    padding: EdgeInsets.only(top: size.height / 25),
+                    child: LoginSignInTextFieldWidget(
+                      onchange: (v) {
+                        _pass = v;
+                      },
+                      txt: 'Password',
+                      controlObsecure: true,
+                      hintText: 'Password',
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: size.height / 20,
+                    ),
+                    child: InkWell(
+                        onTap: () async {
+                          if (_email.isNotEmpty && _pass.isNotEmpty) {
+                            await loginFunction(_email, _pass);
+                          } else {
+                            setState(() {
+                              showSnackBar(
+                                context,
+                                'Please fill in all fields',
+                                Colors.red,
+                              );
+                            });
+                          }
                         },
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'Dont\'t have an account?',
-                                style: TextStyle(
-                                  fontSize: size.width / 25,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black45,
+                        child: SizedBox(
+                            width: size.width,
+                            height: size.height / 13,
+                            child: const LoginSigninButtonWidget(
+                              iconControl: false,
+                              iconUrl: '',
+                              txt: 'Log in',
+                            ))),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: size.height / 45),
+                    child: buildAccountButton(size),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: size.height / 40,
+                    ),
+                    child: Row(
+                      children: [
+                        const Spacer(),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              viewControl = 1;
+                            });
+                          },
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Dont\'t have an account?',
+                                  style: TextStyle(
+                                    fontSize: size.width / 25,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black45,
+                                  ),
                                 ),
-                              ),
-                              TextSpan(
-                                text: '  Register',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: size.width / 25,
-                                  color: Colors.black,
-                                ),
-                              )
-                            ],
+                                TextSpan(
+                                  text: '  Register',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: size.width / 25,
+                                    color: Colors.black,
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      const Spacer(),
-                    ],
+                        const Spacer(),
+                      ],
+                    ),
                   ),
-                )
-              ],
+                  Padding(
+                    padding: EdgeInsets.only(top: size.height / 85),
+                    child: InkWell(
+                      onTap: () async {
+                        // await Auth().forgetPass(context, providerUser);
+                        viewControl = 2;
+                        setState(() {});
+                      },
+                      child: Text(
+                        'Do you forget your password?',
+                        style: TextStyle(
+                            fontSize: size.width / 25,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                            decoration: TextDecoration.underline,
+                            decorationStyle: TextDecorationStyle.solid),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -325,9 +355,12 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                           _pass.isNotEmpty &&
                           _name.isNotEmpty) {
                         if (image == null) {
-                          showMyDialog(context, size,
-                              'Are you sure to proceed without uploading the profile picture?',false,
-                              () async {
+                          showMyDialog(
+                              false,
+                              context,
+                              size,
+                              'Are you sure to proceed without uploading the profile picture?',
+                              false, () async {
                             await signupProsess();
                           }, () {
                             Navigator.of(context).pop();
@@ -448,23 +481,96 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
   }
 
   SafeArea fogetPassScreen(Size size) {
+    String forgetEmail = '';
+
     return SafeArea(
         child: Scaffold(
+      backgroundColor: const Color(0xffdce7fa),
       appBar: AppBar(
+        backgroundColor: const Color(0xffdce7fa),
         automaticallyImplyLeading: false,
         actions: [
-          Text(
-            'Forgot Password',
-            style: TextStyle(
-                fontWeight: FontWeight.w400,
-                color: Colors.grey,
-                fontSize: size.width / 25),
+          Padding(
+            padding: EdgeInsets.only(right: size.width / 25),
+            child: Text(
+              'Forgot Password',
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey,
+                  fontSize: size.width / 25),
+            ),
           )
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [],
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: size.height/7,
+            ),
+            SizedBox(
+              width: size.width,
+              height: size.height / 3,
+              child: Lottie.network(
+                  'https://lottie.host/ece47491-287d-4fe9-9bd2-e0f600b190eb/WwAqFpxUAN.json'),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  top: size.height / 20,
+                  right: size.width / 25,
+                  left: size.width / 25),
+              child: TextInputField(
+                onSubmited: (v) {},
+                onchange: (v) {
+                  forgetEmail = v;
+                },
+                inputLenghtControl: false,
+                hintText: 'Enter your mail',
+                hintColor: Colors.grey,
+                iconWidget: const SizedBox(),
+                labelTextWidget: const Text('Forget pass'),
+                obscrueText: false,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: size.height/25),
+              child: InkWell(
+                onTap: () async {
+                  await Auth().forgetPass(context, forgetEmail);
+                  viewControl = 0;
+                  setState(() {});
+                },
+                child: Container(
+                  width: size.width / 3,
+                  height: size.height / 12,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        Color(0xff46829b),
+                        Color(0xff544797),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(size.width / 25),
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Send',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: size.width / 19,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     ));
   }

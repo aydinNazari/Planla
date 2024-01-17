@@ -124,4 +124,16 @@ class Auth {
     }
     return res;
   }
+  Future<void> forgetPass(BuildContext context,String email)async{
+    try{
+      await auth.sendPasswordResetEmail(email: email);
+     if(context.mounted){
+       showSnackBar(context, 'Please check your email!', Colors.green);
+     }
+    }on FirebaseException catch(e){
+      if(context.mounted){
+        showSnackBar(context, e.toString(), Colors.red);
+      }
+    }
+  }
 }

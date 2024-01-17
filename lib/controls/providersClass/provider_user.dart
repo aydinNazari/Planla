@@ -46,7 +46,6 @@ class ProviderUser with ChangeNotifier {
   Map<String,double> get getMapEvent=>_mapEvent;
 
   double get getScore{
-    print('/*/**/*//*/*/*/*/');
     return _score;
   }
 
