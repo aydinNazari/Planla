@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:planla/models/arrangment_model.dart';
 import 'package:planla/models/today_model.dart';
 import '../../models/user.dart';
 
@@ -18,6 +19,7 @@ class ProviderUser with ChangeNotifier {
   double _valueEvent=0;
   int _index=0;
   Map<String, double> _mapEvent={};
+  Map<String, Arrangment> _mapArrrangment={};
 
   User get user => _user;
 
@@ -44,6 +46,8 @@ class ProviderUser with ChangeNotifier {
   int get getIndex=>_index;
 
   Map<String,double> get getMapEvent=>_mapEvent;
+
+  Map<String,Arrangment> get getMapArrangment=>_mapArrrangment;
 
   double get getScore{
     return _score;
@@ -116,6 +120,9 @@ class ProviderUser with ChangeNotifier {
   }
   setMapEvent(Map<String,double> map){
     _mapEvent=map;
+  }
+  setMapArrangment(Map<String,Arrangment> map){
+    _mapArrrangment=map;
   }
 
 }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:planla/models/arrangment_model.dart';
 import 'package:planla/models/text_id_mode.dart';
 import 'package:planla/models/today_model.dart';
 import 'package:planla/models/user.dart';
@@ -51,6 +52,8 @@ class FirestoreMethods {
   Future<void> getFirestoreData(BuildContext context) async {
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: false);
+    TimerProvider timerProvider =
+        Provider.of<TimerProvider>(context, listen: false);
     if (providerUser.getControlFirestore) {
       List<String> textIdsList = [];
       try {
@@ -111,14 +114,12 @@ class FirestoreMethods {
         providerUser.setTodayList(todayList);
         providerUser.setDoneList(tempList);
         providerUser.setControlFirestore(false);
-        if (context.mounted) {
-          TimerProvider timerProvider =
-              Provider.of<TimerProvider>(context, listen: false);
-          timerProvider.setMotivitionSentences(motivationSentencesList[
-              timerProvider.setRandomNumber(motivationSentencesList.length)]);
-          timerProvider.setMotivationLottieUrl(motivationLottieList[
-              timerProvider.setRandomNumber(motivationLottieList.length)]);
-        }
+
+        timerProvider.setMotivitionSentences(motivationSentencesList[
+            timerProvider.setRandomNumber(motivationSentencesList.length)]);
+        timerProvider.setMotivationLottieUrl(motivationLottieList[
+            timerProvider.setRandomNumber(motivationLottieList.length)]);
+
         // events get
         var eventSnap = await firestore
             .collection('events')
@@ -139,6 +140,16 @@ class FirestoreMethods {
             providerUser.setMapEvent(tempMap);
           }
         }
+
+        DocumentSnapshot<Map<String, dynamic>> scorsDoc =
+        await firestore.collection('arrangement').doc('scors').get();
+        Map<String, dynamic> scorsData = scorsDoc.data() ?? {};
+        Arrangment arrangement = Arrangment.fromMap(scorsData); // Assuming Arrangment.fromMap accepts a Map<String, dynamic>
+
+// Now you have a single Arrangment object
+// If you want a list, you can create a List with a single element
+        List<Arrangment> arrangements = [arrangement];
+        print(arrangements[0].score);
       } on FirebaseException catch (e) {
         if (context.mounted) {
           showSnackBar(context, e.toString(), Colors.red);
@@ -450,7 +461,8 @@ class FirestoreMethods {
 
   Future<void> updateUserElements(
       BuildContext context, String bio, String name) async {
-    ProviderUser providerUser = Provider.of<ProviderUser>(context,listen: false);
+    ProviderUser providerUser =
+        Provider.of<ProviderUser>(context, listen: false);
     try {
       User user = User(
         uid: providerUser.user.uid,
@@ -462,6 +474,53 @@ class FirestoreMethods {
       );
       await firestore.collection('users').doc(user.uid).update(user.toMap());
       providerUser.setUser(user);
+    } on FirebaseException catch (e) {
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
+    }
+  }
+
+  Future<void> updateArrangement(BuildContext context) async {
+    ProviderUser providerUser =
+        Provider.of<ProviderUser>(context, listen: false);
+    try {
+      Map<String, Arrangment> mapArrangment = providerUser.getMapArrangment;
+      double score = providerUser.getScore;
+      Arrangment? arrangment1 = mapArrangment['1'];
+      Arrangment? arrangment2 = mapArrangment['2'];
+      Arrangment? arrangment3 = mapArrangment['3'];
+      if (arrangment1!.score > score) {
+        arrangment1 = Arrangment(
+            imgUrl: providerUser.user.imageurl,
+            uid: providerUser.user.uid,
+            name: providerUser.user.name,
+            score: score);
+        await firestore
+            .collection('arrangement')
+            .doc('scors')
+            .update({'1': arrangment1});
+      } else if (arrangment2!.score > score) {
+        arrangment2 = Arrangment(
+            imgUrl: providerUser.user.imageurl,
+            uid: providerUser.user.uid,
+            name: providerUser.user.name,
+            score: score);
+        await firestore
+            .collection('arrangement')
+            .doc('scors')
+            .update({'2': arrangment2});
+      } else if (arrangment3!.score > score) {
+        arrangment3 = Arrangment(
+            imgUrl: providerUser.user.imageurl,
+            uid: providerUser.user.uid,
+            name: providerUser.user.name,
+            score: score);
+        await firestore
+            .collection('arrangement')
+            .doc('scors')
+            .update({'3': arrangment3});
+      }
     } on FirebaseException catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);

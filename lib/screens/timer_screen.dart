@@ -4,7 +4,9 @@ import 'package:lottie/lottie.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/controls/providersClass/timer_provider.dart';
+import 'package:planla/models/arrangment_model.dart';
 import 'package:planla/utiles/colors.dart';
+import 'package:planla/utiles/constr.dart';
 import 'package:planla/widgets/textField/textinputfield_widget.dart';
 import 'package:planla/widgets/timer_widget.dart';
 import 'package:provider/provider.dart';
@@ -255,8 +257,8 @@ class _TimerScreenState extends State<TimerScreen> {
     Size size = MediaQuery.of(context).size;
     if(timerProvider.getTimerFinishControl){
       timerProvider.setTimerFinishControl(false);
-      print('777777777777');
       FirestoreMethods().updateScoreAndEventsValue(context);
+      FirestoreMethods().updateArrangement(context);
     }
     return SingleChildScrollView(
       child: Column(
@@ -457,6 +459,16 @@ class _TimerScreenState extends State<TimerScreen> {
                       timerProvider.setTimerScreenType(false);
                       // BackgroundService().initSercice(context);
                       timerProvider.reset();
+                     /*
+                      bu deneme amaçlı yazılmış bir kod
+                      Arrangment arrangement1=Arrangment(imgUrl: '', uid: '', name: 'birinci', score: 0);
+                      Arrangment arrangement2=Arrangment(imgUrl: '', uid: '', name: 'ikinci', score: 0);
+                      Arrangment arrangement3=Arrangment(imgUrl: '', uid: '', name: 'üçüncü', score: 0);
+                      firestore.collection('arrangement').doc('scors').set({
+                        '1':arrangement1.toMap(),
+                        '2':arrangement2.toMap(),
+                        '3':arrangement3.toMap(),
+                      });*/
 
                       //BackgroundService().initSercice(hoursNumeric,minuteNumeric,secendNumeric);
                     }
