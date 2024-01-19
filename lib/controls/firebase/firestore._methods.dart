@@ -140,16 +140,19 @@ class FirestoreMethods {
             providerUser.setMapEvent(tempMap);
           }
         }
-
+        //get Arrangment
         DocumentSnapshot<Map<String, dynamic>> scorsDoc =
-        await firestore.collection('arrangement').doc('scors').get();
+            await firestore.collection('arrangement').doc('scors').get();
         Map<String, dynamic> scorsData = scorsDoc.data() ?? {};
-        Arrangment arrangement = Arrangment.fromMap(scorsData); // Assuming Arrangment.fromMap accepts a Map<String, dynamic>
-
-// Now you have a single Arrangment object
-// If you want a list, you can create a List with a single element
-        List<Arrangment> arrangements = [arrangement];
-        print(arrangements[0].score);
+        Arrangment arrangement1 = Arrangment.fromMap(scorsData['1']);
+        Arrangment arrangement2 = Arrangment.fromMap(scorsData['2']);
+        Arrangment arrangement3 = Arrangment.fromMap(scorsData['3']);
+        Map<String, Arrangment> mapArrang = {
+          '1': arrangement1,
+          '2': arrangement2,
+          '3': arrangement3,
+        };
+        await providerUser.setMapArrangment(mapArrang);
       } on FirebaseException catch (e) {
         if (context.mounted) {
           showSnackBar(context, e.toString(), Colors.red);
