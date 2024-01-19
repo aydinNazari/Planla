@@ -108,8 +108,6 @@ class ProviderUser with ChangeNotifier {
   }
   setScore(double s){
     _score=s;
-  /*  print('rrrrrrrrrrrrrrrrrrrrrrrrr');
-    print(_score);*/
     notifyListeners();
   }
   setValueEvent(double v){
@@ -123,6 +121,7 @@ class ProviderUser with ChangeNotifier {
   }
   setMapArrangment(Map<String,Arrangment> map){
     _mapArrrangment=map;
+    notifyListeners();
   }
 
 }

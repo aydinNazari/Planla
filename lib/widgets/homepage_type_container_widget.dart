@@ -23,6 +23,14 @@ class TypeContainerWidget extends StatelessWidget {
       width: size.width / 3,
       height: size.height / 5,
       decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(5, 5),
+            ) // changes position of shadow),
+          ],
           color: typeWidget == 1
               ? const Color(0xff4855e5)
               : typeWidget == 2

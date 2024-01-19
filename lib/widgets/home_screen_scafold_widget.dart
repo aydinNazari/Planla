@@ -177,7 +177,7 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
               ),
               child: SizedBox(
                   width: size.width,
-                  height: size.height / 3,
+                  height: size.height / 2.5,
                   child: const ArrangementCard()),
             ),
             const SizedBox(

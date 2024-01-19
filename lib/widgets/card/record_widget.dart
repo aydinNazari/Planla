@@ -17,8 +17,24 @@ class RecordWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           color: const Color(0xff4855e5),
-          borderRadius: BorderRadius.all(
-              Radius.circular(size.width / 15))),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: const Offset(0, 0),
+            ) // changes position of shadow),
+          ],
+
+          /*gradient: const LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              Color(0xff4855e4),
+              Color(0xff83a3b2),
+            ],
+          ),*/
+          borderRadius: BorderRadius.all(Radius.circular(size.width / 15))),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -29,10 +45,7 @@ class RecordWidget extends StatelessWidget {
               fontWeight: FontWeight.w600,
               fontSize: size.width / 15,
               shadows: const <Shadow>[
-                Shadow(
-                    color: Colors.white,
-                    blurRadius: 3,
-                    offset: Offset(0, 0))
+                Shadow(color: Colors.white, blurRadius: 3, offset: Offset(0, 0))
               ],
             ),
           ),

@@ -486,43 +486,63 @@ class FirestoreMethods {
 
   Future<void> updateArrangement(BuildContext context) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+        Provider.of<ProviderUser>(context, listen: true);
+    TimerProvider timerProvider =
+        Provider.of<TimerProvider>(context, listen: true);
     try {
       Map<String, Arrangment> mapArrangment = providerUser.getMapArrangment;
       double score = providerUser.getScore;
+      print('fffffffffffffffffffffffffff');
+      print('${providerUser.getScore} score');
+      print('${timerProvider.getTempScore} getTempScore');
       Arrangment? arrangment1 = mapArrangment['1'];
       Arrangment? arrangment2 = mapArrangment['2'];
       Arrangment? arrangment3 = mapArrangment['3'];
-      if (arrangment1!.score > score) {
+      bool control = false;
+      if (arrangment1!.score < score) {
+        control = true;
+        arrangment3 = arrangment2;
+        arrangment2 = arrangment1;
         arrangment1 = Arrangment(
             imgUrl: providerUser.user.imageurl,
             uid: providerUser.user.uid,
             name: providerUser.user.name,
+            email: providerUser.user.email,
             score: score);
-        await firestore
-            .collection('arrangement')
-            .doc('scors')
-            .update({'1': arrangment1});
-      } else if (arrangment2!.score > score) {
+      } else if (arrangment2!.score < score &&
+          arrangment1.uid != arrangment2.uid &&
+          arrangment3!.uid != arrangment2.uid) {
+        control = true;
+        arrangment3 = arrangment2;
         arrangment2 = Arrangment(
             imgUrl: providerUser.user.imageurl,
             uid: providerUser.user.uid,
             name: providerUser.user.name,
+            email: providerUser.user.email,
             score: score);
-        await firestore
-            .collection('arrangement')
-            .doc('scors')
-            .update({'2': arrangment2});
-      } else if (arrangment3!.score > score) {
+      } else if (arrangment3!.score < score) {
+        control = true;
         arrangment3 = Arrangment(
             imgUrl: providerUser.user.imageurl,
             uid: providerUser.user.uid,
             name: providerUser.user.name,
+            email: providerUser.user.email,
             score: score);
-        await firestore
-            .collection('arrangement')
-            .doc('scors')
-            .update({'3': arrangment3});
+      }
+      if (control) {
+        control = false;
+        Map<String, Map<String, dynamic>> mapp = {
+          '1': arrangment1.toMap(),
+          '2': arrangment2.toMap(),
+          '3': arrangment3!.toMap(),
+        };
+        mapArrangment = {
+          '1': arrangment1,
+          '2': arrangment2,
+          '3': arrangment3,
+        };
+        await firestore.collection('arrangement').doc('scors').update(mapp);
+        providerUser.setMapArrangment(mapArrangment);
       }
     } on FirebaseException catch (e) {
       if (context.mounted) {
