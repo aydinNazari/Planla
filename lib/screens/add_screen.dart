@@ -6,6 +6,7 @@ import 'package:planla/models/today_model.dart';
 import 'package:planla/utiles/constr.dart';
 import 'package:planla/widgets/textField/addpage_card_widget.dart';
 import 'package:provider/provider.dart';
+import '../controls/providersClass/timer_provider.dart';
 import '../widgets/textField/add_textfield_widget.dart';
 
 class AddScreen extends StatefulWidget {
@@ -31,9 +32,10 @@ class _AddScreenState extends State<AddScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final user = Provider.of<ProviderUser>(context, listen: false);
+    TimerProvider timerProvider=Provider.of<TimerProvider>(context,listen: false);
     return WillPopScope(
       onWillPop: () async {
-        logOutFunc(context, size, false,user);
+        logOutFunc(context, size, false,user,timerProvider);
         return false;
       },
       child: Scaffold(

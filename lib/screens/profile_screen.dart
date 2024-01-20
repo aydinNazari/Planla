@@ -7,6 +7,7 @@ import 'package:planla/utiles/colors.dart';
 import 'package:provider/provider.dart';
 
 import '../controls/firebase/firestore._methods.dart';
+import '../controls/providersClass/timer_provider.dart';
 import '../utiles/constr.dart';
 import '../widgets/textField/addpage_card_widget.dart';
 import '../widgets/profile_img_widget.dart';
@@ -39,11 +40,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<ProviderUser>(context, listen: true);
+    TimerProvider timerProvider=Provider.of<TimerProvider>(context,listen: false);
     Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
         if (widget.control == false) {
-          logOutFunc(context, size, false, user);
+          logOutFunc(context, size, false, user,timerProvider);
           return false;
         } else {
           Navigator.push(

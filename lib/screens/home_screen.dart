@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:planla/controls/firebase/firestore._methods.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
+import 'package:planla/controls/providersClass/timer_provider.dart';
 import 'package:planla/widgets/home_screen_scafold_widget.dart';
 import 'package:provider/provider.dart';
 import '../utiles/constr.dart';
@@ -50,9 +51,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     ProviderUser providerUser=Provider.of<ProviderUser>(context,listen: false);
+    TimerProvider timerProvider=Provider.of<TimerProvider>(context,listen: false);
     return WillPopScope(
       onWillPop: () async {
-        logOutFunc(context, size, false,providerUser);
+        logOutFunc(context, size, false,providerUser,timerProvider);
         return false;
       },
       child: FutureBuilder(

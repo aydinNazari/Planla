@@ -80,7 +80,7 @@ class ArrangementCard extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: Text(
+                child: Text( providerUser.getMapArrangment[index]?.email == '' ? '':
                   '@${(providerUser.getMapArrangment[index.toString()]?.email)?.substring(
                     0,
                     (providerUser.getMapArrangment[index.toString()]?.email)

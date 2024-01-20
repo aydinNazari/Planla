@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:planla/controls/firebase/firestore._methods.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:provider/provider.dart';
+import '../controls/providersClass/timer_provider.dart';
 import '../utiles/constr.dart';
 import '../widgets/profile_img_widget.dart';
 import '../widgets/textField/textinputfield_widget.dart';
@@ -17,6 +18,7 @@ class SettingScreen extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: true);
+    TimerProvider timerProvider=Provider.of<TimerProvider>(context,listen: false);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -47,7 +49,7 @@ class SettingScreen extends StatelessWidget {
                   top: size.height / 20,
                   child: InkWell(
                     onTap: () {
-                      logOutFunc(context, size, true, providerUser);
+                      logOutFunc(context, size, true, providerUser,timerProvider);
                     },
                     child: Icon(Icons.logout,
                         color: Colors.white, size: size.width / 18),

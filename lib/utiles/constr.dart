@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:planla/controls/providersClass/timer_provider.dart';
 
 import 'package:planla/screens/add_screen.dart';
 import 'package:planla/screens/profile_screen.dart';
@@ -296,7 +297,7 @@ void lottieProgressDialog(BuildContext context, String url) {
 }
 
 Future<void> logOutFunc(BuildContext context, Size size, bool exitType,
-    ProviderUser providerUser) async {
+    ProviderUser providerUser,TimerProvider timerProvider) async {
   // exittype==true -> logOut
   // exittype==false -> exit from app
   if (exitType) {
@@ -313,6 +314,8 @@ Future<void> logOutFunc(BuildContext context, Size size, bool exitType,
         providerUser.setEventsValueList([]);
         providerUser.setEventsListString([]);
         providerUser.setMapEvent({});
+        timerProvider.reseteSvcore();
+        providerUser.setScore(0.0);
         Navigator.of(context).pop();
         Navigator.pushAndRemoveUntil(
           context,

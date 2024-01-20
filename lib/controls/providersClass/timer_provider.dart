@@ -166,6 +166,10 @@ class TimerProvider with ChangeNotifier {
     _tempScore = double.parse(stringTemp);
     notifyListeners();
   }
+
+  reseteSvcore(){ //when users want to logout
+    _tempScore=0.0;
+  }
   setEventTime() {
     _eventTime=0;
     _eventTime += _minute / 60;

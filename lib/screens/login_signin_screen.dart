@@ -8,6 +8,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:planla/screens/navigator_screen.dart';
 import 'package:planla/widgets/buttons/login_signin_button_widget.dart';
 import 'package:provider/provider.dart';
+import '../controls/providersClass/timer_provider.dart';
 import '../utiles/colors.dart';
 import '../utiles/constr.dart';
 import '../widgets/textField/login_signin_textfield_widget.dart';
@@ -43,12 +44,13 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
 
 //Login widget
   SafeArea loginScreen(Size size) {
+    TimerProvider timerProvider=Provider.of<TimerProvider>(context,listen: false);
     ProviderUser providerUser =
     Provider.of<ProviderUser>(context, listen: false);
     return SafeArea(
       child: WillPopScope(
         onWillPop: () async {
-          logOutFunc(context, size, false,providerUser);
+          logOutFunc(context, size, false,providerUser,timerProvider);
           return false;
         },
         child: Scaffold(
