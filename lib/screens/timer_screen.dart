@@ -256,6 +256,7 @@ class _TimerScreenState extends State<TimerScreen> {
     checkboxList = providerUser.getCheckBoxList;
     Size size = MediaQuery.of(context).size;
     if(timerProvider.getTimerFinishControl){
+      print('asasaasasasasasasa');
       timerProvider.setTimerFinishControl(false);
       FirestoreMethods().updateScoreAndEventsValue(context);
       FirestoreMethods().updateArrangement(context);

@@ -35,7 +35,7 @@ class ArrangementCard extends StatelessWidget {
       ),
       child: ListView.builder(
           shrinkWrap: false,
-          physics: const NeverScrollableScrollPhysics(),
+          //physics: const NeverScrollableScrollPhysics(),
           scrollDirection: Axis.vertical,
           itemCount: providerUser.getMapArrangment.length,
           itemBuilder: (context, index) {

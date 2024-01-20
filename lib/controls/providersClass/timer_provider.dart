@@ -114,8 +114,9 @@ class TimerProvider with ChangeNotifier {
         saniye=0;
       }*/
       if (_counter <= -1) {
-        print('_counterrrrrrrrrrrrr');
+        _counter=0;
         setTimerFinishControl(true);
+        timer?.cancel();
         setTimerReset('00');
         setTimerScreenType(true);
       }
@@ -157,6 +158,7 @@ class TimerProvider with ChangeNotifier {
   }
 
   setTempScore() {
+    _tempScore=getTempScore;
     _tempScore += _minute / 60;
     _tempScore += _secends / 3600;
     _tempScore += _hours;
