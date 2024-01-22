@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:planla/controls/providersClass/timer_provider.dart';
 import 'package:planla/widgets/profile_img_widget.dart';
 import 'package:planla/widgets/card/record_widget.dart';
 import 'package:provider/provider.dart';
@@ -25,10 +24,6 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
     Size size = MediaQuery.of(context).size;
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: false);
-    /*  TimerProvider timerProvider =
-        Provider.of<TimerProvider>(context, listen: false);
-    print('ffffff');
-    print(timerProvider.getTempScore);*/
     return Scaffold(
         body: SingleChildScrollView(
       child: Padding(

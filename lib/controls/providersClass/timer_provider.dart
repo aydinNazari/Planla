@@ -158,7 +158,6 @@ class TimerProvider with ChangeNotifier {
   }
 
   setTempScore() {
-    _tempScore=getTempScore;
     _tempScore += _minute / 60;
     _tempScore += _secends / 3600;
     _tempScore += _hours;
@@ -167,7 +166,7 @@ class TimerProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  reseteSvcore(){ //when users want to logout
+  reseteSvcore(){ //when users want to log out.
     _tempScore=0.0;
   }
   setEventTime() {
@@ -219,5 +218,9 @@ class TimerProvider with ChangeNotifier {
   void setTimerFinishControl(bool v) {
     _timerFinishControl = v;
    //notifyListeners();
+  }
+  setScore(double v){
+    _tempScore=v;
+    notifyListeners();
   }
 }

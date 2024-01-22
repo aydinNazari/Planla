@@ -64,6 +64,7 @@ class FirestoreMethods {
             .get();
         double tempScore = (cred.data() as dynamic)['score'];
         providerUser.setScore(tempScore);
+        timerProvider.setScore(tempScore);
 
         //get textIds list
         var snapshot1 = await firestore
@@ -422,8 +423,6 @@ class FirestoreMethods {
           .doc(providerUser.user.uid)
           .update({'score': tempHours});
       providerUser.setScore(tempHours);
-
-      //save event and its value
       double tempTEventTime = timerProvider.getEventTime;
       // print('getEventTime $tempTEventTime');
       String eventTemp = providerUser.getEvent;
@@ -517,8 +516,6 @@ class FirestoreMethods {
       List<Arrangment> tempClassList2= [
 
       ];
-
-
       for(int i=0;i<tempClassList.length;i++){
         if(tempClassList[i].score < timerProvider.getTempScore){
           control=true;

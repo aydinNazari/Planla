@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
-import 'package:planla/models/arrangment_model.dart';
 import 'package:provider/provider.dart';
 
 import '../profile_img_widget.dart';
@@ -98,12 +97,24 @@ class ArrangementCard extends StatelessWidget {
         const Spacer(),
         Padding(
           padding: EdgeInsets.only(right: size.width / 15),
-          child: Text(
-            ('${providerUser.getMapArrangment['$index']?.score}h').toString(),
-            style: TextStyle(
-                color: const Color(0xff442342),
-                fontSize: size.width / 20,
-                fontWeight: FontWeight.w900),
+          child: Row(
+            children: [
+              Text(
+                ('${providerUser.getMapArrangment['$index']?.score}h').toString(),
+                style: TextStyle(
+                    color: const Color(0xff442342),
+                    fontSize: size.width / 20,
+                    fontWeight: FontWeight.w900),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: size.width/70),
+                child: SizedBox(
+                  width: size.width/18,
+                  height: size.width/18,
+                  child: Image.asset('assets/icons/clock.png'),
+                ),
+              )
+            ],
           ),
         )
       ],
