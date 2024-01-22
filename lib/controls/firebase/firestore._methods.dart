@@ -507,25 +507,106 @@ class FirestoreMethods {
       Arrangment? arrangment5 = mapArrangment['5'];
       bool control =
           false; //fire base'e eklemesi için //eğer örnek olarak arrangment2ye ekledi ise tekrardan aynı değeri 3-4'e eklemesmesi için
-      if (arrangment1!.score < timerProvider.getTempScore) {
-        control = true;
-        arrangment5 = arrangment4;
-        arrangment4 = arrangment3;
-        arrangment3 = arrangment2;
-        arrangment2 = arrangment1;
-        arrangment1 = Arrangment(
-            imgUrl: providerUser.user.imageurl,
-            uid: providerUser.user.uid,
-            name: providerUser.user.name,
-            email: providerUser.user.email,
-            score: timerProvider.getTempScore);
-      } else if (arrangment2!.score < timerProvider.getTempScore &&
-          control == false) {
-        if (providerUser.user.uid != arrangment1.uid) {
+      List<Arrangment> tempClassList= [
+        arrangment1!,
+        arrangment2!,
+        arrangment3!,
+        arrangment4!,
+        arrangment5!
+      ];
+      List<Arrangment> tempClassList2= [
+
+      ];
+
+
+      for(int i=0;i<tempClassList.length;i++){
+        if(tempClassList[i].score < timerProvider.getTempScore){
+          control=true;
+          Arrangment arrangment = Arrangment(
+              imgUrl: providerUser.user.imageurl,
+              uid: providerUser.user.uid,
+              name: providerUser.user.name,
+              email: providerUser.user.email,
+              score: timerProvider.getTempScore);
+          tempClassList2.add(arrangment);
+          for(int j=0;j<tempClassList.length;j++){
+            tempClassList2.add(tempClassList[j]);
+          }
+          break;
+        }
+      }
+      tempClassList=tempClassList2;
+      for (int i = 0; i < tempClassList.length; i++) {
+        for (int j = i + 1; j < tempClassList.length; j++) {
+          if (tempClassList[i].uid == tempClassList[j].uid) {
+            tempClassList2.removeAt(j);
+            //print(tempList[j].name + tempList[j].score.toString());
+            break;
+          }
+        }
+      }
+      tempClassList=tempClassList2;
+      for (int i = 0; i < tempClassList.length - 1; i++) {
+        for (int j = 0; j < tempClassList.length - 1 - i; j++) {
+          if (tempClassList[j].score < tempClassList[j + 1].score) {
+            Arrangment temp = tempClassList[j];
+            tempClassList[j] = tempClassList[j + 1];
+            tempClassList[j + 1] = temp;
+          }
+        }
+      }
+      tempClassList2=tempClassList;
+    /*
+      for(int i=0;i<tempClassList.length;i++){
+        if(tempClassList[i].score < providerUser.user.score && providerUser.user.uid == tempClassList[i].uid){
+          tempClassList2.removeAt(i);
+          break;
+        }
+      }
+      arrangment1=tempClassList2[0];
+      arrangment2=tempClassList2[1];
+      arrangment3=tempClassList2[2];
+      arrangment4=tempClassList2[3];
+      arrangment5=tempClassList2[4];*/
+     /* if (arrangment1.score < timerProvider.getTempScore) {
+        if (arrangment1.uid != providerUser.user.uid) {
           control = true;
           arrangment5 = arrangment4;
           arrangment4 = arrangment3;
           arrangment3 = arrangment2;
+          arrangment2 = arrangment1;
+          arrangment1 = Arrangment(
+              imgUrl: providerUser.user.imageurl,
+              uid: providerUser.user.uid,
+              name: providerUser.user.name,
+              email: providerUser.user.email,
+              score: timerProvider.getTempScore);
+        } else {
+          control = true;
+          arrangment1 = Arrangment(
+              imgUrl: providerUser.user.imageurl,
+              uid: providerUser.user.uid,
+              name: providerUser.user.name,
+              email: providerUser.user.email,
+              score: timerProvider.getTempScore);
+        }
+      } else if (arrangment2!.score < timerProvider.getTempScore &&
+          control == false) {
+        if (providerUser.user.uid != arrangment1.uid &&
+            providerUser.user.uid != arrangment2.uid) {
+          control = true;
+
+          arrangment5 = arrangment4;
+          arrangment4 = arrangment3;
+          arrangment3 = arrangment2;
+          arrangment2 = Arrangment(
+              imgUrl: providerUser.user.imageurl,
+              uid: providerUser.user.uid,
+              name: providerUser.user.name,
+              email: providerUser.user.email,
+              score: timerProvider.getTempScore);
+        } else if (providerUser.user.uid == arrangment2.uid) {
+          control = true;
           arrangment2 = Arrangment(
               imgUrl: providerUser.user.imageurl,
               uid: providerUser.user.uid,
@@ -536,10 +617,19 @@ class FirestoreMethods {
       } else if (arrangment3!.score < timerProvider.getTempScore &&
           control == false) {
         if (providerUser.user.uid != arrangment1.uid &&
-            providerUser.user.uid != arrangment2.uid) {
+            providerUser.user.uid != arrangment2.uid &&
+            providerUser.user.uid != arrangment3.uid) {
           control = true;
           arrangment5 = arrangment4;
           arrangment4 = arrangment3;
+          arrangment3 = Arrangment(
+              imgUrl: providerUser.user.imageurl,
+              uid: providerUser.user.uid,
+              name: providerUser.user.name,
+              email: providerUser.user.email,
+              score: timerProvider.getTempScore);
+        } else if (providerUser.user.uid == arrangment3.uid) {
+          control = true;
           arrangment3 = Arrangment(
               imgUrl: providerUser.user.imageurl,
               uid: providerUser.user.uid,
@@ -551,9 +641,18 @@ class FirestoreMethods {
           control == false) {
         if (providerUser.user.uid != arrangment1.uid &&
             providerUser.user.uid != arrangment2.uid &&
-            providerUser.user.uid != arrangment3.uid) {
+            providerUser.user.uid != arrangment3.uid &&
+            providerUser.user.uid != arrangment4.uid) {
           control = true;
           arrangment5 = arrangment4;
+          arrangment4 = Arrangment(
+              imgUrl: providerUser.user.imageurl,
+              uid: providerUser.user.uid,
+              name: providerUser.user.name,
+              email: providerUser.user.email,
+              score: timerProvider.getTempScore);
+        } else if (providerUser.user.uid == arrangment4.uid) {
+          control = true;
           arrangment4 = Arrangment(
               imgUrl: providerUser.user.imageurl,
               uid: providerUser.user.uid,
@@ -563,11 +662,11 @@ class FirestoreMethods {
         }
       } else if (arrangment5!.score < timerProvider.getTempScore &&
           control == false) {
+        control = true;
         if (providerUser.user.uid != arrangment1.uid &&
             providerUser.user.uid != arrangment2.uid &&
             providerUser.user.uid != arrangment3.uid &&
             providerUser.user.uid != arrangment4.uid) {
-          control = true;
           arrangment5 = Arrangment(
               imgUrl: providerUser.user.imageurl,
               uid: providerUser.user.uid,
@@ -575,16 +674,16 @@ class FirestoreMethods {
               email: providerUser.user.email,
               score: timerProvider.getTempScore);
         }
-      }
+      }*/
       if (control) {
-        List<Arrangment> tempList = [
+     /*   List<Arrangment> tempList = [
           arrangment1,
-          arrangment2,
+          arrangment2!,
           arrangment3!,
           arrangment4!,
           arrangment5!
-        ];
-        List<Arrangment> uniqueObjects = tempList;
+        ];*/
+        /*List<Arrangment> uniqueObjects = tempList;
         for (int i = 0; i < tempList.length; i++) {
           for (int j = i + 1; j < tempList.length; j++) {
             if (tempList[i].uid == tempList[j].uid) {
@@ -603,23 +702,23 @@ class FirestoreMethods {
               uid: 'test$counter',
               email: 'test_$counter@.com',
               name: 'test_$counter',
-              score: 0.00+counter);
+              score: 0.00 + counter);
           uniqueObjects.add(arrangment);
-        }
+        }*/
         control = false;
         Map<String, Map<String, dynamic>> mapp = {
-          '1': uniqueObjects[0].toMap(),
-          '2': uniqueObjects[1].toMap(),
-          '3': uniqueObjects[2].toMap(),
-          '4': uniqueObjects[3].toMap(),
-          '5': uniqueObjects[4].toMap(),
+          '1': tempClassList2[0].toMap(),
+          '2': tempClassList2[1].toMap(),
+          '3': tempClassList2[2].toMap(),
+          '4': tempClassList2[3].toMap(),
+          '5': tempClassList2[4].toMap(),
         };
         mapArrangment = {
-          '1': uniqueObjects[0],
-          '2': uniqueObjects[1],
-          '3': uniqueObjects[2],
-          '4': uniqueObjects[3],
-          '5': uniqueObjects[4],
+          '1':tempClassList2[0],
+          '2':tempClassList2[1],
+          '3':tempClassList2[2],
+          '4':tempClassList2[3],
+          '5':tempClassList2[4],
         };
         await firestore.collection('arrangement').doc('scors').update(mapp);
         providerUser.setMapArrangment(mapArrangment);

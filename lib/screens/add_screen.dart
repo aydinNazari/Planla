@@ -32,10 +32,11 @@ class _AddScreenState extends State<AddScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final user = Provider.of<ProviderUser>(context, listen: false);
-    TimerProvider timerProvider=Provider.of<TimerProvider>(context,listen: false);
+    TimerProvider timerProvider =
+        Provider.of<TimerProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
-        logOutFunc(context, size, false,user,timerProvider);
+        logOutFunc(context, size, false, user, timerProvider);
         return false;
       },
       child: Scaffold(
