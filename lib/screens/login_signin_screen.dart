@@ -13,6 +13,7 @@ import '../utiles/colors.dart';
 import '../utiles/constr.dart';
 import '../widgets/textField/login_signin_textfield_widget.dart';
 import '../widgets/textField/textinputfield_widget.dart';
+import 'email_verfication_screen.dart';
 
 class LoginSignInScreen extends StatefulWidget {
   const LoginSignInScreen({Key? key}) : super(key: key);
@@ -124,8 +125,18 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                     ),
                     child: InkWell(
                         onTap: () async {
+                          await auth.currentUser!.reload();
                           if (_email.isNotEmpty && _pass.isNotEmpty) {
-                            await loginFunction(_email, _pass);
+                            if (!auth.currentUser!.emailVerified) {
+                              if(context.mounted){
+                                showSnackBar(
+                                    context,
+                                    'You haven\'t verified your email yet. Please verify your email',
+                                    Colors.red);
+                              }
+                            }else{
+                              await loginFunction(_email, _pass);
+                            }
                           } else {
                             setState(() {
                               showSnackBar(
@@ -135,6 +146,9 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                               );
                             });
                           }
+                          setState(() {
+
+                          });
                         },
                         child: SizedBox(
                             width: size.width,
@@ -608,8 +622,8 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
         Navigator.push(
             context,
             PageTransition(
-                type: PageTransitionType.bottomToTop,
-                child: const IntroScreen()));
+                type: PageTransitionType.leftToRight,
+                child: const EmailVerfication()));
       });
     }
   }

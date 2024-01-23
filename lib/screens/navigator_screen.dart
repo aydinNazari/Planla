@@ -33,6 +33,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
     Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
+        backgroundColor: navigatorColor,
         extendBody: true,
         resizeToAvoidBottomInset: false,
         body: screenList[currentIndex],
@@ -112,6 +113,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                   label: '',
                 ),*/
                  BottomNavigationBarItem(
+                   backgroundColor: navigatorColor,
                   icon: /*Icon(
                     Icons.person_outline,
                     size: size.width / 17,
@@ -119,6 +121,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> {
                       SizedBox(
                           width: size.width/17,
                           height: size.width/17,
+
                           child: ProgileImgWidget(url: providerUser.user.imageurl )),
                   activeIcon: /*Icon(
                     Icons.person,

@@ -40,6 +40,9 @@ class Auth {
         email: email,
         password: pass,
       );
+      if(!cred.user!.emailVerified){
+        cred.user!.sendEmailVerification();
+      }
       if (cred.user != null) {
         String image =
             await storage.uploadImageToStorage(profilePhoto, cred.user!.uid);

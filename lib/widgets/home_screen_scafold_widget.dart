@@ -36,44 +36,51 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
           children: [
             Row(
               children: [
-                Text(
-                  'Hi ${providerUser.user.name}!',
-                  style: TextStyle(shadows: const <Shadow>[
-                    Shadow(
-                        color: Colors.black,
-                        blurRadius: 5,
-                        offset: Offset(0, 0))
-                  ], color: textColor, fontSize: size.width / 15),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: size.width / 50),
-                  child: SizedBox(
-                      width: size.width / 10,
-                      height: size.height / 10,
-                      child: Image.asset('assets/icons/hand_hello.png')),
-                ),
-                const Spacer(),
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: size.width / 25,
+                Expanded(
+                  flex: 7,
+                  child: Row(
+                    children: [
+                      Text(
+                        'Hi ${providerUser.user.name}!',
+                        style: TextStyle(shadows: const <Shadow>[
+                          Shadow(
+                              color: Colors.black,
+                              blurRadius: 5,
+                              offset: Offset(0, 0))
+                        ], color: textColor, fontSize: size.width / 15),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: size.width / 50),
+                        child: SizedBox(
+                            width: size.width / 11,
+                            height: size.height / 11,
+                            child: Image.asset('assets/icons/hand_hello.png')),
+                      ),
+                    ],
                   ),
-                  child: InkWell(
-                    autofocus: true,
-                    onTap: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: const ProfileScreen(control: true)),
-                        (route) => route.isCurrent,
-                      );
-                    },
-                    child: SizedBox(
-                      width: size.width/8,
-                      height: size.width/8,
-                      child: ProgileImgWidget(
-                        url: providerUser.user.imageurl,
+                ),
 
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      right: size.width / 25,
+                    ),
+                    child: InkWell(
+                      autofocus: true,
+                      onTap: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          PageTransition(
+                              type: PageTransitionType.rightToLeft,
+                              child: const ProfileScreen(control: true)),
+                          (route) => route.isCurrent,
+                        );
+                      },
+                      child: SizedBox(
+                        child: ProgileImgWidget(
+                          url: providerUser.user.imageurl,
+                        ),
                       ),
                     ),
                   ),
@@ -158,22 +165,22 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                 child: const ChartWidget()),
             Padding(
               padding: EdgeInsets.only(
+                right: size.width / 45,
+                top: size.height / 25,
+              ),
+              child: SizedBox(
+                  width: size.width,
+                  height: size.height / 1.5,
+                  child: const ArrangementCard()),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
                   top: size.height / 30, right: size.width / 50),
               child: SizedBox(
                 width: size.width,
                 height: size.height / 5,
                 child: RecordWidget(size: size, providerUser: providerUser),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                right: size.width / 45,
-                top: size.height / 25,
-              ),
-              child: SizedBox(
-                  width: size.width,
-                  height: size.height / 2.5,
-                  child: const ArrangementCard()),
             ),
             const SizedBox(
               height: 100,
