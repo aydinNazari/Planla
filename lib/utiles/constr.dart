@@ -263,7 +263,7 @@ Future<void> showMyDialog(bool exitControl,
                         'Remove Photo',
                         style: TextStyle(
                             color: providerUser.user.imageurl == ''
-                                ? Colors.red.shade100
+                                ? const Color(0xff989191)
                                 : Colors.red,
                             fontSize: size.width / 20,
                             fontWeight: FontWeight.w500),

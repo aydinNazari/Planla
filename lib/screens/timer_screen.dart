@@ -205,6 +205,7 @@ class _TimerScreenState extends State<TimerScreen> {
                 children: [
                   const Spacer(),
                   TimerWidget(
+providerUser: providerUser,
                       hours: timerProvider.getdenemeHours,
                       minutes: timerProvider.getdenemeMinute,
                       secends: timerProvider.getdenemeSecend),

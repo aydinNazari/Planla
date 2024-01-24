@@ -138,8 +138,6 @@ class ProviderUser with ChangeNotifier {
 
   setLanguage(bool v) {
     _language = v;
-    print('ffffffffffffffffffff');
-    print(v);
     notifyListeners();
   }
   setEnterControl(bool v){

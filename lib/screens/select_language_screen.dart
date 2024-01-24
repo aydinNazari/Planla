@@ -104,6 +104,7 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
             padding: EdgeInsets.only(bottom: size.height / 7),
             child: InkWell(
               onTap: () {
+                providerUser.setEnterControl(true);
                 Navigator.pushReplacement(
                   context,
                   PageTransition(

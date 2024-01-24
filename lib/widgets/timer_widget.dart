@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/utiles/colors.dart';
 
 class TimerWidget extends StatelessWidget {
   final String hours;
   final String minutes;
   final String secends;
+  final ProviderUser providerUser;
 
   const TimerWidget(
       {Key? key,
       required this.hours,
       required this.minutes,
-      required this.secends})
+      required this.secends,required this.providerUser})
       : super(key: key);
 
   @override
@@ -19,11 +21,11 @@ class TimerWidget extends StatelessWidget {
     return Row(
       children: [
 
-        buildTimeCard(hours, 'HOURS', context),
+        buildTimeCard(hours, providerUser.getLanguage ? 'SAAT':'HOURS', context),
         buildColon(size),
-        buildTimeCard(minutes, 'MINUTES', context),
+        buildTimeCard(minutes, providerUser.getLanguage ? 'DAKİKA':'MINUTES', context),
         buildColon(size),
-        buildTimeCard(secends, 'SECENDS', context),
+        buildTimeCard(secends, providerUser.getLanguage ? 'SANİY':'SECENDS', context),
       ],
     );
   }

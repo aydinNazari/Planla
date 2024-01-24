@@ -74,12 +74,17 @@ class SettingScreen extends StatelessWidget {
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: size.width / 55),
-                        child: Text(
-                          providerUser.getLanguage ? 'Ayarlar' : 'Setting',
-                          style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: size.width / 14,
-                              fontWeight: FontWeight.w700),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            providerUser.getLanguage ? 'Ayarlar' : 'Setting',
+                            style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: size.width / 14,
+                                fontWeight: FontWeight.w700),
+                          ),
                         ),
                       )
                     ],
