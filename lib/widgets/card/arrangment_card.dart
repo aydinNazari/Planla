@@ -65,7 +65,7 @@ class ArrangementCard extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(left:size.width/25),
+          padding: EdgeInsets.only(left: size.width / 25),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -79,12 +79,15 @@ class ArrangementCard extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: Text( providerUser.getMapArrangment[index]?.email == '' ? '':
-                  '@${(providerUser.getMapArrangment[index.toString()]?.email)?.substring(
-                    0,
-                    (providerUser.getMapArrangment[index.toString()]?.email)
-                        ?.indexOf('@'),
-                  )}',
+                child: Text(
+                  providerUser.getMapArrangment[index]?.email == ''
+                      ? ''
+                      : '@${(providerUser.getMapArrangment[index.toString()]?.email)?.substring(
+                          0,
+                          (providerUser
+                                  .getMapArrangment[index.toString()]?.email)
+                              ?.indexOf('@'),
+                        )}',
                   style: TextStyle(
                       fontSize: size.width / 28,
                       fontWeight: FontWeight.w500,
@@ -100,17 +103,21 @@ class ArrangementCard extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                ('${providerUser.getMapArrangment['$index']?.score}h').toString(),
+                providerUser.getLanguage
+                    ? ('${providerUser.getMapArrangment['$index']?.score}s')
+                        .toString()
+                    : ('${providerUser.getMapArrangment['$index']?.score}h')
+                        .toString(),
                 style: TextStyle(
                     color: const Color(0xff442342),
                     fontSize: size.width / 20,
                     fontWeight: FontWeight.w900),
               ),
               Padding(
-                padding: EdgeInsets.only(left: size.width/70),
+                padding: EdgeInsets.only(left: size.width / 70),
                 child: SizedBox(
-                  width: size.width/18,
-                  height: size.width/18,
+                  width: size.width / 18,
+                  height: size.width / 18,
                   child: Image.asset('assets/icons/clock.png'),
                 ),
               )

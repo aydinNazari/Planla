@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class AddTextfieldWidget extends StatelessWidget {
   final void Function(String) onSubmit;
+  final String hinttext;
 
-  AddTextfieldWidget({Key? key, required this.onSubmit}) : super(key: key);
+  AddTextfieldWidget({Key? key, required this.onSubmit, required this.hinttext}) : super(key: key);
 
   TextEditingController txtControoler = TextEditingController();
 
@@ -21,7 +22,7 @@ class AddTextfieldWidget extends StatelessWidget {
         style:
             const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
         decoration: InputDecoration(
-          hintText: 'Add...',
+          hintText: hinttext,
           //icon: Icon(Icons.task_alt),
           hintStyle: const TextStyle(
             color: Colors.black,

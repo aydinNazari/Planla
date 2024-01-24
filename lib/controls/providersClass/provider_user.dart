@@ -4,8 +4,8 @@ import 'package:planla/models/today_model.dart';
 import '../../models/user.dart';
 
 class ProviderUser with ChangeNotifier {
-
-  User _user = User(uid: '', email: '', name: '', imageurl: '', score: 0,bio: '');
+  User _user =
+      User(uid: '', email: '', name: '', imageurl: '', score: 0, bio: '');
   List<TodayModel> _todayList = [];
   List<TodayModel> _tankList = [];
   List<String> _idList = [];
@@ -16,12 +16,19 @@ class ProviderUser with ChangeNotifier {
   List<bool> _checkBoxList = [];
   String _event = '';
   double _score = 0;
-  double _valueEvent=0;
-  int _index=0;
-  Map<String, double> _mapEvent={};
-  Map<String, Arrangment> _mapArrrangment={};
+  double _valueEvent = 0;
+  int _index = 0;
+  Map<String, double> _mapEvent = {};
+  Map<String, Arrangment> _mapArrrangment = {};
+  bool _language = false; //language ? Turkey : English
+  bool __enterControl =
+      false; //_enter ? NavigatorScreeen : SelectLanguageScreen yanı tanıtım ve dil seçimi olacak eğer false ise
 
   User get user => _user;
+
+  bool get getLanguage => _language;
+
+  bool get getEnterControl => __enterControl;
 
   List<TodayModel> get getTodayList => _todayList;
 
@@ -41,15 +48,15 @@ class ProviderUser with ChangeNotifier {
 
   String get getEvent => _event;
 
-  double get getValueEvent=>_valueEvent;
+  double get getValueEvent => _valueEvent;
 
-  int get getIndex=>_index;
+  int get getIndex => _index;
 
-  Map<String,double> get getMapEvent=>_mapEvent;
+  Map<String, double> get getMapEvent => _mapEvent;
 
-  Map<String,Arrangment> get getMapArrangment=>_mapArrrangment;
+  Map<String, Arrangment> get getMapArrangment => _mapArrrangment;
 
-  double get getScore{
+  double get getScore {
     return _score;
   }
 
@@ -106,22 +113,36 @@ class ProviderUser with ChangeNotifier {
       notifyListeners();
     }
   }
-  setScore(double s){
-    _score=s;
-    notifyListeners();
-  }
-  setValueEvent(double v){
-    _valueEvent=v;
-  }
-  setIndex(int v){
-    _index=v;
-  }
-  setMapEvent(Map<String,double> map){
-    _mapEvent=map;
-  }
-  setMapArrangment(Map<String,Arrangment> map){
-    _mapArrrangment=map;
+
+  setScore(double s) {
+    _score = s;
     notifyListeners();
   }
 
+  setValueEvent(double v) {
+    _valueEvent = v;
+  }
+
+  setIndex(int v) {
+    _index = v;
+  }
+
+  setMapEvent(Map<String, double> map) {
+    _mapEvent = map;
+  }
+
+  setMapArrangment(Map<String, Arrangment> map) {
+    _mapArrrangment = map;
+    notifyListeners();
+  }
+
+  setLanguage(bool v) {
+    _language = v;
+    print('ffffffffffffffffffff');
+    print(v);
+    notifyListeners();
+  }
+  setEnterControl(bool v){
+    __enterControl=v;
+  }
 }

@@ -2,8 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/controls/providersClass/timer_provider.dart';
+import 'package:planla/screens/Intro_screen_page.dart';
 import 'package:planla/screens/login_signin_screen.dart';
 import 'package:planla/screens/navigator_screen.dart';
+import 'package:planla/screens/select_language_screen.dart';
 import 'package:planla/utiles/constr.dart';
 import 'package:provider/provider.dart';
 import 'controls/firebase/auth.dart';
@@ -31,6 +33,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ProviderUser providerUser=Provider.of<ProviderUser>(context,listen: false);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'TargetToTarget',
@@ -54,8 +57,12 @@ class MyApp extends StatelessWidget {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (snapshot.hasData) {
-            return const NavigatorScreen();
+          } else if (snapshot.hasData && auth.currentUser!.emailVerified) {
+            if(providerUser.getEnterControl){
+              return const NavigatorScreen();
+            }else{
+              return const SelectLanguageScreen();
+            }
           }
           return const LoginSignInScreen();
         },

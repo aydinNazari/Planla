@@ -20,7 +20,8 @@ class TimerProvider with ChangeNotifier {
   int _counter = 0;
   double _tempScore = 0;
   String _motivationLottieUrl = '';
-  String _motivationSentences = '';
+  String _motivationSentesEn = '';
+  String _motivationSentesTur = '';
   bool _timerFinishControl = false;
   double _eventTime=0.0;
 
@@ -46,7 +47,8 @@ class TimerProvider with ChangeNotifier {
 
   String get getMotivationLttieUrl => _motivationLottieUrl;
 
-  String get getMotivationSentences => _motivationSentences;
+  String get getMotivationSentencesEn => _motivationSentesEn;
+  String get getMotivationSentencesTur => _motivationSentesTur;
 
   bool get getTimerFinishControl => _timerFinishControl;
 
@@ -89,8 +91,9 @@ class TimerProvider with ChangeNotifier {
         tempCounter = 0;
         int temp = setRandomNumber(motivationLottieList.length);
         setMotivationLottieUrl(motivationLottieList[temp]);
-        temp = setRandomNumber(motivationSentencesList.length);
-        setMotivitionSentences(motivationSentencesList[temp]);
+        temp = setRandomNumber(motivationSentencesEnList.length);
+        setMotivitionSentencesEn(motivationSentencesEnList[temp]);
+        setMotivitionSentencesTur(motivationSentencesTurList[temp]);
       }
       int saat = _counter ~/ 3600;
       int dakika = (_counter % 3600) ~/ 60;
@@ -205,8 +208,12 @@ class TimerProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  setMotivitionSentences(String value) {
-    _motivationSentences = value;
+  setMotivitionSentencesEn(String value) {
+    _motivationSentesEn = value;
+    notifyListeners();
+  }
+  setMotivitionSentencesTur(String value) {
+    _motivationSentesTur = value;
     notifyListeners();
   }
 

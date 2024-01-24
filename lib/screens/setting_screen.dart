@@ -10,15 +10,16 @@ import '../widgets/textField/textinputfield_widget.dart';
 class SettingScreen extends StatelessWidget {
   SettingScreen({Key? key}) : super(key: key);
 
-   String name='';
-   String bio='';
+  String name = '';
+  String bio = '';
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: true);
-    TimerProvider timerProvider=Provider.of<TimerProvider>(context,listen: false);
+    TimerProvider timerProvider =
+        Provider.of<TimerProvider>(context, listen: false);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -49,7 +50,8 @@ class SettingScreen extends StatelessWidget {
                   top: size.height / 20,
                   child: InkWell(
                     onTap: () {
-                      logOutFunc(context, size, true, providerUser,timerProvider);
+                      logOutFunc(
+                          context, size, true, providerUser, timerProvider);
                     },
                     child: Icon(Icons.logout,
                         color: Colors.white, size: size.width / 18),
@@ -73,7 +75,7 @@ class SettingScreen extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(left: size.width / 55),
                         child: Text(
-                          'Setting',
+                          providerUser.getLanguage ? 'Ayarlar' : 'Setting',
                           style: TextStyle(
                               color: Colors.white70,
                               fontSize: size.width / 14,
@@ -118,18 +120,23 @@ class SettingScreen extends StatelessWidget {
               padding: EdgeInsets.only(top: size.height / 25),
               child: buildTextAndTextField(
                   size,
-                  'Bio',
+                  providerUser.getLanguage ? 'Bio' : 'Açıklama',
                   providerUser.user.bio != ''
                       ? providerUser.user.bio
-                      : 'Enter your bio',
-                  'Bio', (v) {
+                      : (providerUser.getLanguage
+                          ? 'Açıklamanızı ekleyin'
+                          : 'Enter your bio'),
+                  providerUser.getLanguage ? 'Bio' : 'Açıklama', (v) {
                 bio = v;
               }),
             ),
             Padding(
               padding: EdgeInsets.only(top: size.height / 25),
               child: buildTextAndTextField(
-                  size, 'Name', providerUser.user.name, 'Name', (v) {
+                  size,
+                  providerUser.getLanguage ? 'İsim' : 'Name',
+                  providerUser.user.name,
+                  providerUser.getLanguage ? 'İsim' : 'Name', (v) {
                 name = v;
               }),
             ),
@@ -164,10 +171,10 @@ class SettingScreen extends StatelessWidget {
                       }
                     } else {
                       showSnackBar(
-                          context, 'You did not enter anything ', Colors.red);
+                          context, providerUser.getLanguage ? 'Hiçbir şey girmedin':'You did not enter anything ', Colors.red);
                     }
                   },
-                  child: Text(
+                  child: Text(providerUser.getLanguage ? 'Güncelle' :
                     'Update',
                     style: TextStyle(
                         color: Colors.white,
@@ -206,9 +213,7 @@ class SettingScreen extends StatelessWidget {
             padding:
                 EdgeInsets.only(left: size.width / 25, right: size.width / 25),
             child: TextInputField(
-              onSubmited: (v){
-
-              },
+              onSubmited: (v) {},
               onchange: func,
               inputLenghtControl: false,
               hintText: hint,

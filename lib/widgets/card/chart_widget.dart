@@ -14,10 +14,12 @@ class ChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int t=-1;
+    int t = -1;
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
-    var size = MediaQuery.of(context).size;
+    Provider.of<ProviderUser>(context, listen: false);
+    var size = MediaQuery
+        .of(context)
+        .size;
     return SizedBox(
         width: size.width,
         height: size.height / 2.5,
@@ -50,7 +52,8 @@ class ChartWidget extends StatelessWidget {
                   title: key,
                   value: value,
                   color: colorList[t],
-                  titleStyle: TextStyle(color: Colors.white, fontSize: size.width / 40),
+                  titleStyle: TextStyle(
+                      color: Colors.white, fontSize: size.width / 40),
                   radius: size.width / 4,
                 );
               }).toList(),
@@ -58,26 +61,28 @@ class ChartWidget extends StatelessWidget {
           )
 
               : Column(
-                  children: [
-                    SizedBox(
-                        width: size.width,
-                        height: size.height / 3.5,
-                        child: Lottie.network(
-                            'https://lottie.host/c05bda17-1f57-47ad-8675-3b89edb4545d/uPwH4O4khz.json')),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: size.width / 6),
-                      child: Text(
-                        'I can\'t create your chart because you don\'t have any activity!',
-                        textAlign: TextAlign.center,
-                        softWrap: true,
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: size.width / 25,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    )
-                  ],
+            children: [
+              SizedBox(
+                  width: size.width,
+                  height: size.height / 3.5,
+                  child: Lottie.network(
+                      'https://lottie.host/c05bda17-1f57-47ad-8675-3b89edb4545d/uPwH4O4khz.json')),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: size.width / 6),
+                child: Text(
+                  providerUser.getLanguage
+                      ? 'Herhangi bir etkinliğiniz olmadığından grafiğinizi oluşturamıyorum!':
+                      'I can\'t create your chart because you don\'t have any activity!',
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                  style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: size.width / 25,
+                      fontWeight: FontWeight.w700),
                 ),
+              )
+            ],
+          ),
         ));
   }
 }

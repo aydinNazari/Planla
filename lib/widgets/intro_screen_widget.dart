@@ -18,21 +18,14 @@ class IntroScreenWidget extends StatelessWidget {
         return false;
       },
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-        ),
-        body: Container(
-          padding: EdgeInsets.only(
-              left: size.width / 20,
-              right: size.width / 20,
-              bottom: size.height / 20),
+        body: Padding(
+          padding: EdgeInsets.only(bottom: size.height/8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               !revers
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
                             width: size.width / 1.6,

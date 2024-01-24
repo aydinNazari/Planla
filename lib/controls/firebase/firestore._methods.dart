@@ -116,8 +116,10 @@ class FirestoreMethods {
         providerUser.setDoneList(tempList);
         providerUser.setControlFirestore(false);
 
-        timerProvider.setMotivitionSentences(motivationSentencesList[
-            timerProvider.setRandomNumber(motivationSentencesList.length)]);
+        timerProvider.setMotivitionSentencesEn(motivationSentencesEnList[
+            timerProvider.setRandomNumber(motivationSentencesEnList.length)]);
+        timerProvider.setMotivitionSentencesTur(motivationSentencesTurList[
+        timerProvider.setRandomNumber(motivationSentencesTurList.length)]);
         timerProvider.setMotivationLottieUrl(motivationLottieList[
             timerProvider.setRandomNumber(motivationLottieList.length)]);
 

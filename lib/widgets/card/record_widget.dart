@@ -39,7 +39,7 @@ class RecordWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Your Record',
+            providerUser.getLanguage ? 'Rekorunuz' : 'Your Record',
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w600,
@@ -50,7 +50,9 @@ class RecordWidget extends StatelessWidget {
             ),
           ),
           Text(
-            '${providerUser.getScore}h',
+            providerUser.getLanguage
+                ? '${providerUser.getScore}s'
+                : '${providerUser.getScore}h',
             style: TextStyle(
               color: Colors.white70,
               fontWeight: FontWeight.w600,

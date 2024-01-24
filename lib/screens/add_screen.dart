@@ -56,7 +56,9 @@ class _AddScreenState extends State<AddScreen> {
                         padding: EdgeInsets.only(right: size.width / 25),
                         child: SizedBox(
                           width: size.width,
-                          child: AddTextfieldWidget(onSubmit: (value) async {
+                          child: AddTextfieldWidget(
+                              hinttext: user.getLanguage ? 'Ekle...':'Add...',
+                              onSubmit: (value) async {
                             txt = value;
                             value = '';
                             if (txt.isNotEmpty) {
@@ -73,7 +75,11 @@ class _AddScreenState extends State<AddScreen> {
                                   .textSave(context, todayModel);
                             } else {
                               showSnackBar(
-                                  context, 'Fill in all fields', Colors.red);
+                                  context,
+                                  user.getLanguage
+                                      ? 'Tüm alanları doldurun'
+                                      : 'Fill in all fields',
+                                  Colors.red);
                             }
                           }),
                         ),
@@ -95,7 +101,7 @@ class _AddScreenState extends State<AddScreen> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(top: size.height / 45),
-                            child: Text(
+                            child: Text( user.getLanguage ? 'Bugün için herhangi bir göreviniz yok':
                               'You don\'t have any task for today',
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,

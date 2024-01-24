@@ -41,7 +41,10 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                   child: Row(
                     children: [
                       Text(
-                        'Hi ${providerUser.user.name}!',
+                        providerUser.getLanguage
+                            ? 'Selam ${providerUser.user.name}!'
+                            : 'Hi ${providerUser.user.name}!',
+                        softWrap: true,
                         style: TextStyle(shadows: const <Shadow>[
                           Shadow(
                               color: Colors.black,
@@ -59,7 +62,6 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                     ],
                   ),
                 ),
-
                 Expanded(
                   flex: 2,
                   child: Padding(
@@ -87,16 +89,18 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                 )
               ],
             ),
-            Padding(
+          /*  Padding(
               padding: EdgeInsets.only(top: size.height / 25),
               child: Text(
-                'Last Week Result',
+                providerUser.getLanguage
+                    ? 'Geçen haftanın sonuçla'
+                    : 'Last Week Result',
                 style: TextStyle(
                     fontSize: size.width / 25,
                     color: textColor,
                     fontWeight: FontWeight.w600),
               ),
-            ),
+            ),*/
             Padding(
               padding: EdgeInsets.only(top: size.height / 50),
               child: Column(
@@ -153,6 +157,7 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
             Padding(
               padding: EdgeInsets.only(top: size.height / 25),
               child: Text(
+                providerUser.getLanguage ? 'Grafiğiniz' :
                 'Your Chart',
                 style: TextStyle(
                     fontSize: size.width / 25,

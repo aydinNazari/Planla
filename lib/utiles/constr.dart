@@ -35,14 +35,20 @@ List<Widget> screenList = [
 ];
 
 //dropdown items
-final List<String> items = [
+final List<String> itemsEn = [
   'Study',
   'Work',
   'Sport',
   'other',
 ];
+final List<String> itemsTur = [
+  'Okumak',
+  'Çalışmak',
+  'Spor',
+  'Diğer',
+];
 
-List<String> motivationSentencesList = [
+List<String> motivationSentencesEnList = [
   "Believe in yourself; you are capable of amazing things.",
   "Your only limit is you. Break through it.",
   "Every small step you take brings you closer to big achievements.",
@@ -63,6 +69,18 @@ List<String> motivationSentencesList = [
   "Your energy introduces you before you even speak.",
   "Don't stop until you're proud.",
   "Be the change you wish to see in the world."
+];
+List<String> motivationSentencesTurList = [
+  "Her gün bir adım daha yaklaşıyorsun, vazgeçme!",
+  "Çalışkanlık, başarı yolculuğunun anahtarıdır.",
+  "Zorluklar, güçlü olmanın sınavlarıdır.",
+  "Bugün ne eklersen, yarın onu toplarsın.",
+  "Azim, hedeflere ulaşmanın en güçlü motorudur.",
+  "Başarı, pes etmeyenlerin ödülüdür.",
+  "Çalışmak, hayallerini gerçeğe dönüştürmenin ilk adımıdır.",
+  "Her engel, seni daha güçlü kılar.",
+  "Vazgeçmek, başarının kapısını kapatmaktır; o kapıyı açık tut!",
+  "İnan ki, emek verdiğin her an, geleceğine yatırımdır."
 ];
 List<String> motivationLottieList = [
   'https://lottie.host/659b65a9-d50c-4a25-bbca-1dd14a8f0e60/uUWtrC4btf.json',
@@ -101,7 +119,7 @@ showSnackBar(BuildContext context, String txt, Color color) {
 //for picking photo
 Future<Uint8List?> pickImager() async {
   FilePickerResult? pickedImage =
-      await FilePicker.platform.pickFiles(type: FileType.image);
+  await FilePicker.platform.pickFiles(type: FileType.image);
   if (kIsWeb) {
     return pickedImage?.files.single.bytes;
   }
@@ -112,8 +130,7 @@ Future<Uint8List?> pickImager() async {
 }
 
 //dialog
-Future<void> showMyDialog(
-    bool exitControl,
+Future<void> showMyDialog(bool exitControl,
     BuildContext context,
     Size size,
     String txt,
@@ -126,153 +143,157 @@ Future<void> showMyDialog(
     barrierDismissible: profilePhoto ? true : false,
     builder: (BuildContext context) {
       ProviderUser providerUser =
-          Provider.of<ProviderUser>(context, listen: true);
+      Provider.of<ProviderUser>(context, listen: true);
       return AlertDialog(
         backgroundColor: Colors.white,
         content: SingleChildScrollView(
           child: ListBody(
             mainAxis: Axis.vertical,
             children: <Widget>[
-
-              profilePhoto ==false ? Column(
+              profilePhoto == false
+                  ? Column(
                 children: [
-                  exitControl ?
-                  SizedBox(
+                  exitControl
+                      ? SizedBox(
                     width: size.width / 6,
                     height: size.width / 6,
                     child: Lottie.network(
                         'https://lottie.host/04e1b122-3b8f-4f93-b9cf-ee49f47be838/Ebix9jy6jB.json'),
-                  ):SizedBox(
+                  )
+                      : SizedBox(
                     width: size.width / 6,
                     height: size.width / 6,
-                    child: Image.asset('assets/images/goals_dialog.png'),
+                    child: Image.asset(
+                        'assets/images/goals_dialog.png'),
                   ),
                   SizedBox(
                     height: size.height / 50,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: size.width / 25),
+                    padding:
+                    EdgeInsets.symmetric(horizontal: size.width / 25),
                     child: Text(txt),
                   ),
                 ],
-              ) : const SizedBox()
+              )
+                  : const SizedBox()
             ],
           ),
         ),
         actions: <Widget>[
           profilePhoto
               ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        const Spacer(),
-                        InkWell(
-                          onTap: () async {
-                            var image = await pickImager();
-                            if (context.mounted) {
-                              lottieProgressDialog(
-                                  context, 'assets/json/loading.json');
-                            }
-                            String url = await Storage().uploadImageToStorage(
-                                image, providerUser.user.uid);
-                            model.User user = model.User(
-                                uid: providerUser.user.uid,
-                                email: providerUser.user.email,
-                                name: providerUser.user.name,
-                                imageurl: url,
-                                score: providerUser.user.score,
-                                bio: providerUser.user.bio);
-                            providerUser.setUser(user);
-                            await firestore
-                                .collection('users')
-                                .doc(providerUser.user.uid)
-                                .update(user.toMap());
-                            if (context.mounted) {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                            }
-                          },
-                          child: Text(
-                            'Upload Photo',
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: size.width / 20,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        const Spacer(),
-                      ],
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  const Spacer(),
+                  InkWell(
+                    onTap: () async {
+                      var image = await pickImager();
+                      if (context.mounted) {
+                        lottieProgressDialog(
+                            context, 'assets/json/loading.json');
+                      }
+                      String url = await Storage().uploadImageToStorage(
+                          image, providerUser.user.uid);
+                      model.User user = model.User(
+                          uid: providerUser.user.uid,
+                          email: providerUser.user.email,
+                          name: providerUser.user.name,
+                          imageurl: url,
+                          score: providerUser.user.score,
+                          bio: providerUser.user.bio);
+                      providerUser.setUser(user);
+                      await firestore
+                          .collection('users')
+                          .doc(providerUser.user.uid)
+                          .update(user.toMap());
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: Text( providerUser.getLanguage ? 'Fotoğraf yükle' :
+                      'Upload Photo',
+                      style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: size.width / 20,
+                          fontWeight: FontWeight.w500),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: size.height / 25),
-                      child: Row(
-                        children: [
-                          const Spacer(),
-                          InkWell(
-                            onTap: () async {
-                              if (providerUser.user.imageurl != '') {
-                                if (context.mounted) {
-                                  lottieProgressDialog(
-                                      context, 'assets/json/loading.json');
-                                }
-                                await Storage().deleteProfilePhoto(
-                                    context, providerUser.user.uid);
-                                model.User user = model.User(
-                                    uid: providerUser.user.uid,
-                                    email: providerUser.user.email,
-                                    name: providerUser.user.name,
-                                    imageurl: '',
-                                    score: providerUser.user.score,
-                                    bio: providerUser.user.bio);
-                                providerUser.setUser(user);
-                                if (context.mounted) {
-                                  Navigator.of(context).pop();
-                                  Navigator.of(context).pop();
-                                }
-                              } else {
-                                Navigator.of(context).pop();
-                                showSnackBar(
-                                    context,
-                                    'You don\'t have a profile picture yet',
-                                    Colors.red);
-                              }
-                            },
-                            child: Text(
-                              'Remove Photo',
-                              style: TextStyle(
-                                  color: providerUser.user.imageurl == ''
-                                      ? Colors.red.shade100
-                                      : Colors.red,
-                                  fontSize: size.width / 20,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          const Spacer(),
-                        ],
+                  ),
+                  const Spacer(),
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: size.height / 25),
+                child: Row(
+                  children: [
+                    const Spacer(),
+                    InkWell(
+                      onTap: () async {
+                        if (providerUser.user.imageurl != '') {
+                          if (context.mounted) {
+                            lottieProgressDialog(
+                                context, 'assets/json/loading.json');
+                          }
+                          await Storage().deleteProfilePhoto(
+                              context, providerUser.user.uid);
+                          model.User user = model.User(
+                              uid: providerUser.user.uid,
+                              email: providerUser.user.email,
+                              name: providerUser.user.name,
+                              imageurl: '',
+                              score: providerUser.user.score,
+                              bio: providerUser.user.bio);
+                          providerUser.setUser(user);
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          }
+                        } else {
+                          Navigator.of(context).pop();
+                          showSnackBar(
+                              context, providerUser.getLanguage ? 'Profil resminiz yok zaten!' :
+                              'You don\'t have a profile picture yet',
+                              Colors.red);
+                        }
+                      },
+                      child: Text( providerUser.getLanguage ? 'Profil fotğradfını sil' :
+                        'Remove Photo',
+                        style: TextStyle(
+                            color: providerUser.user.imageurl == ''
+                                ? Colors.red.shade100
+                                : Colors.red,
+                            fontSize: size.width / 20,
+                            fontWeight: FontWeight.w500),
                       ),
                     ),
+                    const Spacer(),
                   ],
-                )
+                ),
+              ),
+            ],
+          )
               : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                        onPressed: yesFunction,
-                        child: Text(
-                          'Yes',
-                          style: TextStyle(
-                              color: Colors.black, fontSize: size.width / 25),
-                        )),
-                    TextButton(
-                        onPressed: noFunction,
-                        child: Text(
-                          'No',
-                          style: TextStyle(
-                              color: Colors.black, fontSize: size.width / 25),
-                        )),
-                  ],
-                )
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                  onPressed: yesFunction,
+                  child: Text( providerUser.getLanguage ? 'Evet' :
+                    'Yes',
+                    style: TextStyle(
+                        color: Colors.black, fontSize: size.width / 25),
+                  )),
+              TextButton(
+                  onPressed: noFunction,
+                  child: Text(providerUser.getLanguage ? 'Hayır' :
+                    'No',
+                    style: TextStyle(
+                        color: Colors.black, fontSize: size.width / 25),
+                  )),
+            ],
+          )
         ],
       );
     },
@@ -287,8 +308,14 @@ void lottieProgressDialog(BuildContext context, String url) {
     builder: (context) {
       return Center(
         child: SizedBox(
-          width: MediaQuery.of(context).size.width / 2.2,
-          height: MediaQuery.of(context).size.width / 2.2,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width / 2.2,
+          height: MediaQuery
+              .of(context)
+              .size
+              .width / 2.2,
           child: Lottie.asset(url),
         ),
       );
@@ -297,12 +324,18 @@ void lottieProgressDialog(BuildContext context, String url) {
 }
 
 Future<void> logOutFunc(BuildContext context, Size size, bool exitType,
-    ProviderUser providerUser,TimerProvider timerProvider) async {
+    ProviderUser providerUser, TimerProvider timerProvider) async {
   // exittype==true -> logOut
   // exittype==false -> exit from app
   if (exitType) {
-    showMyDialog(true,context, size, 'Are you sure you want to log out?', false,
-        () async {
+    showMyDialog(
+        true,
+        context,
+        size,
+        providerUser.getLanguage
+            ? 'Oturumu kapatmak istediğinizden emin misiniz?'
+            : 'Are you sure you want to log out?',
+        false, () async {
       await Auth().signOut();
       if (context.mounted) {
         providerUser.setControlFirestore(true);
@@ -323,7 +356,7 @@ Future<void> logOutFunc(BuildContext context, Size size, bool exitType,
             type: PageTransitionType.topToBottom,
             child: const LoginSignInScreen(),
           ),
-          (route) => route.isCurrent,
+              (route) => route.isCurrent,
         );
       }
     }, () {
@@ -331,8 +364,14 @@ Future<void> logOutFunc(BuildContext context, Size size, bool exitType,
     });
   } else {
     showMyDialog(
-        false,context, size, 'Are you sure you want to exit the application??', false,
-        () {
+        false,
+        context,
+        size,
+        providerUser.getLanguage
+            ? 'Uygulamadan çıkmak istediğinizden emin misiniz?'
+            :
+        'Are you sure you want to exit the application?',
+        false, () {
       exit(0);
     }, () {
       Navigator.of(context).pop();
@@ -345,11 +384,21 @@ Future<void> uploadOrRemoveProfilePhoto(BuildContext context, Size size,
   // uploadOrRemove==true -> upload
   // uploadOrRemove==false -> Remove
   if (uploadOrRemove) {
-    showMyDialog(false,context, size, '', true, () async {}, () {});
+    showMyDialog(
+        false,
+        context,
+        size,
+        '',
+        true, () async {}, () {});
   } else {
     showMyDialog(
-        false,context, size, 'Are you sure you want to exit the application??', false,
-        () {
+        false,
+        context,
+        size,
+        providerUser.getLanguage
+            ? 'Uygulamadan çıkmak istediğinizden emin misiniz?':
+            'Are you sure you want to exit the application?',
+        false, () {
       exit(0);
     }, () {
       Navigator.of(context).pop();

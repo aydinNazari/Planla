@@ -39,13 +39,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<ProviderUser>(context, listen: true);
-    TimerProvider timerProvider=Provider.of<TimerProvider>(context,listen: false);
+    final providerUSer = Provider.of<ProviderUser>(context, listen: true);
+    TimerProvider timerProvider =
+        Provider.of<TimerProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
         if (widget.control == false) {
-          logOutFunc(context, size, false, user,timerProvider);
+          logOutFunc(context, size, false, providerUSer, timerProvider);
           return false;
         } else {
           Navigator.push(
@@ -114,21 +115,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Column(
                       children: [
                         Text(
-                          user.user.name,
+                          providerUSer.user.name,
                           style: TextStyle(
                               color: textColor,
                               fontSize: size.width / 14,
                               fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          '@${(user.user.email).substring(0, (user.user.email).indexOf('@'))}',
+                          '@${(providerUSer.user.email).substring(0, (providerUSer.user.email).indexOf('@'))}',
                           style: TextStyle(
                               color: Colors.black38,
                               fontSize: size.width / 23,
                               fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          user.user.bio,
+                          providerUSer.user.bio,
                           style: TextStyle(
                               color: primeryColor,
                               fontSize: size.width / 22,
@@ -146,9 +147,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: GestureDetector(
                           onTap: () {
                             uploadOrRemoveProfilePhoto(
-                                context, size, true, user);
+                                context, size, true, providerUSer);
                           },
-                          child: ProgileImgWidget(url: user.user.imageurl))),
+                          child: ProgileImgWidget(
+                              url: providerUSer.user.imageurl))),
                 ),
               ],
             ),
@@ -167,8 +169,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                     child: TasksCountWidget(
                       size: size,
-                      txt: 'Task',
-                      count: (user.getTankList.length).toString(),
+                      txt: providerUSer.getLanguage ? 'Görev' : 'Task',
+                      count: (providerUSer.getTankList.length).toString(),
                     ),
                   ),
                   const Spacer(),
@@ -180,11 +182,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                     child: TasksCountWidget(
                         size: size,
-                        txt: 'Done',
-                        count: (user.getDoneList.length).toString()),
+                        txt: providerUSer.getLanguage ? 'Tamamlanan ' : 'Done',
+                        count: (providerUSer.getDoneList.length).toString()),
                   ),
                   const Spacer(),
-                  TasksCountWidget(size: size, txt: 'Plaka', count: '***'),
+                  TasksCountWidget(
+                      size: size,
+                      txt: providerUSer.getLanguage ? 'Rekor' : 'Record',
+                      count: providerUSer.getLanguage ? '${providerUSer.getTankList.length} adet'
+                      :'${providerUSer.getTankList.length} items'),
                   const Spacer()
                 ],
               ),
@@ -208,7 +214,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Padding(
                   padding: EdgeInsets.only(
                       left: size.width / 50, right: size.width / 50),
-                  child: cards(user, size)),
+                  child: cards(providerUSer, size)),
             )
           ],
         ),

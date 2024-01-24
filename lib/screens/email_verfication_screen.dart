@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/screens/Intro_screen_page.dart';
 import 'package:planla/screens/login_signin_screen.dart';
+import 'package:planla/screens/select_language_screen.dart';
 import 'package:planla/utiles/colors.dart';
+import 'package:provider/provider.dart';
 
 import '../utiles/constr.dart';
 
@@ -12,6 +14,8 @@ class EmailVerfication extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ProviderUser providerUser =
+        Provider.of<ProviderUser>(context, listen: true);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Column(
@@ -26,7 +30,9 @@ class EmailVerfication extends StatelessWidget {
             padding: EdgeInsets.symmetric(
                 vertical: size.height / 25, horizontal: size.width / 15),
             child: Text(
-              'Kindly verify your email by checking your inbox for our message',
+              providerUser.getLanguage
+                  ? 'Lütfen size gelen e-postayı onaylayın'
+                  : 'Kindly verify your email by checking your inbox for our message',
               textAlign: TextAlign.center,
               softWrap: true,
               style: TextStyle(
@@ -46,12 +52,12 @@ class EmailVerfication extends StatelessWidget {
                     PageTransition(
                         type: PageTransitionType.leftToRight,
                         child: const LoginSignInScreen()));
-              }else{
+              } else {
                 Navigator.pushReplacement(
                     context,
                     PageTransition(
                         type: PageTransitionType.leftToRight,
-                        child: const IntroScreen()));
+                        child: const SelectLanguageScreen()));
               }
             },
             child: Container(
@@ -64,9 +70,12 @@ class EmailVerfication extends StatelessWidget {
                   )),
               child: Center(
                 child: Text(
-                  'Done',
-                  style:
-                      TextStyle(color: Colors.white, fontSize: size.width / 22),
+                  providerUser.getLanguage ? 'Tamam' : 'Ok',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: size.width / 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

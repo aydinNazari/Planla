@@ -4,9 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/controls/providersClass/timer_provider.dart';
-import 'package:planla/models/arrangment_model.dart';
 import 'package:planla/utiles/colors.dart';
-import 'package:planla/utiles/constr.dart';
 import 'package:planla/widgets/textField/textinputfield_widget.dart';
 import 'package:planla/widgets/timer_widget.dart';
 import 'package:provider/provider.dart';
@@ -69,6 +67,7 @@ class _TimerScreenState extends State<TimerScreen> {
   Widget build(BuildContext context) {
     TimerProvider providerTimer =
         Provider.of<TimerProvider>(context, listen: false);
+    ProviderUser providerUser = Provider.of<ProviderUser>(context);
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -89,7 +88,7 @@ class _TimerScreenState extends State<TimerScreen> {
                         children: [
                           const Spacer(),
                           Text(
-                            'Add',
+                            providerUser.getLanguage ? 'Ekle' : 'Add',
                             style: TextStyle(
                                 color: primeryColor,
                                 fontSize: size.width / 20,
@@ -102,7 +101,9 @@ class _TimerScreenState extends State<TimerScreen> {
                         padding: EdgeInsets.only(
                             top: size.height / 45, bottom: size.height / 80),
                         child: Text(
-                          'Add your new event',
+                          providerUser.getLanguage
+                              ? 'Yeni etkinliğinizi ekleyin'
+                              : 'Add your new event',
                           style: TextStyle(
                               color: const Color(0xff26303b),
                               fontWeight: FontWeight.w400,
@@ -113,11 +114,16 @@ class _TimerScreenState extends State<TimerScreen> {
                         width: size.width / 2,
                         height: size.height / 12,
                         child: TextInputField(
-                          onSubmited: (v){
-                          },
+                            onSubmited: (v) {},
                             inputLenghtControl: true,
-                            hintText: 'Add new activity',
-                            labelTextWidget: const Text('up to 10 characters'),
+                            hintText: providerUser.getLanguage
+                                ? 'Yeni etkinlik ekle'
+                                : 'Add new activity',
+                            labelTextWidget: Text(
+                              providerUser.getLanguage
+                                  ? '10 karaktere kadar'
+                                  : 'up to 10 characters',
+                            ),
                             iconWidget: const SizedBox(),
                             obscrueText: false,
                             onchange: (v) {
@@ -139,13 +145,15 @@ class _TimerScreenState extends State<TimerScreen> {
                                   Navigator.of(context).pop();
                                 }
                               },
-                              child: const Text('Yes'),
+                              child: Text(
+                                  providerUser.getLanguage ? 'Evet' : 'Yes'),
                             ),
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: const Text('No'),
+                              child: Text(
+                                  providerUser.getLanguage ? 'Hayır' : 'No'),
                             ),
                             const Spacer()
                           ],
@@ -161,7 +169,7 @@ class _TimerScreenState extends State<TimerScreen> {
             width: size.width / 8,
             height: size.height / 15,
             decoration:
-                BoxDecoration(color: primeryColor, shape: BoxShape.circle),
+                BoxDecoration(color: navigatorColor, shape: BoxShape.circle),
             child: Center(
               child: Text(
                 '+',
@@ -176,12 +184,12 @@ class _TimerScreenState extends State<TimerScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       body: providerTimer.timerScreenType
-          ? buildTimerSetScreen()
-          : buildTimerCountScreen(),
+          ? buildTimerSetScreen(providerUser)
+          : buildTimerCountScreen(providerUser),
     );
   }
 
-  Widget buildTimerCountScreen() {
+  Widget buildTimerCountScreen(ProviderUser providerUser) {
     TimerProvider timerProvider =
         Provider.of<TimerProvider>(context, listen: true);
 
@@ -226,7 +234,9 @@ class _TimerScreenState extends State<TimerScreen> {
                         right: size.width / 10,
                         top: size.height / 80),
                     child: Text(
-                      timerProvider.getMotivationSentences,
+                      providerUser.getLanguage
+                          ? timerProvider.getMotivationSentencesTur
+                          : timerProvider.getMotivationSentencesEn,
                       softWrap: true,
                       textDirection: TextDirection.ltr,
                       textAlign: TextAlign.center,
@@ -241,22 +251,19 @@ class _TimerScreenState extends State<TimerScreen> {
                 ],
               ),
             ),
-            buildButton(),
+            buildButton(providerUser),
           ],
         ),
       ),
     );
   }
 
-  SingleChildScrollView buildTimerSetScreen() {
+  SingleChildScrollView buildTimerSetScreen(ProviderUser providerUser) {
     TimerProvider timerProvider =
         Provider.of<TimerProvider>(context, listen: true);
-    ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: true);
     checkboxList = providerUser.getCheckBoxList;
     Size size = MediaQuery.of(context).size;
-    if(timerProvider.getTimerFinishControl){
-      print('asasaasasasasasasa');
+    if (timerProvider.getTimerFinishControl) {
       timerProvider.setTimerFinishControl(false);
       FirestoreMethods().updateScoreAndEventsValue(context);
       FirestoreMethods().updateArrangement(context);
@@ -266,7 +273,7 @@ class _TimerScreenState extends State<TimerScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            height: size.height / 20,
+            height: size.height / 50,
           ),
           /*   SizedBox(
               width: size.width,
@@ -298,7 +305,8 @@ class _TimerScreenState extends State<TimerScreen> {
                 Expanded(
                     child: Column(
                   children: [
-                    buildNumericText(size, 'Hours'),
+                    buildNumericText(
+                        size, providerUser.getLanguage ? 'Saat' : 'Hours'),
                     numeric(
                       current: hoursNumeric,
                       onChanged: (value) {
@@ -313,6 +321,8 @@ class _TimerScreenState extends State<TimerScreen> {
                 Expanded(
                     child: Column(
                   children: [
+                    buildNumericText(
+                        size, providerUser.getLanguage ? 'Dakika' : 'Minute'),
                     numeric(
                       current: minuteNumeric,
                       onChanged: (value) {
@@ -322,13 +332,13 @@ class _TimerScreenState extends State<TimerScreen> {
                         timerProvider.reset();
                       },
                     ),
-                    buildNumericText(size, 'Minute'),
                   ],
                 )),
                 Expanded(
                     child: Column(
                   children: [
-                    buildNumericText(size, 'Secend'),
+                    buildNumericText(
+                        size, providerUser.getLanguage ? 'Saniye' : 'Secend'),
                     numeric(
                       current: secendNumeric,
                       onChanged: (value) {
@@ -370,7 +380,9 @@ class _TimerScreenState extends State<TimerScreen> {
                           padding:
                               EdgeInsets.symmetric(horizontal: size.width / 6),
                           child: Text(
-                            'You don\'t have any events, you must add at least one event first ',
+                            providerUser.getLanguage
+                                ? 'Herhangi bir etkinliğiniz yok, önce en az bir etkinlik eklemelisiniz'
+                                : 'You don\'t have any events, you must add at least one event first ',
                             textAlign: TextAlign.center,
                             softWrap: true,
                             style: TextStyle(
@@ -395,7 +407,8 @@ class _TimerScreenState extends State<TimerScreen> {
                           return Dismissible(
                             key: UniqueKey(),
                             onDismissed: (DismissDirection direction) async {
-                              await FirestoreMethods().deleteEvent(context, index);
+                              await FirestoreMethods()
+                                  .deleteEvent(context, index);
                             },
                             child: SizedBox(
                               child: Row(
@@ -460,7 +473,7 @@ class _TimerScreenState extends State<TimerScreen> {
                       timerProvider.setTimerScreenType(false);
                       // BackgroundService().initSercice(context);
                       timerProvider.reset();
-                     /*
+                      /*
                       bu deneme amaçlı yazılmış bir kod
                       Arrangment arrangement1=Arrangment(imgUrl: '', uid: '', name: 'birinci', score: 0);
                       Arrangment arrangement2=Arrangment(imgUrl: '', uid: '', name: 'ikinci', score: 0);
@@ -481,7 +494,7 @@ class _TimerScreenState extends State<TimerScreen> {
                                   providerUser.getEvent.isNotEmpty
                               ? primeryColor
                               : Colors.grey,
-                          txt: 'Go',
+                          txt: providerUser.getLanguage ? 'Başla' : 'Go',
                         )
                       : const SizedBox(),
                 ),
@@ -532,7 +545,7 @@ class _TimerScreenState extends State<TimerScreen> {
     );
   }
 
-  Widget buildButton() {
+  Widget buildButton(ProviderUser providerUser) {
     TimerProvider timerProvider =
         Provider.of<TimerProvider>(context, listen: true);
     bool type =
@@ -555,12 +568,21 @@ class _TimerScreenState extends State<TimerScreen> {
             child: SizedBox(
               width: size.width / 3,
               height: size.height / 13,
-              child: TimerButtonWidget(
-                radiusControl: true,
-                color:
-                    timerProvider.getCounter != 0 ? Colors.black : Colors.grey,
-                txt: type ? 'Stop' : 'Resume',
-              ),
+              child: providerUser.getLanguage
+                  ? TimerButtonWidget(
+                      radiusControl: true,
+                      color: timerProvider.getCounter != 0
+                          ? Colors.black
+                          : Colors.grey,
+                      txt: type ? 'Durdur' : 'Devam',
+                    )
+                  : TimerButtonWidget(
+                      radiusControl: true,
+                      color: timerProvider.getCounter != 0
+                          ? Colors.black
+                          : Colors.grey,
+                      txt: type ? 'Stop' : 'Resume',
+                    ),
             ),
           ),
         ),
@@ -577,10 +599,10 @@ class _TimerScreenState extends State<TimerScreen> {
             child: SizedBox(
               width: size.width / 3,
               height: size.height / 13,
-              child: const TimerButtonWidget(
+              child: TimerButtonWidget(
                 radiusControl: true,
                 color: Colors.black,
-                txt: 'Reset',
+                txt: providerUser.getLanguage ? 'Sıfırla' : 'Reset',
               ),
             ),
           ),
