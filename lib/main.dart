@@ -55,20 +55,7 @@ class MyApp extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasData) {
-            print('ffffffffffffffffffffffflllll');
-            print(snapshot.data!.language);
-            if(snapshot.data?.language !=''){
-             if(snapshot.data!.language =='Tur'){
-               providerUser.setLanguage(true);
-               return const NavigatorScreen();
-             }else if(snapshot.data!.language=='En'){
-               providerUser.setLanguage(false);
-             }else if(snapshot.data?.language == ''){
-               return const SelectLanguageScreen();
-             }
-           }else {
-             return const SelectLanguageScreen();
-           }
+           return const NavigatorScreen();
           }
           return const LoginSignInScreen();
         },

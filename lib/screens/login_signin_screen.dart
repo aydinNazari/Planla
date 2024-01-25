@@ -5,6 +5,7 @@ import 'package:planla/controls/firebase/auth.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:planla/screens/navigator_screen.dart';
+import 'package:planla/screens/select_language_screen.dart';
 import 'package:planla/widgets/buttons/login_signin_button_widget.dart';
 import 'package:provider/provider.dart';
 import '../controls/providersClass/timer_provider.dart';
@@ -230,8 +231,14 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
   }
 
 //signIn widget
-  SafeArea signInScreen(Size size, ProviderUser providerUser) {
-    return SafeArea(
+  Widget signInScreen(Size size, ProviderUser providerUser) {
+    return WillPopScope(
+      onWillPop: () async {
+        setState(() {
+          viewControl=0;
+        });
+        return false;
+      },
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -505,131 +512,157 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
     );
   }
 
-  SafeArea fogetPassScreen(Size size, ProviderUser providerUser) {
+  Widget fogetPassScreen(Size size, ProviderUser providerUser) {
     String forgetEmail = '';
-
-    return SafeArea(
-        child: Scaffold(
-      backgroundColor: const Color(0xffe8decb),
-      appBar: AppBar(
+    TimerProvider timerProvider =
+    Provider.of<TimerProvider>(context, listen: false);
+    return WillPopScope(
+      onWillPop: () async {
+        setState(() {
+          viewControl=0;
+        });
+        return false;
+      },
+      child: Scaffold(
         backgroundColor: const Color(0xffe8decb),
-        automaticallyImplyLeading: false,
-        title: InkWell(
-          onTap: () {
-            viewControl=0;
-            setState(() {});
-          },
-          child: Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-            size: size.width / 15,
+        appBar: AppBar(
+      backgroundColor: const Color(0xffe8decb),
+      automaticallyImplyLeading: false,
+      title: InkWell(
+        onTap: () {
+          viewControl=0;
+          setState(() {});
+        },
+        child: Icon(
+          Icons.arrow_back,
+          color: Colors.black,
+          size: size.width / 15,
+        ),
+      ),
+      actions: [
+        Padding(
+          padding: EdgeInsets.only(right: size.width / 25),
+          child: Text(
+            providerUser.getLanguage ? 'Şifremi unuttum' : 'Forgot Password',
+            style: TextStyle(
+                fontWeight: FontWeight.w400,
+                color: Colors.black87,
+                fontSize: size.width / 25),
           ),
         ),
-        actions: [
+      ],
+        ),
+        body: SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: size.height / 7,
+          ),
+          SizedBox(
+            width: size.width,
+            height: size.height / 3,
+            child: Lottie.network(
+                'https://lottie.host/ece47491-287d-4fe9-9bd2-e0f600b190eb/WwAqFpxUAN.json'),
+          ),
           Padding(
-            padding: EdgeInsets.only(right: size.width / 25),
-            child: Text(
-              providerUser.getLanguage ? 'Şifremi unuttum' : 'Forgot Password',
-              style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black87,
-                  fontSize: size.width / 25),
+            padding: EdgeInsets.only(
+                top: size.height / 20,
+                right: size.width / 25,
+                left: size.width / 25),
+            child: TextInputField(
+              onSubmited: (v) {},
+              onchange: (v) {
+                forgetEmail = v;
+              },
+              inputLenghtControl: false,
+              hintText: providerUser.getLanguage
+                  ? 'E-posta adresinizi giriniz'
+                  : 'Enter your mail',
+              hintColor: Colors.grey,
+              iconWidget: const SizedBox(),
+              labelTextWidget: Text(providerUser.getLanguage
+                  ? 'Şifremi unuttum'
+                  : 'Forget pass'),
+              obscrueText: false,
             ),
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: size.height / 7,
-            ),
-            SizedBox(
-              width: size.width,
-              height: size.height / 3,
-              child: Lottie.network(
-                  'https://lottie.host/ece47491-287d-4fe9-9bd2-e0f600b190eb/WwAqFpxUAN.json'),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                  top: size.height / 20,
-                  right: size.width / 25,
-                  left: size.width / 25),
-              child: TextInputField(
-                onSubmited: (v) {},
-                onchange: (v) {
-                  forgetEmail = v;
-                },
-                inputLenghtControl: false,
-                hintText: providerUser.getLanguage
-                    ? 'E-posta adresinizi giriniz'
-                    : 'Enter your mail',
-                hintColor: Colors.grey,
-                iconWidget: const SizedBox(),
-                labelTextWidget: Text(providerUser.getLanguage
-                    ? 'Şifremi unuttum'
-                    : 'Forget pass'),
-                obscrueText: false,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: size.height / 25),
-              child: InkWell(
-                onTap: () async {
-                  await Auth().forgetPass(context, forgetEmail);
-                  viewControl = 0;
-                  setState(() {});
-                },
-                child: Container(
-                  width: size.width / 3,
-                  height: size.height / 12,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Color(0xff232321),
-                        Color(0xff2d2d2b),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(size.width / 25),
-                    ),
+          Padding(
+            padding: EdgeInsets.only(top: size.height / 25),
+            child: InkWell(
+              onTap: () async {
+                await Auth().forgetPass(context, forgetEmail);
+                viewControl = 0;
+                setState(() {});
+              },
+              child: Container(
+                width: size.width / 3,
+                height: size.height / 12,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Color(0xff232321),
+                      Color(0xff2d2d2b),
+                    ],
                   ),
-                  child: Center(
-                    child: Text(
-                      providerUser.getLanguage ? 'Gönder' : 'Send',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: size.width / 19,
-                          fontWeight: FontWeight.w600),
-                    ),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(size.width / 25),
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    providerUser.getLanguage ? 'Gönder' : 'Send',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: size.width / 19,
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
-            )
-          ],
+            ),
+          )
+        ],
+      ),
         ),
       ),
-    ));
+    );
   }
 
-  //functions
   Future<void> loginFunction(String email, String pass) async {
+    ProviderUser providerUser=Provider.of<ProviderUser>(context,listen: false);
     lottieProgressDialog(context, 'assets/json/progress.json');
     bool res = await Auth().loginUser(email, pass, context);
     if (context.mounted) {
       Navigator.of(context).pop();
     }
+
+
     if (res && context.mounted) {
-      Navigator.push(
-        context,
-        PageTransition(
-          type: PageTransitionType.bottomToTop,
-          child: const NavigatorScreen(),
-        ),
-      );
+     /* print('eeeeeeeeeeeeeeeeeeeeeeeeerrrrr');
+      print(providerUser.user.email);
+      print(providerUser.user.language);
+      print(providerUser.getLanguage);
+      print('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrt');*/
+
+      if(providerUser.user.language == ''){
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.bottomToTop,
+            child: const SelectLanguageScreen(),
+          ),
+        );
+      }else{
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.bottomToTop,
+            child: const NavigatorScreen(),
+          ),
+        );
+      }
     } else {
       if (context.mounted) {
         Navigator.push(

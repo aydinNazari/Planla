@@ -21,9 +21,18 @@ class FirestoreMethods {
           .get();
       String lang = (snap.data() as dynamic)['language'];
 
-      if (lang.isNotEmpty &&lang!='') {
+
+
+      if (lang.isNotEmpty) {
         value = true;
       }
+      print('ğğğğğğğğğğğğğğğğğğğğğğğğğğğğğ'); burda bir terslik var
+      print(lang);
+      if(lang =='Tur'){
+       providerUser.setLanguage(true);
+     }else if(lang=='En'){
+       providerUser.setLanguage(false);
+     }
     } on FirebaseException catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString(), Colors.red);
@@ -201,6 +210,10 @@ class FirestoreMethods {
           '5': arrangement5,
         };
         await providerUser.setMapArrangment(mapArrang);
+
+       if(context.mounted){
+         await getLanguage(context);
+       }
       } on FirebaseException catch (e) {
         if (context.mounted) {
           showSnackBar(context, e.toString(), Colors.red);
