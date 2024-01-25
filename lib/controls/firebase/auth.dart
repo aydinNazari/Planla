@@ -21,11 +21,12 @@ class Auth {
     DocumentSnapshot cred = await firestore.collection('users').doc(uid).get();
     model.User user = model.User(
       uid: uid!,
-      email: (cred.data() as dynamic)['email'],
-      name: (cred.data() as dynamic)['name'],
-      imageurl: (cred.data() as dynamic)['imageurl'],
-      score: (cred.data() as dynamic)['score'],
-      bio: (cred.data() as dynamic)['bio']
+      email: (cred.data() as dynamic)['email'] ?? '',
+      name: (cred.data() as dynamic)['name']?? '',
+      imageurl: (cred.data() as dynamic)['imageurl'] ?? '',
+      score: (cred.data() as dynamic)['score'] ?? 0.0,
+      bio: (cred.data() as dynamic)['bio']?? '',
+      language: (cred.data() as dynamic)['language']??'',
     );
     // providerUser.setScore(user.score);
     providerUser.setUser(user);
@@ -53,6 +54,7 @@ class Auth {
           imageurl: image,
           score: 0,
           bio: '',
+          language: '',
         );
         await firestore
             .collection('users')
@@ -91,7 +93,10 @@ class Auth {
             'email': user.email,
             'uid': user.uid,
             'imageurl': user.photoURL,
-            'name': user.displayName
+            'name': user.displayName,
+            'bio': '',
+            'language': '',
+            'score' : 0.0
           });
         }
         res = true;
@@ -112,13 +117,28 @@ class Auth {
     try {
       UserCredential cred =
           await auth.signInWithEmailAndPassword(email: email, password: pass);
+     // await auth.currentUser!.reload();
+
       if (cred.user != null) {
+
         //model.User user=model.User(uid: uid, email: email, username: username);
         model.User user = await getCurrentUser(cred.user!.uid);
         if (context.mounted) {
           Provider.of<ProviderUser>(context, listen: false).setUser(user);
         }
         res = true;
+        if (!cred.user!.emailVerified) {
+          res=false;
+          if (context.mounted) {
+            showSnackBar(
+                context,
+                providerUser.getLanguage
+                    ? 'E-postanızı henüz doğrulamadınız. Lütfen e-postanızı doğrulayın'
+                    : 'You haven\'t verified your email yet. Please verify your email',
+                Colors.red);
+          }
+
+        }
       }
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {

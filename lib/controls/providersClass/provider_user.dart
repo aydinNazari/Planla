@@ -5,7 +5,7 @@ import '../../models/user.dart';
 
 class ProviderUser with ChangeNotifier {
   User _user =
-      User(uid: '', email: '', name: '', imageurl: '', score: 0, bio: '');
+      User(uid: '', email: '', name: '', imageurl: '', score: 0, bio: '',language:'');
   List<TodayModel> _todayList = [];
   List<TodayModel> _tankList = [];
   List<String> _idList = [];
@@ -21,14 +21,16 @@ class ProviderUser with ChangeNotifier {
   Map<String, double> _mapEvent = {};
   Map<String, Arrangment> _mapArrrangment = {};
   bool _language = false; //language ? Turkey : English
+/*
   bool __enterControl =
       false; //_enter ? NavigatorScreeen : SelectLanguageScreen yanı tanıtım ve dil seçimi olacak eğer false ise
+*/
 
   User get user => _user;
 
   bool get getLanguage => _language;
 
-  bool get getEnterControl => __enterControl;
+  /*bool get getEnterControl => __enterControl;*/
 
   List<TodayModel> get getTodayList => _todayList;
 
@@ -138,9 +140,10 @@ class ProviderUser with ChangeNotifier {
 
   setLanguage(bool v) {
     _language = v;
-    notifyListeners();
+    //notifyListeners();
   }
-  setEnterControl(bool v){
-    __enterControl=v;
-  }
+
+ /* setEnterControl(bool v) {
+    __enterControl = v;
+  }*/
 }

@@ -5,6 +5,7 @@ class User {
   final String imageurl;
   final double score;
   final String bio;
+  final String language;
 
 
   User({
@@ -13,7 +14,8 @@ class User {
     required this.name,
     required this.imageurl,
     required this.score,
-    required this.bio
+    required this.bio,
+    required this.language
   });
 
 
@@ -25,6 +27,7 @@ class User {
       'imageurl': imageurl,
       'score': score,
       'bio': bio,
+      'language': language,
     };
   }
 
@@ -36,6 +39,7 @@ class User {
         imageurl: map['imageurl'] ?? '',
       score: map['score'] ?? '',
       bio: map['bio'] ?? '',
+      language: map['language'] ?? '',
     );
   }
 }

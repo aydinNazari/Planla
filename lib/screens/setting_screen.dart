@@ -75,7 +75,7 @@ class SettingScreen extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(left: size.width / 55),
                         child: InkWell(
-                          onTap: (){
+                          onTap: () {
                             Navigator.of(context).pop();
                           },
                           child: Text(
@@ -125,7 +125,7 @@ class SettingScreen extends StatelessWidget {
               padding: EdgeInsets.only(top: size.height / 25),
               child: buildTextAndTextField(
                   size,
-                  providerUser.getLanguage ? 'Bio' : 'Açıklama',
+                  providerUser.getLanguage ? 'Açıklama' : 'Bio',
                   providerUser.user.bio != ''
                       ? providerUser.user.bio
                       : (providerUser.getLanguage
@@ -168,19 +168,26 @@ class SettingScreen extends StatelessWidget {
                   onTap: () async {
                     if (name.isNotEmpty || bio.isNotEmpty) {
                       lottieProgressDialog(context, 'assets/json/loading.json');
-                      await FirestoreMethods()
-                          .updateUserElements(context, bio, name);
+                      await FirestoreMethods().updateUserElements(
+                          context,
+                          bio,
+                          name,
+                          true); //bunu değiştir dil ayarları ekle ve buna value yu ata
                       if (context.mounted) {
                         Navigator.of(context).pop();
                         Navigator.of(context).pop();
                       }
                     } else {
                       showSnackBar(
-                          context, providerUser.getLanguage ? 'Hiçbir şey girmedin':'You did not enter anything ', Colors.red);
+                          context,
+                          providerUser.getLanguage
+                              ? 'Hiçbir şey girmedin'
+                              : 'You did not enter anything ',
+                          Colors.red);
                     }
                   },
-                  child: Text(providerUser.getLanguage ? 'Güncelle' :
-                    'Update',
+                  child: Text(
+                    providerUser.getLanguage ? 'Güncelle' : 'Update',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: size.width / 20,
@@ -207,7 +214,7 @@ class SettingScreen extends StatelessWidget {
               txt,
               style: TextStyle(
                   color: const Color(0xff234565),
-                  fontSize: size.width / 20,
+                  fontSize: size.width / 22,
                   fontWeight: FontWeight.w700),
             ),
           ),

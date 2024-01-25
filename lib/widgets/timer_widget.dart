@@ -25,7 +25,7 @@ class TimerWidget extends StatelessWidget {
         buildColon(size),
         buildTimeCard(minutes, providerUser.getLanguage ? 'DAKİKA':'MINUTES', context),
         buildColon(size),
-        buildTimeCard(secends, providerUser.getLanguage ? 'SANİY':'SECENDS', context),
+        buildTimeCard(secends, providerUser.getLanguage ? 'SANİYE':'SECENDS', context),
       ],
     );
   }

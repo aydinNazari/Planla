@@ -12,12 +12,53 @@ import '../providersClass/provider_user.dart';
 import '../providersClass/timer_provider.dart';
 
 class FirestoreMethods {
+  Future<bool> getLanguage(BuildContext context) async {
+    bool value = false;
+    ProviderUser providerUser = Provider.of<ProviderUser>(context);
+    try {
+      var snap = await firestore.collection('users')
+          .doc(providerUser.user.uid)
+          .get();
+      String lang = (snap.data() as dynamic)['language'];
+
+      if (lang.isNotEmpty &&lang!='') {
+        value = true;
+      }
+    } on FirebaseException catch (e) {
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
+    }
+    return value;
+  }
+
+  Future<void> setLanguage(BuildContext context,String lang) async {
+    ProviderUser providerUser = Provider.of<ProviderUser>(context,listen: false);
+    String lan='';
+    try {
+      if(lang=='Türkçe'){
+        lan='Tur';
+      }else{
+        lan='En';
+      }
+      await
+      firestore.collection('users').doc(providerUser.user.uid).update({
+        'language' : lan
+      });
+    } on FirebaseException catch (e) {
+      if (context.mounted) {
+        showSnackBar(context, e.toString(), Colors.red);
+      }
+    }
+  }
+
+
   Future<void> textSave(BuildContext context, TodayModel todayModel) async {
     List<TodayModel> todayList = [];
     List<TodayModel> tankList = [];
     List<String> idlist = [];
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     var uuid = const Uuid();
     var id = uuid.v4();
     try {
@@ -51,9 +92,9 @@ class FirestoreMethods {
 
   Future<void> getFirestoreData(BuildContext context) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     TimerProvider timerProvider =
-        Provider.of<TimerProvider>(context, listen: false);
+    Provider.of<TimerProvider>(context, listen: false);
     if (providerUser.getControlFirestore) {
       List<String> textIdsList = [];
       try {
@@ -117,11 +158,11 @@ class FirestoreMethods {
         providerUser.setControlFirestore(false);
 
         timerProvider.setMotivitionSentencesEn(motivationSentencesEnList[
-            timerProvider.setRandomNumber(motivationSentencesEnList.length)]);
+        timerProvider.setRandomNumber(motivationSentencesEnList.length)]);
         timerProvider.setMotivitionSentencesTur(motivationSentencesTurList[
         timerProvider.setRandomNumber(motivationSentencesTurList.length)]);
         timerProvider.setMotivationLottieUrl(motivationLottieList[
-            timerProvider.setRandomNumber(motivationLottieList.length)]);
+        timerProvider.setRandomNumber(motivationLottieList.length)]);
 
         // events get
         var eventSnap = await firestore
@@ -145,7 +186,7 @@ class FirestoreMethods {
         }
         //get Arrangment
         DocumentSnapshot<Map<String, dynamic>> scorsDoc =
-            await firestore.collection('arrangement').doc('scors').get();
+        await firestore.collection('arrangement').doc('scors').get();
         Map<String, dynamic> scorsData = scorsDoc.data() ?? {};
         Arrangment arrangement1 = Arrangment.fromMap(scorsData['1']);
         Arrangment arrangement2 = Arrangment.fromMap(scorsData['2']);
@@ -199,7 +240,7 @@ class FirestoreMethods {
 
   Future<void> deleteCard(BuildContext context, String deleteId) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     try {
       await firestore
           .collection('text')
@@ -209,7 +250,7 @@ class FirestoreMethods {
           .delete();
 
       DocumentReference docRef =
-          firestore.collection('textIds').doc(providerUser.user.uid);
+      firestore.collection('textIds').doc(providerUser.user.uid);
       DocumentSnapshot docSnapshot = await docRef.get();
       Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
 
@@ -251,7 +292,7 @@ class FirestoreMethods {
   Future<void> doneImportantUpdate(BuildContext context, bool typeProcess,
       bool value, String processID) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     List<TodayModel> tankList = [];
     List<TodayModel> todayList = [];
     List<TodayModel> doneList = [];
@@ -342,7 +383,7 @@ class FirestoreMethods {
 
   Future<void> saveEvent(BuildContext context, String event) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     List<String> tempString = [];
     List<double> eventValue = [];
     bool control = true;
@@ -358,7 +399,7 @@ class FirestoreMethods {
         tempString.add(event);
         eventValue.add(0);
         EventModel eventModel =
-            EventModel(eventsKey: tempString, eventValue: eventValue);
+        EventModel(eventsKey: tempString, eventValue: eventValue);
         await firestore
             .collection('events')
             .doc(providerUser.user.uid)
@@ -383,14 +424,16 @@ class FirestoreMethods {
 
   Future<void> deleteEvent(BuildContext context, int index) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     List<String> tempString = [];
     List<double> tempInt = [];
     try {
       tempString = providerUser.getEventsString;
       tempInt = providerUser.getEventsValueList;
-      tempString = List.from(tempString)..removeAt(index);
-      tempInt = List.from(tempInt)..removeAt(index);
+      tempString = List.from(tempString)
+        ..removeAt(index);
+      tempInt = List.from(tempInt)
+        ..removeAt(index);
       Map<String, double> tempMap = {};
       for (int i = 0; i < tempString.length; i++) {
         tempMap[tempString[i]] = tempInt[i];
@@ -398,7 +441,7 @@ class FirestoreMethods {
       providerUser.setMapEvent(tempMap);
       print('ssssssssssssssss ${tempMap}');
       EventModel eventModel =
-          EventModel(eventsKey: tempString, eventValue: tempInt);
+      EventModel(eventsKey: tempString, eventValue: tempInt);
       await firestore
           .collection('events')
           .doc(providerUser.user.uid)
@@ -414,9 +457,9 @@ class FirestoreMethods {
 
   Future<void> updateScoreAndEventsValue(BuildContext context) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     TimerProvider timerProvider =
-        Provider.of<TimerProvider>(context, listen: false);
+    Provider.of<TimerProvider>(context, listen: false);
     try {
       //set score
       double tempHours = timerProvider.getTempScore;
@@ -467,18 +510,19 @@ class FirestoreMethods {
     }
   }
 
-  Future<void> updateUserElements(
-      BuildContext context, String bio, String name) async {
+  Future<void> updateUserElements(BuildContext context, String bio, String name,
+      bool lang) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: false);
+    Provider.of<ProviderUser>(context, listen: false);
     try {
       User user = User(
-        uid: providerUser.user.uid,
-        email: providerUser.user.email,
-        name: name != '' ? name : providerUser.user.name,
-        imageurl: providerUser.user.imageurl,
-        score: providerUser.user.score,
-        bio: bio != '' ? bio : providerUser.user.bio,
+          uid: providerUser.user.uid,
+          email: providerUser.user.email,
+          name: name != '' ? name : providerUser.user.name,
+          imageurl: providerUser.user.imageurl,
+          score: providerUser.user.score,
+          bio: bio != '' ? bio : providerUser.user.bio,
+          language: lang ? 'Tur' : 'En'
       );
       await firestore.collection('users').doc(user.uid).update(user.toMap());
       providerUser.setUser(user);
@@ -491,9 +535,9 @@ class FirestoreMethods {
 
   Future<void> updateArrangement(BuildContext context) async {
     ProviderUser providerUser =
-        Provider.of<ProviderUser>(context, listen: true);
+    Provider.of<ProviderUser>(context, listen: true);
     TimerProvider timerProvider =
-        Provider.of<TimerProvider>(context, listen: true);
+    Provider.of<TimerProvider>(context, listen: true);
     try {
       Map<String, Arrangment> mapArrangment = providerUser.getMapArrangment;
       timerProvider.setTimerFinishControl(false);
@@ -507,20 +551,19 @@ class FirestoreMethods {
       Arrangment? arrangment4 = mapArrangment['4'];
       Arrangment? arrangment5 = mapArrangment['5'];
       bool control =
-          false; //fire base'e eklemesi için //eğer örnek olarak arrangment2ye ekledi ise tekrardan aynı değeri 3-4'e eklemesmesi için
-      List<Arrangment> tempClassList= [
+      false; //fire base'e eklemesi için //eğer örnek olarak arrangment2ye ekledi ise tekrardan aynı değeri 3-4'e eklemesmesi için
+      List<Arrangment> tempClassList = [
         arrangment1!,
         arrangment2!,
         arrangment3!,
         arrangment4!,
         arrangment5!
       ];
-      List<Arrangment> tempClassList2= [
-
+      List<Arrangment> tempClassList2 = [
       ];
-      for(int i=0;i<tempClassList.length;i++){
-        if(tempClassList[i].score < timerProvider.getTempScore){
-          control=true;
+      for (int i = 0; i < tempClassList.length; i++) {
+        if (tempClassList[i].score < timerProvider.getTempScore) {
+          control = true;
           Arrangment arrangment = Arrangment(
               imgUrl: providerUser.user.imageurl,
               uid: providerUser.user.uid,
@@ -528,13 +571,13 @@ class FirestoreMethods {
               email: providerUser.user.email,
               score: timerProvider.getTempScore);
           tempClassList2.add(arrangment);
-          for(int j=0;j<tempClassList.length;j++){
+          for (int j = 0; j < tempClassList.length; j++) {
             tempClassList2.add(tempClassList[j]);
           }
           break;
         }
       }
-      tempClassList=tempClassList2;
+      tempClassList = tempClassList2;
       for (int i = 0; i < tempClassList.length; i++) {
         for (int j = i + 1; j < tempClassList.length; j++) {
           if (tempClassList[i].uid == tempClassList[j].uid) {
@@ -544,7 +587,7 @@ class FirestoreMethods {
           }
         }
       }
-      tempClassList=tempClassList2;
+      tempClassList = tempClassList2;
       for (int i = 0; i < tempClassList.length - 1; i++) {
         for (int j = 0; j < tempClassList.length - 1 - i; j++) {
           if (tempClassList[j].score < tempClassList[j + 1].score) {
@@ -554,8 +597,8 @@ class FirestoreMethods {
           }
         }
       }
-      tempClassList2=tempClassList;
-    /*
+      tempClassList2 = tempClassList;
+      /*
       for(int i=0;i<tempClassList.length;i++){
         if(tempClassList[i].score < providerUser.user.score && providerUser.user.uid == tempClassList[i].uid){
           tempClassList2.removeAt(i);
@@ -567,7 +610,7 @@ class FirestoreMethods {
       arrangment3=tempClassList2[2];
       arrangment4=tempClassList2[3];
       arrangment5=tempClassList2[4];*/
-     /* if (arrangment1.score < timerProvider.getTempScore) {
+      /* if (arrangment1.score < timerProvider.getTempScore) {
         if (arrangment1.uid != providerUser.user.uid) {
           control = true;
           arrangment5 = arrangment4;
@@ -675,7 +718,7 @@ class FirestoreMethods {
         }
       }*/
       if (control) {
-     /*   List<Arrangment> tempList = [
+        /*   List<Arrangment> tempList = [
           arrangment1,
           arrangment2!,
           arrangment3!,
@@ -713,11 +756,11 @@ class FirestoreMethods {
           '5': tempClassList2[4].toMap(),
         };
         mapArrangment = {
-          '1':tempClassList2[0],
-          '2':tempClassList2[1],
-          '3':tempClassList2[2],
-          '4':tempClassList2[3],
-          '5':tempClassList2[4],
+          '1': tempClassList2[0],
+          '2': tempClassList2[1],
+          '3': tempClassList2[2],
+          '4': tempClassList2[3],
+          '5': tempClassList2[4],
         };
         await firestore.collection('arrangement').doc('scors').update(mapp);
         providerUser.setMapArrangment(mapArrangment);
@@ -732,13 +775,14 @@ class FirestoreMethods {
 
   String _twoDigits(Timestamp timestamp) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
-            timestamp.seconds * 1000,
-            isUtc: true)
+        timestamp.seconds * 1000,
+        isUtc: true)
         .add(Duration(microseconds: timestamp.nanoseconds ~/ 1000));
 
     String formattedDate =
         "${dateTime.year}-${_ddd(dateTime.month)}-${_ddd(dateTime.day)} "
-        "${_ddd(dateTime.hour)}:${_ddd(dateTime.minute)}:${_ddd(dateTime.second)}";
+        "${_ddd(dateTime.hour)}:${_ddd(dateTime.minute)}:${_ddd(
+        dateTime.second)}";
     formattedDate = formattedDate.substring(0, 10);
     return formattedDate;
   }

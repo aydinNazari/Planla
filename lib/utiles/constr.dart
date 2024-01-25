@@ -203,7 +203,9 @@ Future<void> showMyDialog(bool exitControl,
                           name: providerUser.user.name,
                           imageurl: url,
                           score: providerUser.user.score,
-                          bio: providerUser.user.bio);
+                          bio: providerUser.user.bio,
+                      language: providerUser.getLanguage ? 'Tur' : 'En'
+                      );
                       providerUser.setUser(user);
                       await firestore
                           .collection('users')
@@ -245,7 +247,9 @@ Future<void> showMyDialog(bool exitControl,
                               name: providerUser.user.name,
                               imageurl: '',
                               score: providerUser.user.score,
-                              bio: providerUser.user.bio);
+                              bio: providerUser.user.bio,
+                              language: providerUser.getLanguage ? 'Tur' : 'En'
+                          );
                           providerUser.setUser(user);
                           if (context.mounted) {
                             Navigator.of(context).pop();

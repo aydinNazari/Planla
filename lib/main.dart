@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/controls/providersClass/timer_provider.dart';
-import 'package:planla/screens/Intro_screen_page.dart';
 import 'package:planla/screens/login_signin_screen.dart';
 import 'package:planla/screens/navigator_screen.dart';
 import 'package:planla/screens/select_language_screen.dart';
@@ -33,7 +32,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ProviderUser providerUser=Provider.of<ProviderUser>(context,listen: false);
+   ProviderUser providerUser=Provider.of<ProviderUser>(context,listen: false);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'TargetToTarget',
@@ -45,11 +44,9 @@ class MyApp extends StatelessWidget {
       home: FutureBuilder(
         future: Auth()
             .getCurrentUser(
-                auth.currentUser != null ? auth.currentUser!.uid : null)
+            auth.currentUser != null ? auth.currentUser!.uid : null)
             .then((value) {
-          if (value != null) {
             Provider.of<ProviderUser>(context, listen: false).setUser(value);
-          }
           return value;
         }),
         builder: (context, snapshot) {
@@ -57,12 +54,21 @@ class MyApp extends StatelessWidget {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (snapshot.hasData && auth.currentUser!.emailVerified) {
-            if(providerUser.getEnterControl){
-              return const NavigatorScreen();
-            }else{
-              return const SelectLanguageScreen();
-            }
+          } else if (snapshot.hasData) {
+            print('ffffffffffffffffffffffflllll');
+            print(snapshot.data!.language);
+            if(snapshot.data?.language !=''){
+             if(snapshot.data!.language =='Tur'){
+               providerUser.setLanguage(true);
+               return const NavigatorScreen();
+             }else if(snapshot.data!.language=='En'){
+               providerUser.setLanguage(false);
+             }else if(snapshot.data?.language == ''){
+               return const SelectLanguageScreen();
+             }
+           }else {
+             return const SelectLanguageScreen();
+           }
           }
           return const LoginSignInScreen();
         },

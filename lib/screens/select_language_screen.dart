@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:planla/controls/firebase/firestore._methods.dart';
 import 'package:planla/controls/providersClass/provider_user.dart';
 import 'package:planla/screens/Intro_screen_page.dart';
 import 'package:planla/utiles/colors.dart';
@@ -52,13 +53,13 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
                     child: Row(
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(left: size.width/100),
+                          padding: EdgeInsets.only(left: size.width / 100),
                           child: SizedBox(
-                              width: size.width/12,
+                              width: size.width / 12,
                               child: Image.asset('assets/images/uk-flag.png')),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(left: size.width/25),
+                          padding: EdgeInsets.only(left: size.width / 25),
                           child: const Text('English'),
                         ),
                       ],
@@ -70,10 +71,10 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
                     child: Row(
                       children: [
                         SizedBox(
-                            width: size.width/10,
+                            width: size.width / 10,
                             child: Image.asset('assets/images/turkey.png')),
                         Padding(
-                          padding: EdgeInsets.only(left: size.width/25),
+                          padding: EdgeInsets.only(left: size.width / 25),
                           child: const Text('Türkçe'),
                         ),
                       ],
@@ -103,15 +104,20 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
           Padding(
             padding: EdgeInsets.only(bottom: size.height / 7),
             child: InkWell(
-              onTap: () {
-                providerUser.setEnterControl(true);
-                Navigator.pushReplacement(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.leftToRight,
-                    child: const IntroScreen(),
-                  ),
+              onTap: () async {
+               // providerUser.setEnterControl(true);
+                await FirestoreMethods().setLanguage(
+                  context,valueLan
                 );
+                if (context.mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.leftToRight,
+                      child: const IntroScreen(),
+                    ),
+                  );
+                }
               },
               child: Container(
                 width: size.width / 3,
