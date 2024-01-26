@@ -214,13 +214,13 @@ class SettingScreen extends StatelessWidget {
               txt,
               style: TextStyle(
                   color: const Color(0xff234565),
-                  fontSize: size.width / 22,
+                  fontSize: size.width / 28,
                   fontWeight: FontWeight.w700),
             ),
           ),
         ),
         Expanded(
-          flex: 7,
+          flex: 8,
           child: Padding(
             padding:
                 EdgeInsets.only(left: size.width / 25, right: size.width / 25),

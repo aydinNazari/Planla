@@ -80,6 +80,7 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                         );
                       },
                       child: SizedBox(
+                        height: size.height/10,
                         child: ProgileImgWidget(
                           url: providerUser.user.imageurl,
                         ),

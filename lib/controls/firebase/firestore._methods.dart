@@ -14,20 +14,15 @@ import '../providersClass/timer_provider.dart';
 class FirestoreMethods {
   Future<bool> getLanguage(BuildContext context) async {
     bool value = false;
-    ProviderUser providerUser = Provider.of<ProviderUser>(context);
+    ProviderUser providerUser = Provider.of<ProviderUser>(context,listen: false);
     try {
       var snap = await firestore.collection('users')
           .doc(providerUser.user.uid)
           .get();
       String lang = (snap.data() as dynamic)['language'];
-
-
-
       if (lang.isNotEmpty) {
         value = true;
       }
-      print('ğğğğğğğğğğğğğğğğğğğğğğğğğğğğğ'); burda bir terslik var
-      print(lang);
       if(lang =='Tur'){
        providerUser.setLanguage(true);
      }else if(lang=='En'){
