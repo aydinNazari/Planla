@@ -7,11 +7,19 @@ import '../utiles/constr.dart';
 import '../widgets/profile_img_widget.dart';
 import '../widgets/textField/textinputfield_widget.dart';
 
-class SettingScreen extends StatelessWidget {
-  SettingScreen({Key? key}) : super(key: key);
+class SettingScreen extends StatefulWidget {
+  const SettingScreen({Key? key}) : super(key: key);
 
+  @override
+  State<SettingScreen> createState() => _SettingScreenState();
+}
+
+class _SettingScreenState extends State<SettingScreen> {
   String name = '';
+
   String bio = '';
+
+  String valueLan = '';
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +28,10 @@ class SettingScreen extends StatelessWidget {
         Provider.of<ProviderUser>(context, listen: true);
     TimerProvider timerProvider =
         Provider.of<TimerProvider>(context, listen: false);
+    providerUser.user.language=='Tur' ? valueLan='Türkçe' : valueLan='English';
+    if(valueLan == '') {
+      valueLan='English';
+    }
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -145,8 +157,101 @@ class SettingScreen extends StatelessWidget {
                 name = v;
               }),
             ),
+            SizedBox(
+              height: size.height/20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding:  EdgeInsets.only(left: size.width/25),
+                    child: Text(
+                      providerUser.getLanguage ? 'Dil' : 'Language',
+                      style: TextStyle(
+                          color: const Color(0xff234565),
+                          fontSize: size.width / 28,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 8,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: size.width/15,right: size.width/15),
+                    child: SizedBox(
+                      width: size.width / 2,
+                      height: size.height / 10,
+                      child: DropdownButton(
+                        alignment: Alignment.center,
+                        dropdownColor: const Color(0xffc9cfd5),
+                        icon: Padding(
+                          padding: EdgeInsets.only(right: size.width/12),
+                          child: const Icon(Icons.language),
+                        ),
+                        items: [
+                          DropdownMenuItem<String>(
+                            alignment: Alignment.center,
+                            value: 'English',
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(left: size.width / 100),
+                                  child: SizedBox(
+                                      width: size.width / 12,
+                                      child: Image.asset(
+                                          'assets/images/uk-flag.png')),
+                                ),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(left: size.width / 25),
+                                  child: const Text('English'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          DropdownMenuItem<String>(
+                            alignment: Alignment.center,
+                            value: 'Türkçe',
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                    width: size.width / 10,
+                                    child: Image.asset(
+                                        'assets/images/turkey.png')),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(left: size.width / 25),
+                                  child: const Text('Türkçe'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        isExpanded: true,
+                        value: valueLan ,
+                        borderRadius:
+                            BorderRadius.all(Radius.circular(size.width / 25)),
+                        onChanged: (Object? value) async {
+                          if (value is String) {
+                            if (value == 'English') {
+                              valueLan = value;
+                            } else {
+                              valueLan = value;
+                            }
+                          }
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             Padding(
-              padding: EdgeInsets.only(top: size.height / 8),
+              padding: EdgeInsets.only(top: size.height / 18),
               child: Container(
                 width: size.width / 3,
                 height: size.height / 12,
@@ -166,13 +271,24 @@ class SettingScreen extends StatelessWidget {
                 child: Center(
                     child: InkWell(
                   onTap: () async {
-                    if (name.isNotEmpty || bio.isNotEmpty) {
+                    if (name.isNotEmpty || bio.isNotEmpty ) {
                       lottieProgressDialog(context, 'assets/json/loading.json');
                       await FirestoreMethods().updateUserElements(
                           context,
                           bio,
                           name,
                           true); //bunu değiştir dil ayarları ekle ve buna value yu ata
+                      if (context.mounted) {
+                        print('ghghhggggggggggggggg');
+                        print(valueLan);
+                        await FirestoreMethods().setLanguage(
+                            context, valueLan=='Türkçe' ? 'Tur' : 'En');ffffff
+                      }
+                      if (valueLan == 'English') {
+                        providerUser.setLanguage(false);
+                      } else {
+                        providerUser.setLanguage(true);
+                      }
                       if (context.mounted) {
                         Navigator.of(context).pop();
                         Navigator.of(context).pop();

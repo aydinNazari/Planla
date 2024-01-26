@@ -91,7 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       context,
                       PageTransition(
                           type: PageTransitionType.topToBottom,
-                          child: SettingScreen()));
+                          child: const SettingScreen()));
                 },
                 child: Icon(
                   Icons.settings,
