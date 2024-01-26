@@ -4,8 +4,14 @@ import 'package:planla/models/today_model.dart';
 import '../../models/user.dart';
 
 class ProviderUser with ChangeNotifier {
-  User _user =
-      User(uid: '', email: '', name: '', imageurl: '', score: 0, bio: '',language:'');
+  User _user = User(
+      uid: '',
+      email: '',
+      name: '',
+      imageurl: '',
+      score: 0,
+      bio: '',
+      language: '');
   List<TodayModel> _todayList = [];
   List<TodayModel> _tankList = [];
   List<String> _idList = [];
@@ -25,6 +31,9 @@ class ProviderUser with ChangeNotifier {
   bool __enterControl =
       false; //_enter ? NavigatorScreeen : SelectLanguageScreen yanı tanıtım ve dil seçimi olacak eğer false ise
 */
+  bool _settingLanControl =
+  false; //settingLanControl ? update buttonu çalışacak false ise çalışmayacak
+
 
   User get user => _user;
 
@@ -57,6 +66,8 @@ class ProviderUser with ChangeNotifier {
   Map<String, double> get getMapEvent => _mapEvent;
 
   Map<String, Arrangment> get getMapArrangment => _mapArrrangment;
+
+bool get getSettingLanControl=>_settingLanControl;
 
   double get getScore {
     return _score;
@@ -143,7 +154,12 @@ class ProviderUser with ChangeNotifier {
     //notifyListeners();
   }
 
- /* setEnterControl(bool v) {
+/* setEnterControl(bool v) {
     __enterControl = v;
   }*/
+
+setSettingLanControl(bool v){
+  _settingLanControl=v;
+  notifyListeners();
+}
 }

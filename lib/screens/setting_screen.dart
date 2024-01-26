@@ -15,11 +15,26 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  @override
+  void initState() {
+    ProviderUser providerUser =
+    Provider.of<ProviderUser>(context, listen: false);
+   valuFunc(providerUser);
+    super.initState();
+  }
   String name = '';
 
   String bio = '';
 
   String valueLan = '';
+  valuFunc(ProviderUser providerUser){
+    providerUser.user.language == 'Tur'
+        ? valueLan = 'Türkçe'
+        : valueLan = 'English';
+    if (valueLan == '') {
+      valueLan = 'English';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +43,8 @@ class _SettingScreenState extends State<SettingScreen> {
         Provider.of<ProviderUser>(context, listen: true);
     TimerProvider timerProvider =
         Provider.of<TimerProvider>(context, listen: false);
-    providerUser.user.language=='Tur' ? valueLan='Türkçe' : valueLan='English';
-    if(valueLan == '') {
-      valueLan='English';
-    }
+
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -158,7 +171,7 @@ class _SettingScreenState extends State<SettingScreen> {
               }),
             ),
             SizedBox(
-              height: size.height/20,
+              height: size.height / 20,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -166,7 +179,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 Expanded(
                   flex: 3,
                   child: Padding(
-                    padding:  EdgeInsets.only(left: size.width/25),
+                    padding: EdgeInsets.only(left: size.width / 25),
                     child: Text(
                       providerUser.getLanguage ? 'Dil' : 'Language',
                       style: TextStyle(
@@ -179,7 +192,8 @@ class _SettingScreenState extends State<SettingScreen> {
                 Expanded(
                   flex: 8,
                   child: Padding(
-                    padding: EdgeInsets.only(left: size.width/15,right: size.width/15),
+                    padding: EdgeInsets.only(
+                        left: size.width / 15, right: size.width / 15),
                     child: SizedBox(
                       width: size.width / 2,
                       height: size.height / 10,
@@ -187,7 +201,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         alignment: Alignment.center,
                         dropdownColor: const Color(0xffc9cfd5),
                         icon: Padding(
-                          padding: EdgeInsets.only(right: size.width/12),
+                          padding: EdgeInsets.only(right: size.width / 12),
                           child: const Icon(Icons.language),
                         ),
                         items: [
@@ -231,7 +245,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           ),
                         ],
                         isExpanded: true,
-                        value: valueLan ,
+                        value: valueLan,
                         borderRadius:
                             BorderRadius.all(Radius.circular(size.width / 25)),
                         onChanged: (Object? value) async {
@@ -242,6 +256,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               valueLan = value;
                             }
                           }
+                          providerUser.setSettingLanControl(true);
                           setState(() {});
                         },
                       ),
@@ -252,64 +267,67 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             Padding(
               padding: EdgeInsets.only(top: size.height / 18),
-              child: Container(
-                width: size.width / 3,
-                height: size.height / 12,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      Color(0xff46829b),
-                      Color(0xff544797),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(size.width / 25),
-                  ),
-                ),
-                child: Center(
-                    child: InkWell(
-                  onTap: () async {
-                    if (name.isNotEmpty || bio.isNotEmpty ) {
+              child: InkWell(
+                onTap: () async {
+                  if (name.isNotEmpty || bio.isNotEmpty || providerUser.getSettingLanControl) {
+                    if(name.isNotEmpty || bio.isNotEmpty){
                       lottieProgressDialog(context, 'assets/json/loading.json');
                       await FirestoreMethods().updateUserElements(
-                          context,
-                          bio,
-                          name,
-                          true); //bunu değiştir dil ayarları ekle ve buna value yu ata
-                      if (context.mounted) {
-                        print('ghghhggggggggggggggg');
-                        print(valueLan);
-                        await FirestoreMethods().setLanguage(
-                            context, valueLan=='Türkçe' ? 'Tur' : 'En');ffffff
-                      }
-                      if (valueLan == 'English') {
-                        providerUser.setLanguage(false);
-                      } else {
-                        providerUser.setLanguage(true);
-                      }
+                          context, bio, name, providerUser.getLanguage);
                       if (context.mounted) {
                         Navigator.of(context).pop();
                         Navigator.of(context).pop();
                       }
-                    } else {
-                      showSnackBar(
-                          context,
-                          providerUser.getLanguage
-                              ? 'Hiçbir şey girmedin'
-                              : 'You did not enter anything ',
-                          Colors.red);
                     }
-                  },
-                  child: Text(
+                    if (context.mounted) {
+                    if (valueLan == 'English') {
+                      providerUser.setLanguage(false);
+                    } else {
+                      providerUser.setLanguage(true);
+                    }
+                    if(providerUser.getSettingLanControl){
+                      await FirestoreMethods().setLanguage(
+                          context, valueLan);
+                    }
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    }
+                    providerUser.setSettingLanControl(false);
+                  } else {
+                    showSnackBar(
+                        context,
+                        providerUser.getLanguage
+                            ? 'Hiçbir değişiklik yapılmadı!'
+                            : 'No changes were made! ',
+                        Colors.red);
+                  }
+                },
+                child: Container(
+                  width: size.width / 3,
+                  height: size.height / 12,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        Color(0xff46829b),
+                        Color(0xff544797),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(size.width / 25),
+                    ),
+                  ),
+                  child: Center(
+                      child: Text(
                     providerUser.getLanguage ? 'Güncelle' : 'Update',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: size.width / 20,
                         fontWeight: FontWeight.w600),
-                  ),
-                )),
+                  )),
+                ),
               ),
             )
           ],

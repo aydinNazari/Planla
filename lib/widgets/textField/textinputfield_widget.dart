@@ -27,7 +27,7 @@ class TextInputField extends StatelessWidget {
     return SizedBox(
       child: TextField(
         inputFormatters: [
-          LengthLimitingTextInputFormatter(inputLenghtControl ? 10 : 60)
+          LengthLimitingTextInputFormatter(inputLenghtControl ? 20 : 60)
         ],
         textCapitalization: TextCapitalization.words,
         onChanged: onchange,

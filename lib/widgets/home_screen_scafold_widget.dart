@@ -37,10 +37,24 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
             Row(
               children: [
                 Expanded(
-                  flex: 7,
+                  flex: 4,
                   child: Row(
                     children: [
-                      Text(
+                      providerUser.user.name.length >=22 ?
+                      Expanded(
+                        child: Text(
+                          providerUser.getLanguage
+                              ? 'Selam ${providerUser.user.name}!'
+                              : 'Hi ${providerUser.user.name}!',
+                          softWrap: true,
+                          style: TextStyle(shadows: const <Shadow>[
+                            Shadow(
+                                color: Colors.black,
+                                blurRadius: 5,
+                                offset: Offset(0, 0))
+                          ], color: textColor, fontSize: size.width / 18),
+                        ),
+                      ) :Text(
                         providerUser.getLanguage
                             ? 'Selam ${providerUser.user.name}!'
                             : 'Hi ${providerUser.user.name}!',
@@ -50,20 +64,20 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                               color: Colors.black,
                               blurRadius: 5,
                               offset: Offset(0, 0))
-                        ], color: textColor, fontSize: size.width / 15),
+                        ], color: textColor, fontSize: size.width / 18),
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: size.width / 50),
                         child: SizedBox(
-                            width: size.width / 11,
-                            height: size.height / 11,
+                          width: size.width/15,
+                            height: size.height/15,
                             child: Image.asset('assets/icons/hand_hello.png')),
                       ),
                     ],
                   ),
                 ),
                 Expanded(
-                  flex: 2,
+                  flex: 1,
                   child: Padding(
                     padding: EdgeInsets.only(
                       right: size.width / 25,
@@ -81,6 +95,7 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                       },
                       child: SizedBox(
                         height: size.height/10,
+                        width: size.width/15,
                         child: ProgileImgWidget(
                           url: providerUser.user.imageurl,
                         ),
