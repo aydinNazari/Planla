@@ -282,6 +282,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     if (context.mounted) {
                     if (valueLan == 'English') {
                       providerUser.setLanguage(false);
+
                     } else {
                       providerUser.setLanguage(true);
                     }
@@ -359,6 +360,8 @@ class _SettingScreenState extends State<SettingScreen> {
             padding:
                 EdgeInsets.only(left: size.width / 25, right: size.width / 25),
             child: TextInputField(
+              autofocusControl: false,
+              controlCaptalWord: true,
               onSubmited: (v) {},
               onchange: func,
               inputLenghtControl: false,

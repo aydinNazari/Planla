@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +13,12 @@ class ChartWidget extends StatelessWidget {
   const ChartWidget({
     super.key,
   });
-
+  int generateRandomNumber(int min, int max) {
+    final random = Random();
+    return min + random.nextInt(max - min + 1);
+  }
   @override
   Widget build(BuildContext context) {
-    int t = -1;
     ProviderUser providerUser =
         Provider.of<ProviderUser>(context, listen: false);
     var size = MediaQuery.of(context).size;
@@ -34,9 +38,7 @@ class ChartWidget extends StatelessWidget {
           borderRadius:
           BorderRadius.all(Radius.circular(size.width / 15))),*/
         child: Center(
-          child: providerUser.getMapEvent.isNotEmpty &&
-                  providerUser.getEventsValueList.length ==
-                      providerUser.getEventsString.length
+          child: providerUser.getMapEvent.isNotEmpty
               ? PieChart(
                   PieChartData(
                     centerSpaceColor: Colors.black26,
@@ -46,12 +48,12 @@ class ChartWidget extends StatelessWidget {
                     sections: providerUser.getMapEvent.entries.map((entry) {
                       String key = entry.key;
                       double value = entry.value;
-                      t++;
+                      int randomNum = generateRandomNumber(0, 10);
                       return PieChartSectionData(
                         showTitle: true,
-                        title: ('${key.substring(0,5)}...'),
-                        value: value,
-                        color: colorList[t],
+                        title: key.length > 5 ? ('${key.substring(0,5)}...') : key,
+                        value: value== 0 ? 0.001 : value,
+                        color: colorList[randomNum],
                         titleStyle: TextStyle(
                             color: Colors.white, fontSize: size.width / 40),
                         radius: size.width / 4,

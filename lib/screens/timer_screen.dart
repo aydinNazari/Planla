@@ -114,6 +114,8 @@ class _TimerScreenState extends State<TimerScreen> {
                         width: size.width / 2,
                         height: size.height / 12,
                         child: TextInputField(
+                          controlCaptalWord: true,
+                            autofocusControl: true,
                             onSubmited: (v) {},
                             inputLenghtControl: true,
                             hintText: providerUser.getLanguage
@@ -205,7 +207,7 @@ class _TimerScreenState extends State<TimerScreen> {
                 children: [
                   const Spacer(),
                   TimerWidget(
-providerUser: providerUser,
+                      providerUser: providerUser,
                       hours: timerProvider.getdenemeHours,
                       minutes: timerProvider.getdenemeMinute,
                       secends: timerProvider.getdenemeSecend),
@@ -259,15 +261,22 @@ providerUser: providerUser,
     );
   }
 
-  SingleChildScrollView buildTimerSetScreen(ProviderUser providerUser) {
+  firestoreSvae(TimerProvider timerProvider)  {
+     FirestoreMethods().updateScoreAndEventsValue(context);
+
+    FirestoreMethods().updateArrangement(context);
+
+    print('geliyottttt');
+    timerProvider.setTimerFinishControl(false);
+  }
+
+  Widget buildTimerSetScreen(ProviderUser providerUser) {
     TimerProvider timerProvider =
         Provider.of<TimerProvider>(context, listen: true);
     checkboxList = providerUser.getCheckBoxList;
     Size size = MediaQuery.of(context).size;
     if (timerProvider.getTimerFinishControl) {
-      timerProvider.setTimerFinishControl(false);
-      FirestoreMethods().updateScoreAndEventsValue(context);
-      FirestoreMethods().updateArrangement(context);
+      firestoreSvae(timerProvider);
     }
     return SingleChildScrollView(
       child: Column(

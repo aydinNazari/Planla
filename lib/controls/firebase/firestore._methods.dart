@@ -469,6 +469,7 @@ class FirestoreMethods {
     TimerProvider timerProvider =
     Provider.of<TimerProvider>(context, listen: false);
     try {
+      print('ororororororororrrkasasfasfö');
       //set score
       double tempHours = timerProvider.getTempScore;
       await firestore
@@ -477,6 +478,7 @@ class FirestoreMethods {
           .update({'score': tempHours});
       providerUser.setScore(tempHours);
       double tempTEventTime = timerProvider.getEventTime;
+
       // print('getEventTime $tempTEventTime');
       String eventTemp = providerUser.getEvent;
       //print('eventTemp : $eventTemp');
@@ -485,17 +487,14 @@ class FirestoreMethods {
         String key = entry.key;
         double value = entry.value;
         if (key == eventTemp) {
-          /* print('key : $key');
-          print('value $value');*/
           tempTEventTime += value;
           String stringValue = tempTEventTime.toString();
-          RegExp regex = RegExp(r'^\d*\.\d{0,2}');
+          /*RegExp regex = RegExp(r'^\d*\.\d{0,3}');
           RegExpMatch? match = regex.firstMatch(stringValue);
           String result = match?.group(0) ?? stringValue;
-          tempTEventTime = double.parse(result);
+          tempTEventTime = double.parse(result);*/
         }
       }
-      // print('tempTEventTime $tempTEventTime');
       if (tempMapEvent.containsKey(eventTemp)) {
         tempMapEvent[eventTemp] = tempTEventTime;
       }

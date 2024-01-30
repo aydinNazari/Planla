@@ -71,16 +71,26 @@ List<String> motivationSentencesEnList = [
   "Be the change you wish to see in the world."
 ];
 List<String> motivationSentencesTurList = [
-  "Her gün bir adım daha yaklaşıyorsun, vazgeçme!",
-  "Çalışkanlık, başarı yolculuğunun anahtarıdır.",
-  "Zorluklar, güçlü olmanın sınavlarıdır.",
-  "Bugün ne eklersen, yarın onu toplarsın.",
-  "Azim, hedeflere ulaşmanın en güçlü motorudur.",
-  "Başarı, pes etmeyenlerin ödülüdür.",
-  "Çalışmak, hayallerini gerçeğe dönüştürmenin ilk adımıdır.",
-  "Her engel, seni daha güçlü kılar.",
-  "Vazgeçmek, başarının kapısını kapatmaktır; o kapıyı açık tut!",
-  "İnan ki, emek verdiğin her an, geleceğine yatırımdır."
+  "Başarı, sabır ve azimle bir araya gelir.",
+  "Çalışmaktan asla vazgeçme, çünkü emek verdiğin her an, geleceğine bir adımdır.",
+  "Yüksek dağları aşmanın tek yolu adım adım tırmanmaktır.",
+  "Hedeflerine ulaşmak için bugün adım at, yarının başarısı bugünkü çabalarındadır.",
+  "Engeller, başarı yolundaki sınavlardır; onları aşmak senin gücündedir.",
+  "Azimli ol, çünkü başarıyı sadece isteyenler değil, çalışanlar elde eder.",
+  "En büyük zaferler, en zorlu mücadelelerin ardından gelir.",
+  "Çalışma isteğin, hedeflerine olan bağlılığını belirler.",
+  "Bugünün küçük adımları, yarının büyük zaferlerine dönüşecektir.",
+  "Başarı, bir gün istemekle değil, her gün çalışmakla gelir.",
+  "Kendine inan, başkalarının seni motive etmesini bekleme.",
+  "Her başarı, bir miktar fedakarlık ve kararlılık gerektirir.",
+  "Başarı, engelleri aşmaktan vazgeçmeyenlerin elindedir.",
+  "Zorluklar sadece gücünü test etmek içindir; sen de bu testi geçebilirsin.",
+  "Hedeflerine ulaşmak için bugün attığın her adım, seni yarının başarılarına götürür.",
+  "Çalışma, hayallerini gerçekleştirmek için atman gereken ilk adımdır.",
+  "Başarı, istemekten çok, istikrarlı bir şekilde çalışmaktan gelir.",
+  "Hedeflerini gerçekleştirmek için bir adım at, geriye bakma.",
+  "Hayal et, inan, çalış ve başar.",
+  "Hiçbir şey, kararlı bir irade ve sürekli çaba karşısında duramaz."
 ];
 List<String> motivationLottieList = [
   'https://lottie.host/659b65a9-d50c-4a25-bbca-1dd14a8f0e60/uUWtrC4btf.json',

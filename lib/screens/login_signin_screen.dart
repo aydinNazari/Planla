@@ -106,8 +106,9 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                         _email = v;
                       },
                       txt: 'Your Email',
-                      controlObsecure: false,
-                      hintText: 'Email',
+                     // controlObsecure: false,
+                      passControl: false,
+                      hintText: 'Email', controlObsecure: false,
                     ),
                   ),
                   Padding(
@@ -118,6 +119,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                       },
                       txt: providerUser.getLanguage ? 'Şifre' : 'Password',
                       controlObsecure: true,
+                      passControl: true,
                       hintText: 'Şifre',
                     ),
                   ),
@@ -338,6 +340,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                       horizontal: size.width / 25, vertical: size.height / 30),
                   child: LoginSignInTextFieldWidget(
                     controlObsecure: false,
+                    passControl: false,
                     hintText: providerUser.getLanguage ? 'İsim' : 'Name',
                     txt: providerUser.getLanguage ? 'İsminiz' : 'Your Name',
                     onchange: (v) {
@@ -351,6 +354,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                   ),
                   child: LoginSignInTextFieldWidget(
                     controlObsecure: false,
+                    passControl: false,
                     hintText: providerUser.getLanguage ? 'E-posta' : 'Email',
                     txt: providerUser.getLanguage ? 'E-postanız' : 'Your email',
                     onchange: (v) {
@@ -363,6 +367,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                       horizontal: size.width / 25, vertical: size.height / 25),
                   child: LoginSignInTextFieldWidget(
                     controlObsecure: true,
+                    passControl: true,
                     hintText: providerUser.getLanguage ? 'Şifre' : 'Password',
                     txt: providerUser.getLanguage ? 'Şisfre' : 'Password',
                     onchange: (v) {
@@ -418,7 +423,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                           )),
                     )),
                 Padding(
-                  padding: EdgeInsets.only(top: size.height / 45),
+                  padding: EdgeInsets.only(top: size.height / 45,left: size.width/25),
                   child: buildAccountButton(size),
                 ),
                 Padding(
@@ -470,33 +475,29 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
   Row buildAccountButton(Size size) {
     return Row(
       children: [
-        const Spacer(),
-        Padding(
-          padding: EdgeInsets.only(right: size.width / 40),
-          child: InkWell(
-            onTap: () async {
-              bool res = await Auth().signInWithGoogle(context);
-              if (res) {
-                setState(() {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.bottomToTop,
-                          child: const NavigatorScreen()));
-                });
-              }
-            },
-            child: SizedBox(
-                width: size.width / 2.5,
-                height: size.height / 13,
-                child: const LoginSigninButtonWidget(
-                  iconControl: true,
-                  iconUrl: 'assets/icons/google.png',
-                  txt: '',
-                )),
-          ),
+        InkWell(
+          onTap: () async {
+            bool res = await Auth().signInWithGoogle(context);
+            if (res) {
+              setState(() {
+                Navigator.push(
+                    context,
+                    PageTransition(
+                        type: PageTransitionType.bottomToTop,
+                        child: const NavigatorScreen()));
+              });
+            }
+          },
+          child: SizedBox(
+              width: size.width/1.1,
+              height: size.height / 13,
+              child: const LoginSigninButtonWidget(
+                iconControl: true,
+                iconUrl: 'assets/icons/google.png',
+                txt: '',
+              )),
         ),
-        Padding(
+        /*Padding(
           padding: EdgeInsets.only(left: size.width / 40),
           child: SizedBox(
               width: size.width / 2.5,
@@ -507,7 +508,7 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                 iconUrl: 'assets/icons/apple.png',
               )),
         ),
-        const Spacer(),
+        const Spacer(),*/
       ],
     );
   }
@@ -571,6 +572,8 @@ class _LoginSignInScreenState extends State<LoginSignInScreen> {
                 right: size.width / 25,
                 left: size.width / 25),
             child: TextInputField(
+              autofocusControl: false,
+              controlCaptalWord: false,
               onSubmited: (v) {},
               onchange: (v) {
                 forgetEmail = v;

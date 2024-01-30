@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:planla/utiles/constr.dart';
 
+import '../firebase/firestore._methods.dart';
+
 class TimerProvider with ChangeNotifier {
   Timer? timer;
   Duration duration = const Duration();
@@ -118,10 +120,13 @@ class TimerProvider with ChangeNotifier {
       }*/
       if (_counter <= -1) {
         _counter=0;
+        print('gtgtgtgtgtgttgtttggg');
+        setTimerFinishControl(true);
+
+        setTimerScreenType(true);
         setTimerFinishControl(true);
         timer?.cancel();
         setTimerReset('00');
-        setTimerScreenType(true);
       }
       notifyListeners();
     });

@@ -10,7 +10,9 @@ class TextInputField extends StatelessWidget {
       required this.obscrueText,
       required this.onchange,
       required this.hintColor,
+      required this.controlCaptalWord,
       required this.onSubmited,
+        required this.autofocusControl,
       required this.inputLenghtControl})
       : super(key: key);
   final String hintText;
@@ -18,7 +20,9 @@ class TextInputField extends StatelessWidget {
   final Widget iconWidget;
   final bool obscrueText;
   final bool inputLenghtControl;
+  final bool autofocusControl;
   final Color hintColor;
+  final bool controlCaptalWord;
   final void Function(String) onSubmited;
   final void Function(String) onchange;
 
@@ -26,10 +30,13 @@ class TextInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       child: TextField(
+        autofocus: autofocusControl ? true : false,
         inputFormatters: [
           LengthLimitingTextInputFormatter(inputLenghtControl ? 20 : 60)
         ],
-        textCapitalization: TextCapitalization.words,
+        textCapitalization: controlCaptalWord
+            ? TextCapitalization.sentences
+            : TextCapitalization.none,
         onChanged: onchange,
         onSubmitted: onSubmited,
         obscureText: obscrueText,

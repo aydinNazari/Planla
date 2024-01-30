@@ -94,7 +94,7 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                         );
                       },
                       child: SizedBox(
-                        height: size.height/10,
+                        height: size.height/11,
                         width: size.width/15,
                         child: ProgileImgWidget(
                           url: providerUser.user.imageurl,
@@ -185,9 +185,20 @@ class _HomeScreenScafoldWidgetState extends State<HomeScreenScafoldWidget> {
                 padding: EdgeInsets.only(top: size.height / 50),
                 child: const ChartWidget()),
             Padding(
+              padding: EdgeInsets.only(top: size.height / 25),
+              child: Text(
+                providerUser.getLanguage ? 'Kullanıcıların sıralaması' :
+                'Ranking of users',
+                style: TextStyle(
+                    fontSize: size.width / 25,
+                    color: textColor,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+            Padding(
               padding: EdgeInsets.only(
                 right: size.width / 45,
-                top: size.height / 25,
+                top: size.height / 35,
               ),
               child: SizedBox(
                   width: size.width,

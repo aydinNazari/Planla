@@ -14,7 +14,7 @@ class AddTextfieldWidget extends StatelessWidget {
     return SizedBox(
       width: size.width,
       child: TextField(
-        textCapitalization: TextCapitalization.words,
+        textCapitalization: TextCapitalization.sentences,
         //maxLines: 5,
         //onEditingComplete: onSubmit,
         controller: txtControoler,
